@@ -1,0 +1,15 @@
+{
+  "removed": [
+    {
+      "removed_source_id": "S044",
+      "kept_source_id": "S043",
+      "url": "https://www.bjjheroes.com/tag/alliance-bjj"
+    },
+    {
+      "removed_source_id": "S045",
+      "kept_source_id": "S043",
+      "url": "https://www.bjjheroes.com/tag/alliance-bjj"
+    }
+  ],
+  "remaining_sources": 178
+}

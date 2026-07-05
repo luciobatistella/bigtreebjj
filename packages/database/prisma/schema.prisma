@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Person {
+  id              String               @id @default(cuid())
+  fullName        String
+  nicknames       String[]
+  country         String?
+  city            String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  aliases         PersonAlias[]
+  affiliations    PersonAffiliation[]
+  studentClaims   LineageClaim[]       @relation("studentClaims")
+  teacherClaims   LineageClaim[]       @relation("teacherClaims")
+  changeHistories ChangeHistory[]
+  importRows      ImportRow[]
+}
+
+model PersonAlias {
+  id        String   @id @default(cuid())
+  personId  String
+  alias     String
+  person    Person   @relation(fields: [personId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Organization {
+  id           String               @id @default(cuid())
+  name         String
+  type         String
+  foundedAt    DateTime?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  affiliations PersonAffiliation[]
+}
+
+model Academy {
+  id           String               @id @default(cuid())
+  name         String
+  organizationId String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model PersonAffiliation {
+  id              String        @id @default(cuid())
+  personId        String
+  organizationId  String
+  affiliationType String
+  person          Person        @relation(fields: [personId], references: [id])
+  organization    Organization  @relation(fields: [organizationId], references: [id])
+  createdAt       DateTime      @default(now())
+}
+
+model LineageClaim {
+  id                 String          @id @default(cuid())
+  studentPersonId    String
+  teacherPersonId    String?
+  claimType          String
+  relationshipLabel  String
+  dateStart          DateTime?
+  dateEnd            DateTime?
+  location           String?
+  status             String
+  evidenceLevel      String
+  confidenceScore    Float
+  notes              String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  studentPerson      Person          @relation("studentClaims", fields: [studentPersonId], references: [id])
+  teacherPerson      Person?         @relation("teacherClaims", fields: [teacherPersonId], references: [id])
+  evidences          ClaimEvidence[]
+  reviewDecisions    ReviewDecision[]
+  promotionGroupId   String?
+  promotionGroup     PromotionGroup? @relation(fields: [promotionGroupId], references: [id])
+}
+
+model ClaimEvidence {
+  id            String   @id @default(cuid())
+  lineageClaimId String
+  url           String
+  sourceType    String
+  captureDate   DateTime?
+  author        String?
+  curatorNotes  String?
+  createdAt     DateTime @default(now())
+  claim         LineageClaim @relation(fields: [lineageClaimId], references: [id])
+}
+
+model Source {
+  id            String   @id @default(cuid())
+  name          String
+  url           String
+  sourceType    String
+  captureDate   DateTime?
+  author        String?
+  curatorNotes  String?
+  createdAt     DateTime @default(now())
+}
+
+model OfficialObservation {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  createdAt     DateTime @default(now())
+}
+
+model BlackBeltRegistry {
+  id            String   @id @default(cuid())
+  personId      String
+  awardedBy     String?
+  awardedAt     DateTime?
+  createdAt     DateTime @default(now())
+}
+
+model CompetitionRecord {
+  id            String   @id @default(cuid())
+  personId      String
+  eventName     String
+  result        String?
+  createdAt     DateTime @default(now())
+}
+
+model ReviewQueue {
+  id            String   @id @default(cuid())
+  entityType    String
+  entityId      String
+  status        String
+  createdAt     DateTime @default(now())
+}
+
+model ChangeHistory {
+  id             String   @id @default(cuid())
+  entityType     String
+  entityId       String
+  action         String
+  changedBy      String?
+  createdAt      DateTime @default(now())
+  details        String?
+  personId       String?
+  person         Person?  @relation(fields: [personId], references: [id])
+}
+
+model ImportJob {
+  id               String      @id @default(cuid())
+  fileName         String
+  originalFileName String
+  importType       String
+  importCategory   String?
+  status           String      @default("uploaded")
+  storagePath      String?
+  fileSize         Int?
+  uploadedBy       String?
+  summary          String?
+  result           String?
+  metadata         String?
+  mapping          String?
+  validationSummary String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  importRows       ImportRow[]
+}
+
+model ImportRow {
+  id                 String      @id @default(cuid())
+  importJobId        String
+  originalFileName   String
+  originalRowNumber  Int
+  rawPayload         String
+  validationResult   String
+  entityType         String?
+  createdEntityId    String?
+  status             String      @default("pending")
+  importedAt         DateTime    @default(now())
+  importJob          ImportJob   @relation(fields: [importJobId], references: [id])
+  personId           String?
+  person             Person?     @relation(fields: [personId], references: [id])
+}
+
+model DuplicateCandidate {
+  id           String   @id @default(cuid())
+  entityType   String
+  entityName   String
+  confidence    Float
+  status       String
+  notes        String?
+  createdAt    DateTime @default(now())
+}
+
+model ReviewDecision {
+  id           String   @id @default(cuid())
+  lineageClaimId String
+  action       String
+  notes        String?
+  reviewerId   String?
+  createdAt    DateTime @default(now())
+  claim        LineageClaim? @relation(fields: [lineageClaimId], references: [id])
+}
+
+model PromotionGroup {
+  id           String   @id @default(cuid())
+  title        String
+  notes        String?
+  createdAt    DateTime @default(now())
+  claims       LineageClaim[]
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  role          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

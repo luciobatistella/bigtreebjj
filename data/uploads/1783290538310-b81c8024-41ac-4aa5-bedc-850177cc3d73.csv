@@ -1,0 +1,418 @@
+﻿affiliation_id,person_id,organization_id,relation_type,source_observation_id,start_date,end_date,status,notes,original_sheet,original_row
+AFF-V06-P0120-1,P0120,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,2
+AFF-V06-P0406-2,P0406,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,3
+AFF-V06-P0127-3,P0127,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,4
+AFF-V06-P0401-4,P0401,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,5
+AFF-V06-P0317-5,P0317,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,7
+AFF-V06-P0021-6,P0021,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,8
+AFF-V06-P0362-7,P0362,O-V06-BRAZILIAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: Brazilian Top Team. Not proof of black belt promotion.,Pessoas,9
+AFF-V06-P0213-8,P0213,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,10
+AFF-V06-P0076-9,P0076,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,11
+AFF-V06-P0010-10,P0010,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,12
+AFF-V06-P0358-11,P0358,O-V06-BRAZILIAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: Brazilian Top Team. Not proof of black belt promotion.,Pessoas,13
+AFF-V06-P0396-12,P0396,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,14
+AFF-V06-P0109-13,P0109,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,15
+AFF-V06-P0353-14,P0353,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,16
+AFF-V06-P0422-15,P0422,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,17
+AFF-V06-P0331-16,P0331,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,18
+AFF-V06-P0022-17,P0022,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,19
+AFF-V06-P0069-18,P0069,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,20
+AFF-V06-P0283-19,P0283,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,21
+AFF-V06-P0298-20,P0298,O-V06-10TH-PLANET-GRANTS-PASS,reported historical affiliation,,,,research material,Reported text: 10th Planet Grants Pass. Not proof of black belt promotion.,Pessoas,22
+AFF-V06-P0261-21,P0261,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,23
+AFF-V06-P0158-22,P0158,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,24
+AFF-V06-P0409-23,P0409,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,25
+AFF-V06-P0269-24,P0269,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,26
+AFF-V06-P0142-25,P0142,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,27
+AFF-V06-P0411-26,P0411,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,28
+AFF-V06-P0138-27,P0138,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,30
+AFF-V06-P0038-28,P0038,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,31
+AFF-V06-P0203-29,P0203,O-V06-FIGHTZONE,reported historical affiliation,,,,research material,Reported text: Fightzone / Checkmat. Not proof of black belt promotion.,Pessoas,32
+AFF-V06-P0259-30,P0259,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,33
+AFF-V06-P0302-31,P0302,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União / BJ Penn Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,34
+AFF-V06-P0376-32,P0376,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,35
+AFF-V06-P0224-33,P0224,O-V06-BTT,reported historical affiliation,,,,research material,Reported text: BTT / Alliance. Not proof of black belt promotion.,Pessoas,36
+AFF-V06-P0413-34,P0413,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,37
+AFF-V06-P0037-35,P0037,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,38
+AFF-V06-P0189-36,P0189,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,39
+AFF-V06-P0294-37,P0294,O-V06-10TH-PLANET-HUNTSVILLE,reported historical affiliation,,,,research material,Reported text: 10th Planet Huntsville. Not proof of black belt promotion.,Pessoas,40
+AFF-V06-P0267-38,P0267,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra / Estima. Not proof of black belt promotion.,Pessoas,41
+AFF-V06-P0145-39,P0145,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,42
+AFF-V06-P0426-40,P0426,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,43
+AFF-V06-P0290-41,P0290,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,45
+AFF-V06-P0132-42,P0132,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,46
+AFF-V06-P0249-43,P0249,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,47
+AFF-V06-P0400-44,P0400,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,48
+AFF-V06-P0169-45,P0169,O-V06-NS-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: NS Brotherhood. Not proof of black belt promotion.,Pessoas,49
+AFF-V06-P0135-46,P0135,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,50
+AFF-V06-P0101-47,P0101,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,51
+AFF-V06-P0202-48,P0202,O-V06-CAIO-TERRA-ACADEMY,reported historical affiliation,,,,research material,Reported text: Caio Terra Academy. Not proof of black belt promotion.,Pessoas,52
+AFF-V06-P0182-49,P0182,O-V06-FP-TEAM,reported historical affiliation,,,,research material,Reported text: FP Team. Not proof of black belt promotion.,Pessoas,53
+AFF-V06-P0003-50,P0003,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,54
+AFF-V06-P0216-51,P0216,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra / IBJJF. Not proof of black belt promotion.,Pessoas,55
+AFF-V06-P0415-52,P0415,O-V06-CARLSON-GRACIE-TEAM,reported historical affiliation,,,,research material,Reported text: Carlson Gracie Team. Not proof of black belt promotion.,Pessoas,56
+AFF-V06-P0081-53,P0081,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,57
+AFF-V06-P0234-54,P0234,O-V06-CARLSON-GRACIE-TEAM,reported historical affiliation,,,,research material,Reported text: Carlson Gracie Team. Not proof of black belt promotion.,Pessoas,58
+AFF-V06-P0326-55,P0326,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,59
+AFF-V06-P0019-56,P0019,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,60
+AFF-V06-P0026-57,P0026,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,61
+AFF-V06-P0299-58,P0299,O-V06-10TH-PLANET-LONG-BEACH,reported historical affiliation,,,,research material,Reported text: 10th Planet Long Beach. Not proof of black belt promotion.,Pessoas,62
+AFF-V06-P0292-59,P0292,O-V06-ROGER-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Roger Gracie Academy / former GB. Not proof of black belt promotion.,Pessoas,63
+AFF-V06-P0341-60,P0341,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,64
+AFF-V06-P0433-61,P0433,O-V06-SIX-BLADES,reported historical affiliation,,,,research material,Reported text: Six Blades. Not proof of black belt promotion.,Pessoas,65
+AFF-V06-P0311-62,P0311,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,66
+AFF-V06-P0195-63,P0195,O-V06-B-TEAM,reported historical affiliation,,,,research material,Reported text: B-Team / former Absolute MMA. Not proof of black belt promotion.,Pessoas,67
+AFF-V06-P0095-64,P0095,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,68
+AFF-V06-P0214-65,P0214,O-V06-SIX-BLADES,reported historical affiliation,,,,research material,Reported text: Six Blades. Not proof of black belt promotion.,Pessoas,69
+AFF-V06-P0211-66,P0211,O-V06-ROGER-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Roger Gracie Academy. Not proof of black belt promotion.,Pessoas,70
+AFF-V06-P0165-67,P0165,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,71
+AFF-V06-P0392-68,P0392,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,72
+AFF-V06-P0034-69,P0034,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,73
+AFF-V06-P0059-70,P0059,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,74
+AFF-V06-P0262-71,P0262,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,75
+AFF-V06-P0390-72,P0390,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,76
+AFF-V06-P0329-73,P0329,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,77
+AFF-V06-P0149-74,P0149,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,78
+AFF-V06-P0049-75,P0049,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,79
+AFF-V06-P0008-76,P0008,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Brasa / Demian Maia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,80
+AFF-V06-P0416-77,P0416,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,81
+AFF-V06-P0368-78,P0368,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,82
+AFF-V06-P0152-79,P0152,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,83
+AFF-V06-P0056-80,P0056,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,84
+AFF-V06-P0288-81,P0288,O-V06-MELQUI-GALVAO,reported historical affiliation,,,,research material,Reported text: Melqui Galvão. Not proof of black belt promotion.,Pessoas,85
+AFF-V06-P0190-82,P0190,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,86
+AFF-V06-P0293-83,P0293,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,87
+AFF-V06-P0093-84,P0093,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,88
+AFF-V06-P0098-85,P0098,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,89
+AFF-V06-P0106-86,P0106,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,90
+AFF-V06-P0031-87,P0031,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,91
+AFF-V06-P0025-88,P0025,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,92
+AFF-V06-P0052-89,P0052,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,93
+AFF-V06-P0017-90,P0017,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,94
+AFF-V06-P0377-91,P0377,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,95
+AFF-V06-P0314-92,P0314,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,96
+AFF-V06-P0228-93,P0228,O-V06-AMERICAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: American Top Team. Not proof of black belt promotion.,Pessoas,97
+AFF-V06-P0295-94,P0295,O-V06-10TH-PLANET-THOUSAND-OAKS,reported historical affiliation,,,,research material,Reported text: 10th Planet Thousand Oaks. Not proof of black belt promotion.,Pessoas,98
+AFF-V06-P0222-95,P0222,O-V06-DREAM-ART,reported historical affiliation,,,,research material,Reported text: Dream Art. Not proof of black belt promotion.,Pessoas,99
+AFF-V06-P0030-96,P0030,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,100
+AFF-V06-P0360-97,P0360,O-V06-BRAZILIAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: Brazilian Top Team. Not proof of black belt promotion.,Pessoas,101
+AFF-V06-P0080-98,P0080,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,102
+AFF-V06-P0032-99,P0032,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,103
+AFF-V06-P0058-100,P0058,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,104
+AFF-V06-P0287-101,P0287,O-V06-MELQUI-GALVAO,reported historical affiliation,,,,research material,Reported text: Melqui Galvão. Not proof of black belt promotion.,Pessoas,105
+AFF-V06-P0230-102,P0230,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,106
+AFF-V06-P0210-103,P0210,O-V06-ROGER-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Roger Gracie Academy. Not proof of black belt promotion.,Pessoas,107
+AFF-V06-P0389-104,P0389,O-V06-SIX-BLADES-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Six Blades Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,108
+AFF-V06-P0103-105,P0103,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,109
+AFF-V06-P0041-106,P0041,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,110
+AFF-V06-P0178-107,P0178,O-V06-FP-TEAM,reported historical affiliation,,,,research material,Reported text: FP Team / Gracie Barra. Not proof of black belt promotion.,Pessoas,111
+AFF-V06-P0157-108,P0157,O-V06-TT,reported historical affiliation,,,,research material,Reported text: TT / projeto social. Not proof of black belt promotion.,Pessoas,112
+AFF-V06-P0119-109,P0119,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,113
+AFF-V06-P0028-110,P0028,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,114
+AFF-V06-P0086-111,P0086,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,115
+AFF-V06-P0099-112,P0099,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,116
+AFF-V06-P0284-113,P0284,O-V06-WALES,reported historical affiliation,,,,research material,Reported text: Wales / independent. Not proof of black belt promotion.,Pessoas,117
+AFF-V06-P0064-114,P0064,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,118
+AFF-V06-P0111-115,P0111,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,119
+AFF-V06-P0395-116,P0395,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,120
+AFF-V06-P0176-117,P0176,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Norte-Nordeste. Not proof of black belt promotion.,Pessoas,121
+AFF-V06-P0310-118,P0310,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,122
+AFF-V06-P0425-119,P0425,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,123
+AFF-V06-P0007-120,P0007,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,124
+AFF-V06-P0336-121,P0336,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,125
+AFF-V06-P0050-122,P0050,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,126
+AFF-V06-P0286-123,P0286,O-V06-CIDADE-DE-DEUS,reported historical affiliation,,,,research material,Reported text: Cidade de Deus. Not proof of black belt promotion.,Pessoas,127
+AFF-V06-P0349-124,P0349,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,128
+AFF-V06-P0374-125,P0374,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,129
+AFF-V06-P0128-126,P0128,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,130
+AFF-V06-P0179-127,P0179,O-V06-FP-TEAM,reported historical affiliation,,,,research material,Reported text: FP Team. Not proof of black belt promotion.,Pessoas,131
+AFF-V06-P0130-128,P0130,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,132
+AFF-V06-P0055-129,P0055,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,133
+AFF-V06-P0335-130,P0335,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,134
+AFF-V06-P0139-131,P0139,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,135
+AFF-V06-P0219-132,P0219,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,136
+AFF-V06-P0232-133,P0232,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,137
+AFF-V06-P0275-134,P0275,O-V06-NEW-WAVE,reported historical affiliation,,,,research material,Reported text: New Wave / former DDS. Not proof of black belt promotion.,Pessoas,138
+AFF-V06-P0233-135,P0233,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,139
+AFF-V06-P0306-136,P0306,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,140
+AFF-V06-P0040-137,P0040,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,141
+AFF-V06-P0281-138,P0281,O-V06-AMERICAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: American Top Team. Not proof of black belt promotion.,Pessoas,142
+AFF-V06-P0250-139,P0250,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,143
+AFF-V06-P0258-140,P0258,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,144
+AFF-V06-P0274-141,P0274,O-V06-NEW-WAVE,reported historical affiliation,,,,research material,Reported text: New Wave. Not proof of black belt promotion.,Pessoas,145
+AFF-V06-P0078-142,P0078,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,146
+AFF-V06-P0350-143,P0350,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,147
+AFF-V06-P0348-144,P0348,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,148
+AFF-V06-P0180-145,P0180,O-V06-FP-TEAM,reported historical affiliation,,,,research material,Reported text: FP Team. Not proof of black belt promotion.,Pessoas,149
+AFF-V06-P0161-146,P0161,O-V06-ART-OF-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,150
+AFF-V06-P0147-147,P0147,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,151
+AFF-V06-P0084-148,P0084,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,152
+AFF-V06-P0029-149,P0029,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,153
+AFF-V06-P0054-150,P0054,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,154
+AFF-V06-P0136-151,P0136,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,155
+AFF-V06-P0162-152,P0162,O-V06-ART-OF-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,156
+AFF-V06-P0257-153,P0257,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,157
+AFF-V06-P0089-154,P0089,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,158
+AFF-V06-P0057-155,P0057,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,159
+AFF-V06-P0094-156,P0094,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,160
+AFF-V06-P0047-157,P0047,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,161
+AFF-V06-P0066-158,P0066,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,162
+AFF-V06-P0051-159,P0051,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,163
+AFF-V06-P0118-160,P0118,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,164
+AFF-V06-P0004-161,P0004,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,165
+AFF-V06-P0170-162,P0170,O-V06-NS-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: NS Brotherhood. Not proof of black belt promotion.,Pessoas,166
+AFF-V06-P0220-163,P0220,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,167
+AFF-V06-P0108-164,P0108,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,168
+AFF-V06-P0330-165,P0330,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,169
+AFF-V06-P0372-166,P0372,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem / Unity. Not proof of black belt promotion.,Pessoas,170
+AFF-V06-P0352-167,P0352,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,172
+AFF-V06-P0168-168,P0168,O-V06-NS-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: NS Brotherhood. Not proof of black belt promotion.,Pessoas,173
+AFF-V06-P0114-169,P0114,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,174
+AFF-V06-P0206-170,P0206,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,175
+AFF-V06-P0245-171,P0245,O-V06-MACHADO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Machado Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,176
+AFF-V06-P0075-172,P0075,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,177
+AFF-V06-P0198-173,P0198,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,178
+AFF-V06-P0418-174,P0418,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,179
+AFF-V06-P0382-175,P0382,O-V06-CAIO-TERRA-ASSOCIATION,reported historical affiliation,,,,research material,Reported text: Caio Terra Association. Not proof of black belt promotion.,Pessoas,180
+AFF-V06-P0355-176,P0355,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,181
+AFF-V06-P0260-177,P0260,O-V06-ART-OF-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,182
+AFF-V06-P0316-178,P0316,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,183
+AFF-V06-P0001-179,P0001,O-V06-KODOKAN,reported historical affiliation,,,,research material,Reported text: Kodokan. Not proof of black belt promotion.,Pessoas,184
+AFF-V06-P0296-180,P0296,O-V06-10TH-PLANET-PHOENIX,reported historical affiliation,,,,research material,Reported text: 10th Planet Phoenix. Not proof of black belt promotion.,Pessoas,185
+AFF-V06-P0192-181,P0192,O-V06-NEW-WAVE,reported historical affiliation,,,,research material,Reported text: New Wave / Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,186
+AFF-V06-P0193-182,P0193,O-V06-AUSTRALIAN-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Australian Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,187
+AFF-V06-P0247-183,P0247,O-V06-AUSTRALIAN-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Australian Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,188
+AFF-V06-P0297-184,P0297,O-V06-10TH-PLANET-NEWARK,reported historical affiliation,,,,research material,Reported text: 10th Planet Newark. Not proof of black belt promotion.,Pessoas,189
+AFF-V06-P0221-185,P0221,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,190
+AFF-V06-P0393-186,P0393,O-V06-JIU-JITSU-FOR-LIFE,reported historical affiliation,,,,research material,Reported text: Jiu-Jitsu For Life. Not proof of black belt promotion.,Pessoas,191
+AFF-V06-P0072-187,P0072,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,192
+AFF-V06-P0303-188,P0303,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,193
+AFF-V06-P0143-189,P0143,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,194
+AFF-V06-P0333-190,P0333,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,195
+AFF-V06-P0325-191,P0325,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,196
+AFF-V06-P0344-192,P0344,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,197
+AFF-V06-P0181-193,P0181,O-V06-FP-TEAM,reported historical affiliation,,,,research material,Reported text: FP Team. Not proof of black belt promotion.,Pessoas,198
+AFF-V06-P0265-194,P0265,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,199
+AFF-V06-P0035-195,P0035,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,200
+AFF-V06-P0171-196,P0171,O-V06-PSLPB,reported historical affiliation,,,,research material,Reported text: PSLPB / Unity. Not proof of black belt promotion.,Pessoas,201
+AFF-V06-P0070-197,P0070,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,203
+AFF-V06-P0060-198,P0060,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,204
+AFF-V06-P0067-199,P0067,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,205
+AFF-V06-P0327-200,P0327,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,206
+AFF-V06-P0183-201,P0183,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,207
+AFF-V06-P0185-202,P0185,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,208
+AFF-V06-P0256-203,P0256,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,209
+AFF-V06-P0164-204,P0164,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos. Not proof of black belt promotion.,Pessoas,211
+AFF-V06-P0155-205,P0155,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Cobrinha BJJ. Not proof of black belt promotion.,Pessoas,212
+AFF-V06-P0074-206,P0074,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,213
+AFF-V06-P0312-207,P0312,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,214
+AFF-V06-P0381-208,P0381,O-V06-CAIO-TERRA-ASSOCIATION,reported historical affiliation,,,,research material,Reported text: Caio Terra Association. Not proof of black belt promotion.,Pessoas,215
+AFF-V06-P0240-209,P0240,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,216
+AFF-V06-P0417-210,P0417,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,217
+AFF-V06-P0241-211,P0241,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,218
+AFF-V06-P0194-212,P0194,O-V06-ABSOLUTE-MMA,reported historical affiliation,,,,research material,Reported text: Absolute MMA. Not proof of black belt promotion.,Pessoas,219
+AFF-V06-P0014-213,P0014,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,220
+AFF-V06-P0166-214,P0166,O-V06-NS-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: NS Brotherhood. Not proof of black belt promotion.,Pessoas,221
+AFF-V06-P0016-215,P0016,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,222
+AFF-V06-P0044-216,P0044,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,223
+AFF-V06-P0073-217,P0073,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,224
+AFF-V06-P0122-218,P0122,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,225
+AFF-V06-P0369-219,P0369,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,226
+AFF-V06-P0205-220,P0205,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,227
+AFF-V06-P0188-221,P0188,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,228
+AFF-V06-P0407-222,P0407,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,229
+AFF-V06-P0282-223,P0282,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,230
+AFF-V06-P0133-224,P0133,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,231
+AFF-V06-P0264-225,P0264,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,232
+AFF-V06-P0248-226,P0248,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,233
+AFF-V06-P0363-227,P0363,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,234
+AFF-V06-P0226-228,P0226,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,235
+AFF-V06-P0085-229,P0085,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,236
+AFF-V06-P0156-230,P0156,O-V06-BRASA,reported historical affiliation,,,,research material,Reported text: Brasa / São Paulo. Not proof of black belt promotion.,Pessoas,237
+AFF-V06-P0011-231,P0011,O-V06-LINHAGEM-FRANCA,reported historical affiliation,,,,research material,Reported text: Linhagem França. Not proof of black belt promotion.,Pessoas,239
+AFF-V06-P0092-232,P0092,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,240
+AFF-V06-P0280-233,P0280,O-V06-CICERO-COSTHA,reported historical affiliation,,,,research material,Reported text: Cícero Costha. Not proof of black belt promotion.,Pessoas,241
+AFF-V06-P0285-234,P0285,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,242
+AFF-V06-P0105-235,P0105,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,243
+AFF-V06-P0380-236,P0380,O-V06-CAIO-TERRA-ASSOCIATION,reported historical affiliation,,,,research material,Reported text: Caio Terra Association. Not proof of black belt promotion.,Pessoas,244
+AFF-V06-P0424-237,P0424,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,245
+AFF-V06-P0151-238,P0151,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,246
+AFF-V06-P0419-239,P0419,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,247
+AFF-V06-P0359-240,P0359,O-V06-BRAZILIAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: Brazilian Top Team. Not proof of black belt promotion.,Pessoas,248
+AFF-V06-P0177-241,P0177,O-V06-GRACIE-BARRA-BH,reported historical affiliation,,,,research material,Reported text: Gracie Barra BH. Not proof of black belt promotion.,Pessoas,249
+AFF-V06-P0107-242,P0107,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,250
+AFF-V06-P0009-243,P0009,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Marcelo Garcia Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,251
+AFF-V06-P0077-244,P0077,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,252
+AFF-V06-P0432-245,P0432,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,253
+AFF-V06-P0386-246,P0386,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu / Alliance. Not proof of black belt promotion.,Pessoas,254
+AFF-V06-P0278-247,P0278,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat / American Top Team. Not proof of black belt promotion.,Pessoas,255
+AFF-V06-P0129-248,P0129,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,256
+AFF-V06-P0323-249,P0323,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,257
+AFF-V06-P0429-250,P0429,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,258
+AFF-V06-P0324-251,P0324,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,259
+AFF-V06-P0113-252,P0113,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,260
+AFF-V06-P0379-253,P0379,O-V06-CAIO-TERRA-ASSOCIATION,reported historical affiliation,,,,research material,Reported text: Caio Terra Association. Not proof of black belt promotion.,Pessoas,261
+AFF-V06-P0150-254,P0150,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu / Alliance. Not proof of black belt promotion.,Pessoas,262
+AFF-V06-P0385-255,P0385,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu / Alliance. Not proof of black belt promotion.,Pessoas,263
+AFF-V06-P0318-256,P0318,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,264
+AFF-V06-P0090-257,P0090,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,265
+AFF-V06-P0354-258,P0354,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,266
+AFF-V06-P0125-259,P0125,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,267
+AFF-V06-P0328-260,P0328,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,268
+AFF-V06-P0332-261,P0332,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,269
+AFF-V06-P0126-262,P0126,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,270
+AFF-V06-P0337-263,P0337,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,271
+AFF-V06-P0173-264,P0173,O-V06-MELQUI-GALVAO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Melqui Galvão Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,272
+AFF-V06-P0174-265,P0174,O-V06-MELQUI-GALVAO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Melqui Galvão Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,273
+AFF-V06-P0036-266,P0036,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,274
+AFF-V06-P0320-267,P0320,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,275
+AFF-V06-P0187-268,P0187,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,276
+AFF-V06-P0420-269,P0420,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,277
+AFF-V06-P0427-270,P0427,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,278
+AFF-V06-P0263-271,P0263,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos / independent. Not proof of black belt promotion.,Pessoas,279
+AFF-V06-P0062-272,P0062,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,280
+AFF-V06-P0002-273,P0002,O-V06-KODOKAN,reported historical affiliation,,,,research material,Reported text: Kodokan / circuito internacional. Not proof of black belt promotion.,Pessoas,281
+AFF-V06-P0200-274,P0200,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,282
+AFF-V06-P0300-275,P0300,O-V06-ACADEMIA-MONIR,reported historical affiliation,,,,research material,Reported text: Academia Monir / linhagem Fadda. Not proof of black belt promotion.,Pessoas,283
+AFF-V06-P0271-276,P0271,O-V06-BTT,reported historical affiliation,,,,research material,Reported text: BTT. Not proof of black belt promotion.,Pessoas,284
+AFF-V06-P0253-277,P0253,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,286
+AFF-V06-P0243-278,P0243,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,287
+AFF-V06-P0197-279,P0197,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Dream Art. Not proof of black belt promotion.,Pessoas,288
+AFF-V06-P0270-280,P0270,O-V06-BTT,reported historical affiliation,,,,research material,Reported text: BTT. Not proof of black belt promotion.,Pessoas,289
+AFF-V06-P0140-281,P0140,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,290
+AFF-V06-P0175-282,P0175,O-V06-MELQUI-GALVAO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Melqui Galvão Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,291
+AFF-V06-P0244-283,P0244,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,292
+AFF-V06-P0398-284,P0398,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,293
+AFF-V06-P0199-285,P0199,O-V06-NEW-WAVE,reported historical affiliation,,,,research material,Reported text: New Wave / former Alliance. Not proof of black belt promotion.,Pessoas,294
+AFF-V06-P0276-286,P0276,O-V06-B-TEAM,reported historical affiliation,,,,research material,Reported text: B-Team. Not proof of black belt promotion.,Pessoas,295
+AFF-V06-P0196-287,P0196,O-V06-B-TEAM,reported historical affiliation,,,,research material,Reported text: B-Team / former DDS. Not proof of black belt promotion.,Pessoas,296
+AFF-V06-P0209-288,P0209,O-V06-JIU-JITSU-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: Jiu Jitsu Brotherhood. Not proof of black belt promotion.,Pessoas,297
+AFF-V06-P0315-289,P0315,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,298
+AFF-V06-P0088-290,P0088,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,299
+AFF-V06-P0423-291,P0423,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,300
+AFF-V06-P0023-292,P0023,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,301
+AFF-V06-P0313-293,P0313,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,302
+AFF-V06-P0104-294,P0104,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,303
+AFF-V06-P0012-295,P0012,O-V06-ACADEMIA-FADDA,reported historical affiliation,,,,research material,Reported text: Academia Fadda. Not proof of black belt promotion.,Pessoas,304
+AFF-V06-P0255-296,P0255,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,305
+AFF-V06-P0110-297,P0110,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,306
+AFF-V06-P0430-298,P0430,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,307
+AFF-V06-P0231-299,P0231,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,308
+AFF-V06-P0201-300,P0201,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,309
+AFF-V06-P0172-301,P0172,O-V06-PSLPB,reported historical affiliation,,,,research material,Reported text: PSLPB / Unity. Not proof of black belt promotion.,Pessoas,310
+AFF-V06-P0018-302,P0018,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,311
+AFF-V06-P0408-303,P0408,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,312
+AFF-V06-P0015-304,P0015,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,313
+AFF-V06-P0365-305,P0365,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,314
+AFF-V06-P0357-306,P0357,O-V06-BRAZILIAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: Brazilian Top Team. Not proof of black belt promotion.,Pessoas,315
+AFF-V06-P0079-307,P0079,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,316
+AFF-V06-P0387-308,P0387,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu / Alliance. Not proof of black belt promotion.,Pessoas,317
+AFF-V06-P0020-309,P0020,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,318
+AFF-V06-P0289-310,P0289,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,319
+AFF-V06-P0342-311,P0342,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,320
+AFF-V06-P0160-312,P0160,O-V06-ART-OF-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,321
+AFF-V06-P0134-313,P0134,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,322
+AFF-V06-P0124-314,P0124,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,323
+AFF-V06-P0153-315,P0153,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,324
+AFF-V06-P0123-316,P0123,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,325
+AFF-V06-P0309-317,P0309,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,326
+AFF-V06-P0403-318,P0403,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,327
+AFF-V06-P0137-319,P0137,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,328
+AFF-V06-P0159-320,P0159,O-V06-ATOS,reported historical affiliation,,,,research material,Reported text: Atos / Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,329
+AFF-V06-P0116-321,P0116,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,330
+AFF-V06-P0238-322,P0238,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,331
+AFF-V06-P0301-323,P0301,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União. Not proof of black belt promotion.,Pessoas,332
+AFF-V06-P0112-324,P0112,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,333
+AFF-V06-P0141-325,P0141,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,334
+AFF-V06-P0191-326,P0191,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,335
+AFF-V06-P0239-327,P0239,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,336
+AFF-V06-P0065-328,P0065,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,337
+AFF-V06-P0242-329,P0242,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,338
+AFF-V06-P0115-330,P0115,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,339
+AFF-V06-P0102-331,P0102,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,340
+AFF-V06-P0027-332,P0027,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,341
+AFF-V06-P0053-333,P0053,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,342
+AFF-V06-P0272-334,P0272,O-V06-AMERICAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: American Top Team. Not proof of black belt promotion.,Pessoas,343
+AFF-V06-P0223-335,P0223,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,344
+AFF-V06-P0068-336,P0068,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,345
+AFF-V06-P0013-337,P0013,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,346
+AFF-V06-P0063-338,P0063,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,347
+AFF-V06-P0204-339,P0204,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,348
+AFF-V06-P0346-340,P0346,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,349
+AFF-V06-P0366-341,P0366,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,350
+AFF-V06-P0307-342,P0307,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,351
+AFF-V06-P0235-343,P0235,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,352
+AFF-V06-P0167-344,P0167,O-V06-NS-BROTHERHOOD,reported historical affiliation,,,,research material,Reported text: NS Brotherhood. Not proof of black belt promotion.,Pessoas,353
+AFF-V06-P0246-345,P0246,O-V06-MACHADO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Machado Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,354
+AFF-V06-P0186-346,P0186,O-V06-DRYSDALE-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Drysdale Jiu-Jitsu / Checkmat. Not proof of black belt promotion.,Pessoas,355
+AFF-V06-P0042-347,P0042,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,356
+AFF-V06-P0184-348,P0184,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,357
+AFF-V06-P0279-349,P0279,O-V06-CAVACA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Cavaca Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,358
+AFF-V06-P0046-350,P0046,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,359
+AFF-V06-P0148-351,P0148,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,360
+AFF-V06-P0414-352,P0414,O-V06-CARLSON-GRACIE-TEAM,reported historical affiliation,,,,research material,Reported text: Carlson Gracie Team. Not proof of black belt promotion.,Pessoas,361
+AFF-V06-P0391-353,P0391,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,362
+AFF-V06-P0024-354,P0024,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,363
+AFF-V06-P0345-355,P0345,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,364
+AFF-V06-P0208-356,P0208,O-V06-ROGER-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Roger Gracie Academy. Not proof of black belt promotion.,Pessoas,365
+AFF-V06-P0319-357,P0319,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,366
+AFF-V06-P0005-358,P0005,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,367
+AFF-V06-P0006-359,P0006,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / antiga Jacaré Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,368
+AFF-V06-P0254-360,P0254,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,369
+AFF-V06-P0237-361,P0237,O-V06-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Gracie Academy. Not proof of black belt promotion.,Pessoas,370
+AFF-V06-P0212-362,P0212,O-V06-ROGER-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Roger Gracie Academy. Not proof of black belt promotion.,Pessoas,371
+AFF-V06-P0236-363,P0236,O-V06-GRACIE,reported historical affiliation,,,,research material,Reported text: Gracie. Not proof of black belt promotion.,Pessoas,372
+AFF-V06-P0227-364,P0227,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,373
+AFF-V06-P0154-365,P0154,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / Cobrinha BJJ. Not proof of black belt promotion.,Pessoas,374
+AFF-V06-P0378-366,P0378,O-V06-CAIO-TERRA-ASSOCIATION,reported historical affiliation,,,,research material,Reported text: Caio Terra Association. Not proof of black belt promotion.,Pessoas,375
+AFF-V06-P0402-367,P0402,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,376
+AFF-V06-P0305-368,P0305,O-V06-GRACIE-BARRA-TOKUSHIMA,reported historical affiliation,,,,research material,Reported text: Gracie Barra Tokushima. Not proof of black belt promotion.,Pessoas,377
+AFF-V06-P0397-369,P0397,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,378
+AFF-V06-P0405-370,P0405,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,379
+AFF-V06-P0321-371,P0321,O-V06-ATOS-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Atos Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,380
+AFF-V06-P0266-372,P0266,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,381
+AFF-V06-P0384-373,P0384,O-V06-MARCELO-GARCIA-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Marcelo Garcia Jiu-Jitsu / Alliance. Not proof of black belt promotion.,Pessoas,382
+AFF-V06-P0251-374,P0251,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance. Not proof of black belt promotion.,Pessoas,383
+AFF-V06-P0045-375,P0045,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,384
+AFF-V06-P0351-376,P0351,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,385
+AFF-V06-P0428-377,P0428,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,386
+AFF-V06-P0146-378,P0146,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,387
+AFF-V06-P0163-379,P0163,O-V06-ART-OF-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Art of Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,388
+AFF-V06-P0229-380,P0229,O-V06-AMERICAN-TOP-TEAM,reported historical affiliation,,,,research material,Reported text: American Top Team. Not proof of black belt promotion.,Pessoas,389
+AFF-V06-P0096-381,P0096,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,390
+AFF-V06-P0033-382,P0033,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,391
+AFF-V06-P0039-383,P0039,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,392
+AFF-V06-P0091-384,P0091,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,393
+AFF-V06-P0082-385,P0082,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,394
+AFF-V06-P0061-386,P0061,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,395
+AFF-V06-P0370-387,P0370,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,396
+AFF-V06-P0434-388,P0434,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,397
+AFF-V06-P0347-389,P0347,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,398
+AFF-V06-P0117-390,P0117,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,399
+AFF-V06-P0071-391,P0071,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,400
+AFF-V06-P0043-392,P0043,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,401
+AFF-V06-P0431-393,P0431,O-V06-RENZO-GRACIE-ACADEMY,reported historical affiliation,,,,research material,Reported text: Renzo Gracie Academy. Not proof of black belt promotion.,Pessoas,402
+AFF-V06-P0048-394,P0048,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,403
+AFF-V06-P0083-395,P0083,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,404
+AFF-V06-P0218-396,P0218,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra. Not proof of black belt promotion.,Pessoas,405
+AFF-V06-P0334-397,P0334,O-V06-GFTEAM,reported historical affiliation,,,,research material,Reported text: GFTeam. Not proof of black belt promotion.,Pessoas,406
+AFF-V06-P0343-398,P0343,O-V06-CHECKMAT,reported historical affiliation,,,,research material,Reported text: Checkmat. Not proof of black belt promotion.,Pessoas,407
+AFF-V06-P0421-399,P0421,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,408
+AFF-V06-P0217-400,P0217,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra / Estima. Not proof of black belt promotion.,Pessoas,409
+AFF-V06-P0388-401,P0388,O-V06-RIBEIRO-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: Ribeiro Jiu-Jitsu / Six Blades. Not proof of black belt promotion.,Pessoas,410
+AFF-V06-P0268-402,P0268,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,411
+AFF-V06-P0252-403,P0252,O-V06-GRACIE-BARRA,reported historical affiliation,,,,research material,Reported text: Gracie Barra / Alliance. Not proof of black belt promotion.,Pessoas,413
+AFF-V06-P0121-404,P0121,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,414
+AFF-V06-P0364-405,P0364,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,415
+AFF-V06-P0304-406,P0304,O-V06-NOVA-UNIAO,reported historical affiliation,,,,research material,Reported text: Nova União / Vitor Shaolin BJJ. Not proof of black belt promotion.,Pessoas,416
+AFF-V06-P0144-407,P0144,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,417
+AFF-V06-P0097-408,P0097,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,418
+AFF-V06-P0225-409,P0225,O-V06-GRACIE-HUMAITA,reported historical affiliation,,,,research material,Reported text: Gracie Humaitá. Not proof of black belt promotion.,Pessoas,419
+AFF-V06-P0367-410,P0367,O-V06-PROJETO-SOCIAL-LUTANDO-PELO-BEM,reported historical affiliation,,,,research material,Reported text: Projeto Social Lutando Pelo Bem. Not proof of black belt promotion.,Pessoas,420
+AFF-V06-P0131-411,P0131,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,422
+AFF-V06-P0087-412,P0087,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,423
+AFF-V06-P0207-413,P0207,O-V06-CAIO-TERRA,reported historical affiliation,,,,research material,Reported text: Caio Terra / former Checkmat. Not proof of black belt promotion.,Pessoas,424
+AFF-V06-P0308-414,P0308,O-V06-10TH-PLANET-JIU-JITSU,reported historical affiliation,,,,research material,Reported text: 10th Planet Jiu-Jitsu. Not proof of black belt promotion.,Pessoas,425
+AFF-V06-P0100-415,P0100,O-V06-ALLIANCE,reported historical affiliation,,,,research material,Reported text: Alliance / vínculo de formação citado por Fábio Gurgel. Not proof of black belt promotion.,Pessoas,426
+AFF-V06-P0273-416,P0273,O-V06-BTT,reported historical affiliation,,,,research material,Reported text: BTT. Not proof of black belt promotion.,Pessoas,427
+AFF-V06-P0215-417,P0215,O-V06-GRACIE-BARRA-PERNAMBUCO,reported historical affiliation,,,,research material,Reported text: Gracie Barra Pernambuco. Not proof of black belt promotion.,Pessoas,428

@@ -1,0 +1,44 @@
+{
+  "source_file": "C:\\Users\\lucio\\Downloads\\A_Grande_Arvore_Jiu_Jitsu_Pesquisa_v0_6_Expansao_Mundial.xlsx",
+  "zip_found": false,
+  "sheets": {
+    "Painel": {
+      "max_row": 28,
+      "max_column": 8
+    },
+    "Cobertura Equipes": {
+      "max_row": 85,
+      "max_column": 26
+    },
+    "Raízes de Equipe": {
+      "max_row": 19,
+      "max_column": 26
+    },
+    "Relações v0.6": {
+      "max_row": 27,
+      "max_column": 26
+    },
+    "Pessoas": {
+      "max_row": 428,
+      "max_column": 26
+    },
+    "Fontes": {
+      "max_row": 181,
+      "max_column": 26
+    },
+    "Backlog Editorial": {
+      "max_row": 32,
+      "max_column": 26
+    }
+  },
+  "staged_counts": {
+    "sources": 180,
+    "persons": 427,
+    "organizations": 92,
+    "person_affiliations": 417,
+    "official_observations": 18,
+    "research_tasks": 31,
+    "lineage_claims": 26,
+    "claim_evidence": 26
+  }
+}

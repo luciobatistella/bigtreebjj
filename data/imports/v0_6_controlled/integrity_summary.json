@@ -1,0 +1,528 @@
+{
+  "checks": {
+    "no_public_lineage_claims_without_approval": true,
+    "evidence_internal_unapproved": true,
+    "affiliation_not_rendered_as_lineage": true,
+    "official_observation_not_rendered_as_lineage": true,
+    "no_duplicate_source_url_records": true,
+    "no_dangling_student_or_teacher_where_resolution_possible": true,
+    "pending_claims_not_public_profiles": "public profile does not fetch pending claims"
+  },
+  "top_duplicate_candidates": [
+    {
+      "id": "duplicate-import-4b70be5261d3-14-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.96,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "CheckMat International",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-4C7396A559",
+          "name": "CheckMat International",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "CheckMat",
+        "confidence": 0.96,
+        "reason": "Organization brand similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 14,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-14-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-15-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.8,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "CheckMat USA",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-61D3E41D95",
+          "name": "CheckMat USA",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "CheckMat",
+        "confidence": 0.8,
+        "reason": "Related brand with branch difference",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 15,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-15-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-18-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.84,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "Marcio Andre Jiu-Jitsu",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-8430F11A12",
+          "name": "Marcio Andre Jiu-Jitsu",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Marcio Andre Jiu-Jitsu Brasil",
+        "confidence": 0.84,
+        "reason": "Related brand with branch difference",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 18,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-18-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-23-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.82,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "Alliance JJ",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-E342FD4ABA",
+          "name": "Alliance JJ",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Alliance SP",
+        "confidence": 0.82,
+        "reason": "Organization brand similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 23,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-23-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-29-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.84,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "Six Blades Jiu-Jitsu - Brasil",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-75A4FD90CA",
+          "name": "Six Blades Jiu-Jitsu - Brasil",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Six Blades Jiu-Jitsu",
+        "confidence": 0.84,
+        "reason": "Related brand with branch difference",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 29,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-29-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-35-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.84,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "Alliance USA",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-146207EFC3",
+          "name": "Alliance USA",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Alliance SP",
+        "confidence": 0.84,
+        "reason": "Related brand with branch difference",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 35,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-35-1"
+    },
+    {
+      "id": "duplicate-import-4b70be5261d3-39-1",
+      "entityType": "organizations",
+      "importJobId": "import-4b70be5261d3",
+      "status": "open",
+      "confidence": 0.83,
+      "country": "",
+      "organizationType": "organization",
+      "incomingRecord": {
+        "name": "Fratres Brazilian Jiu-Jitsu",
+        "type": "organization",
+        "raw": {
+          "organization_id": "O-647474823F",
+          "name": "Fratres Brazilian Jiu-Jitsu",
+          "organization_type": "equipe/academia reportada",
+          "status": "observada em ranking oficial",
+          "created_on": "2026-07-05"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Inevat Brazilian Jiu-Jitsu",
+        "confidence": 0.83,
+        "reason": "Organization brand similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "organizations"
+      },
+      "importSourceRow": 39,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-4b70be5261d3-39-1"
+    },
+    {
+      "id": "duplicate-import-c146cdc0b570-13-1",
+      "entityType": "people",
+      "importJobId": "import-c146cdc0b570",
+      "status": "open",
+      "confidence": 0.71,
+      "country": "",
+      "organizationType": "",
+      "incomingRecord": {
+        "full_name": "Alexandre Vieira",
+        "aliases": [],
+        "country": "",
+        "city": "",
+        "raw": {
+          "person_id": "P0358",
+          "full_name": "Alexandre Vieira",
+          "nickname": "",
+          "country": "",
+          "team": "Brazilian Top Team",
+          "entity_status": "Perfil com relação apoiada",
+          "lineage_status": "Faixa-preta pesquisado",
+          "created_from": "Historical Lineage Research v0.6",
+          "created_on": "2026-07-05",
+          "notes": "Registro criado na expansão global v0.5. Relação publicada apenas com fonte e nível de evidência.",
+          "original_sheet": "Pessoas",
+          "original_row": "13"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Alexandre Paiva",
+        "confidence": 0.71,
+        "reason": "Name token similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "people"
+      },
+      "importSourceRow": 13,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-c146cdc0b570-13-1"
+    },
+    {
+      "id": "duplicate-import-c146cdc0b570-28-1",
+      "entityType": "people",
+      "importJobId": "import-c146cdc0b570",
+      "status": "open",
+      "confidence": 0.71,
+      "country": "",
+      "organizationType": "",
+      "incomingRecord": {
+        "full_name": "André \"Marola\"",
+        "aliases": [],
+        "country": "",
+        "city": "",
+        "raw": {
+          "person_id": "P0411",
+          "full_name": "André “Marola”",
+          "nickname": "",
+          "country": "",
+          "team": "Nova União",
+          "entity_status": "Perfil com relação apoiada",
+          "lineage_status": "Faixa-preta pesquisado",
+          "created_from": "Historical Lineage Research v0.6",
+          "created_on": "2026-07-05",
+          "notes": "Registro criado na expansão global v0.5. Relação publicada apenas com fonte e nível de evidência.",
+          "original_sheet": "Pessoas",
+          "original_row": "28"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "André Motta",
+        "confidence": 0.71,
+        "reason": "Name token similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "people"
+      },
+      "importSourceRow": 28,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-c146cdc0b570-28-1"
+    },
+    {
+      "id": "duplicate-import-c146cdc0b570-31-1",
+      "entityType": "people",
+      "importJobId": "import-c146cdc0b570",
+      "status": "open",
+      "confidence": 0.71,
+      "country": "",
+      "organizationType": "",
+      "incomingRecord": {
+        "full_name": "Antonio Peinado",
+        "aliases": [],
+        "country": "",
+        "city": "",
+        "raw": {
+          "person_id": "P0038",
+          "full_name": "Antonio Peinado",
+          "nickname": "Batista",
+          "country": "",
+          "team": "Alliance / vínculo de formação citado por Fábio Gurgel",
+          "entity_status": "Perfil mínimo — biografia pendente",
+          "lineage_status": "Faixa-preta formado",
+          "created_from": "Historical Lineage Research v0.6",
+          "created_on": "2026-07-05",
+          "notes": "Relação de faixa-preta confirmada por lista do professor; completar país, período, equipe e biografia com fonte independente.",
+          "original_sheet": "Pessoas",
+          "original_row": "31"
+        }
+      },
+      "possibleExistingRecord": {
+        "name": "Antonio Henrique Azevedo",
+        "confidence": 0.71,
+        "reason": "Name token similarity",
+        "matching_fields": [
+          "name"
+        ],
+        "entity_type": "people"
+      },
+      "importSourceRow": 31,
+      "openComparisonUrl": "/admin/review/duplicates/duplicate-import-c146cdc0b570-31-1"
+    }
+  ],
+  "claims_lacking_evidence_or_refs": [],
+  "possible_co_promotion_groups": [
+    {
+      "claim_id": "R0361",
+      "student_person_id": "P0321",
+      "promoter_person_id": "P0158",
+      "student_name": "Sarah Galvão",
+      "teacher_name": "André Galvão",
+      "relationship_type": "Faixa-preta concedida por",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta concedida por",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "André Galvão relata que ele e Angélica Galvão promoveram Sarah Galvão à faixa-preta em 2025.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "5"
+    },
+    {
+      "claim_id": "R0362",
+      "student_person_id": "P0321",
+      "promoter_person_id": "P0322",
+      "student_name": "Sarah Galvão",
+      "teacher_name": "Angélica Galvão",
+      "relationship_type": "Faixa-preta concedida por",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta concedida por",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "André Galvão relata que ele e Angélica Galvão promoveram Sarah Galvão à faixa-preta em 2025.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "6"
+    },
+    {
+      "claim_id": "R0352",
+      "student_person_id": "P0417",
+      "promoter_person_id": "P0293",
+      "student_name": "Kyle Boehm",
+      "teacher_name": "Eddie Bravo",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Página oficial da 10th Planet descreve Kyle Boehm como faixa-preta sob Eddie Bravo e John Botello.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "11"
+    },
+    {
+      "claim_id": "R0355",
+      "student_person_id": "P0419",
+      "promoter_person_id": "P0293",
+      "student_name": "Manu Perez",
+      "teacher_name": "Eddie Bravo",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Página oficial da 10th Planet descreve Manu Perez como faixa-preta sob Eddie Bravo e Mick Broster.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "12"
+    },
+    {
+      "claim_id": "R0353",
+      "student_person_id": "P0417",
+      "promoter_person_id": "P0296",
+      "student_name": "Kyle Boehm",
+      "teacher_name": "John Botello",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Página oficial da 10th Planet descreve Kyle Boehm como faixa-preta sob Eddie Bravo e John Botello.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "15"
+    },
+    {
+      "claim_id": "R0368",
+      "student_person_id": "P0427",
+      "promoter_person_id": "P0192",
+      "student_name": "Mike Jaramillo",
+      "teacher_name": "John Danaher",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Renzo Gracie Academy descreve Mike Jaramillo como faixa-preta sob Renzo Gracie e John Danaher.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "16"
+    },
+    {
+      "claim_id": "R0356",
+      "student_person_id": "P0419",
+      "promoter_person_id": "P0420",
+      "student_name": "Manu Perez",
+      "teacher_name": "Mick Broster",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Página oficial da 10th Planet descreve Manu Perez como faixa-preta sob Eddie Bravo e Mick Broster.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "18"
+    },
+    {
+      "claim_id": "R0367",
+      "student_person_id": "P0427",
+      "promoter_person_id": "P0191",
+      "student_name": "Mike Jaramillo",
+      "teacher_name": "Renzo Gracie",
+      "relationship_type": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "claim_type": "black_belt_awarded_by",
+      "relationship_label": "Faixa-preta sob professores (fonte cita múltiplos)",
+      "promotion_date": "",
+      "promotion_location": "",
+      "status": "pending_review",
+      "evidence_level": "Alta",
+      "notes": "Renzo Gracie Academy descreve Mike Jaramillo como faixa-preta sob Renzo Gracie e John Danaher.",
+      "original_status": "Confirmado",
+      "publication_policy": "Exibir com co-graduação / atribuição",
+      "original_sheet": "Relações v0.6",
+      "original_row": "23"
+    }
+  ],
+  "readiness": {
+    "totalRecordsByCategory": {
+      "persons": 427,
+      "organizations": 92,
+      "sources": 178,
+      "lineage_claims": 26,
+      "claim_evidence": 26,
+      "person_affiliations": 417,
+      "research_tasks": 31,
+      "official_observations": 18
+    },
+    "possibleDuplicatePeople": 0,
+    "possibleDuplicateOrganizations": 0,
+    "claimsWithMissingStudent": 0,
+    "claimsWithMissingTeacher": 0,
+    "claimsWithoutEvidence": 0,
+    "claimsWithConflictingTeachers": 4,
+    "claimsWithPossibleCoPromotionStructure": 2,
+    "sourcesWithDuplicateUrls": 0,
+    "rowsThatCanSafelyImport": 1209,
+    "rowsRequiringReview": 6,
+    "rowsBlockedFromImport": 0
+  }
+}

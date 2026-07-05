@@ -1,0 +1,23 @@
+{
+  "name": "thebigtreebjj",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm run dev:local",
+    "dev:local": "pnpm -r --parallel --filter @thebigtreebjj/api --filter @thebigtreebjj/web run dev",
+    "dev:docker": "docker compose up --build",
+    "dev:api": "pnpm --filter @thebigtreebjj/api dev",
+    "dev:web": "pnpm --filter @thebigtreebjj/web dev",
+    "db:migrate": "pnpm --filter @thebigtreebjj/database prisma:migrate",
+    "db:generate": "pnpm --filter @thebigtreebjj/database prisma:generate",
+    "db:seed": "pnpm --filter @thebigtreebjj/database prisma:seed",
+    "db:studio": "pnpm --filter @thebigtreebjj/database exec prisma studio",
+    "db:import-status": "node scripts/db-import-status.mjs",
+    "db:review-summary": "node scripts/db-review-summary.mjs"
+  },
+  "packageManager": "pnpm@9.12.0"
+}

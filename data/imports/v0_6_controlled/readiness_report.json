@@ -1,0 +1,23 @@
+{
+  "totalRecordsByCategory": {
+    "persons": 427,
+    "organizations": 92,
+    "sources": 178,
+    "lineage_claims": 26,
+    "claim_evidence": 26,
+    "person_affiliations": 417,
+    "research_tasks": 31,
+    "official_observations": 18
+  },
+  "possibleDuplicatePeople": 0,
+  "possibleDuplicateOrganizations": 0,
+  "claimsWithMissingStudent": 0,
+  "claimsWithMissingTeacher": 0,
+  "claimsWithoutEvidence": 0,
+  "claimsWithConflictingTeachers": 4,
+  "claimsWithPossibleCoPromotionStructure": 2,
+  "sourcesWithDuplicateUrls": 0,
+  "rowsThatCanSafelyImport": 1209,
+  "rowsRequiringReview": 6,
+  "rowsBlockedFromImport": 0
+}
