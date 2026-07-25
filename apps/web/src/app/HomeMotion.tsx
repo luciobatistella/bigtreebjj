@@ -54,6 +54,19 @@ export function HomeMotion() {
             ease: "none"
           });
 
+          gsap.from(".ed-index-track > *", {
+            yPercent: 42,
+            opacity: 0,
+            stagger: 0.055,
+            duration: 0.58,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: ".ed-index",
+              start: "top 96%",
+              once: true
+            }
+          });
+
           const intro = gsap.timeline({
             defaults: { ease: "power3.out" },
             scrollTrigger: {
@@ -290,7 +303,7 @@ export function HomeMotion() {
 
           document.querySelectorAll<HTMLElement>(".ed-section").forEach((section) => {
             if (!section.id) return;
-            const link = document.querySelector<HTMLAnchorElement>(`.ed-header nav a[href="#${section.id}"]`);
+            const link = document.querySelector<HTMLAnchorElement>(`.ed-index-link[href="#${section.id}"]`);
             if (!link) return;
             ScrollTrigger.create({
               trigger: section,
@@ -327,7 +340,7 @@ export function HomeMotion() {
               });
             });
 
-            document.querySelectorAll<HTMLElement>(".ed-button, .ed-header-cta").forEach((button) => {
+            document.querySelectorAll<HTMLElement>(".ed-button, .ed-index-explorer").forEach((button) => {
               const moveX = gsap.quickTo(button, "x", { duration: 0.25, ease: "power2.out" });
               const moveY = gsap.quickTo(button, "y", { duration: 0.25, ease: "power2.out" });
               const onMove = (event: PointerEvent) => {

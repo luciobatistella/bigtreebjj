@@ -263,26 +263,6 @@ export default function HomePage() {
   return (
     <main className="ed-home">
       <HomeMotion />
-      <header className="ed-header">
-        <Link className="ed-brand" href="/">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="" />
-          <span>
-            <strong>The Big Tree BJJ</strong>
-            <small>{copy.brandSubtitle}</small>
-          </span>
-        </Link>
-        <nav aria-label={copy.navLabel}>
-          <a href="#metodo">{copy.nav.method}</a>
-          <a href="#cronologia">{copy.nav.timeline}</a>
-          <a href="#acervo">{copy.nav.entries}</a>
-          <a href="#conflitos">{copy.nav.conflicts}</a>
-          <a href="#fontes">{copy.nav.sources}</a>
-        </nav>
-        <Link className="ed-header-cta" href="/explore">
-          {copy.openExplorer}
-        </Link>
-      </header>
 
       <section className="ed-hero" aria-label="The Big Tree BJJ">
         <video
@@ -329,6 +309,39 @@ export default function HomePage() {
           <i aria-hidden="true" />
         </a>
       </section>
+
+      <nav className="ed-index" aria-label={copy.navLabel}>
+        <div className="ed-index-track">
+          <span className="ed-index-marker" aria-hidden="true">
+            <small>INDEX</small>
+            <b>00—05</b>
+          </span>
+          <a className="ed-index-link" href="#metodo">
+            <span>01</span>
+            <strong>{copy.nav.method}</strong>
+          </a>
+          <a className="ed-index-link" href="#cronologia">
+            <span>02</span>
+            <strong>{copy.nav.timeline}</strong>
+          </a>
+          <a className="ed-index-link" href="#acervo">
+            <span>03</span>
+            <strong>{copy.nav.entries}</strong>
+          </a>
+          <a className="ed-index-link" href="#conflitos">
+            <span>04</span>
+            <strong>{copy.nav.conflicts}</strong>
+          </a>
+          <a className="ed-index-link" href="#fontes">
+            <span>05</span>
+            <strong>{copy.nav.sources}</strong>
+          </a>
+          <Link className="ed-index-explorer" href="/explore">
+            <span aria-hidden="true">↗</span>
+            <strong>{copy.openExplorer}</strong>
+          </Link>
+        </div>
+      </nav>
 
       <section className="ed-intro" id="introducao">
         <div className="ed-hero-copy">
