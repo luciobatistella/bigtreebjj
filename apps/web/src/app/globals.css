@@ -61,22 +61,35 @@ body {
    Mantemos o idioma fora dessa faixa para não cobrir zoom, detalhes ou gestos. */
 .mt-root + .tbt-language-switcher {
   z-index: 80;
-  right: 282px;
-  top: 84px;
+  right: 22px;
+  top: 26px;
   bottom: auto;
+  min-height: 44px;
+  padding-inline: 8px;
+  background: rgba(17,13,7,.94);
+  border-color: rgba(232,192,120,.46);
+  box-shadow: 0 12px 34px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.04);
+}
+
+.mt-root + .tbt-language-switcher button {
+  min-width: 38px;
+  min-height: 32px;
 }
 
 @media (max-width: 1180px) {
   .mt-root + .tbt-language-switcher {
-    right: 14px;
+    right: 18px;
   }
 }
 
 @media (max-width: 860px) {
   .mt-root + .tbt-language-switcher {
-    top: calc(76px + env(safe-area-inset-top));
-    right: 10px;
+    top: calc(14px + env(safe-area-inset-top));
+    left: calc(100vw - 118px);
+    right: auto;
     bottom: auto;
+    width: 106px;
+    box-sizing: border-box;
   }
 }
 
