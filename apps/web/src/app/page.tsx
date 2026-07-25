@@ -295,7 +295,7 @@ export default function HomePage() {
           aria-hidden="true"
           tabIndex={-1}
         >
-          <source src="/filme-bg-tbt.mp4" type="video/mp4" />
+          <source src="/filme-tbt.mp4" type="video/mp4" />
         </video>
         <div className="ed-hero-stage">
           <p className="ed-hero-overline">{copy.hero.overline}</p>
