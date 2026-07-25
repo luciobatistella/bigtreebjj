@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { TreeNode } from "../page";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const apiBase = "/api/people";
 
 type LineageResponse = {
   lineagePath: Array<{ id: string; fullName: string }>;
@@ -41,7 +41,7 @@ export function useLineageTrace(selected: TreeNode | undefined) {
     }
     (async () => {
       try {
-        const response = await fetch(`${apiBase}/public/people/${entityId}`, { cache: "no-store" });
+        const response = await fetch(`${apiBase}/${entityId}`, { cache: "no-store" });
         if (!response.ok) throw new Error(String(response.status));
         const payload = (await response.json()) as LineageResponse;
         const ids = (payload.lineagePath ?? []).map((entry) => `person:${entry.id}`);

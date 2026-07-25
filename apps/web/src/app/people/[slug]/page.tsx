@@ -4,7 +4,10 @@ import { profileCopy, translateProfileValue } from "../../i18n/profileCopy";
 import { getServerLocale } from "../../i18n/serverLocale";
 import type { Locale } from "../../i18n/locale";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const apiBase =
+  process.env.API_INTERNAL_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:3001";
 
 export const dynamic = "force-dynamic";
 

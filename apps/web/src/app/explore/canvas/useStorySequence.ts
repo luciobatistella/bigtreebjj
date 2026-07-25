@@ -19,7 +19,7 @@ type PublicPersonProfile = {
   }>;
 };
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+const apiBase = "/api/people";
 const AUTOPLAY_DELAY_MS = 4200;
 
 /**
@@ -50,7 +50,7 @@ export function useStorySequence(options: {
     async (personEntityId: string) => {
       setLoading(true);
       try {
-        const response = await fetch(`${apiBase}/public/people/${personEntityId}`, { cache: "no-store" });
+        const response = await fetch(`${apiBase}/${personEntityId}`, { cache: "no-store" });
         if (!response.ok) throw new Error("Profile not found");
         const profile = (await response.json()) as PublicPersonProfile;
         const path = profile.lineagePath ?? [];

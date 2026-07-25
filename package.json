@@ -10,6 +10,10 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "pnpm run build:hostinger",
+    "build:hostinger": "pnpm db:generate && pnpm --filter @thebigtreebjj/api run build && pnpm --filter @thebigtreebjj/web run build",
+    "start": "node scripts/start-hostinger.mjs",
+    "start:hostinger": "node scripts/start-hostinger.mjs",
     "dev": "pnpm run dev:local",
     "dev:local": "pnpm -r --parallel --filter @thebigtreebjj/api --filter @thebigtreebjj/web run dev",
     "dev:docker": "docker compose up --build",
