@@ -18,6 +18,9 @@ const fallbackClaimStatus = new Map<string, Record<string, unknown>>();
 let prisma: any = null;
 
 async function getPrismaClient() {
+  if (process.env.VITEST) {
+    return null;
+  }
   if (prisma) {
     return prisma;
   }

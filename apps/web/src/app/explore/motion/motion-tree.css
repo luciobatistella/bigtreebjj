@@ -1,0 +1,128 @@
+/* ============================================================
+   MotionTree (.mtree-) — anexar ao final de src/app/globals.css
+   ============================================================ */
+
+.mtree-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0805;
+}
+.mtree-canvas {
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+.mtree-canvas:active { cursor: grabbing; }
+
+/* ---------- tooltip ---------- */
+.mtree-tip {
+  position: absolute;
+  z-index: 8;
+  pointer-events: none;
+  background: rgba(22, 18, 9, 0.88);
+  border: 1px solid rgba(201, 151, 76, 0.2);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 12px;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  max-width: 220px;
+  color: #f1e7d3;
+}
+.mtree-tip.show { opacity: 1; transform: translateY(0); }
+.mtree-tip b {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 13px;
+  display: block;
+}
+.mtree-tip span { color: #6b6255; font-size: 10.5px; }
+
+/* ---------- modo cinema (letterbox dentro do wrapper) ---------- */
+.mtree-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: #000;
+  z-index: 10;
+  transition: height 0.7s cubic-bezier(0.6, 0, 0.3, 1);
+  pointer-events: none;
+}
+.mtree-bar--top { top: 0; }
+.mtree-bar--bottom { bottom: 0; }
+.mtree-cinema .mtree-bar { height: 11%; }
+
+.mtree-caption {
+  position: absolute;
+  bottom: calc(11% + 22px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 11;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+.mtree-cinema .mtree-caption {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.mtree-caption small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: #6b6255;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.mtree-caption b {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #e8c078;
+  text-shadow: 0 0 30px rgba(201, 151, 76, 0.5);
+  display: block;
+}
+.mtree-caption span {
+  font-size: 12.5px;
+  color: #9c9384;
+  letter-spacing: 0.5px;
+}
+
+.mtree-exit {
+  position: absolute;
+  top: calc(11% + 14px);
+  right: 20px;
+  z-index: 12;
+  background: rgba(22, 18, 9, 0.88);
+  border: 1px solid rgba(201, 151, 76, 0.2);
+  border-radius: 20px;
+  color: #9c9384;
+  font-size: 11.5px;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.mtree-exit:hover { color: #e8c078; border-color: #8a6a34; }
+
+/* durante a história, some com o chrome da página */
+body:has(.mtree-cinema) .lineage-topbar,
+body:has(.mtree-cinema) .lineage-rail,
+body:has(.mtree-cinema) .lineage-controls,
+body:has(.mtree-cinema) .lineage-detail,
+body:has(.mtree-cinema) .lineage-minimap,
+body:has(.mtree-cinema) .lineage-toolbar,
+body:has(.mtree-cinema) .lineage-statusbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mtree-bar, .mtree-caption, .mtree-tip { transition: none; }
+}

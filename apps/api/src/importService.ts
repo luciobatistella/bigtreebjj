@@ -28,6 +28,9 @@ function getImportJobStore() {
 }
 
 async function connectPrisma() {
+  if (process.env.VITEST) {
+    return false;
+  }
   if (prisma) {
     return true;
   }
@@ -86,6 +89,14 @@ function formatDate(value: unknown) {
   return value instanceof Date ? value.toISOString() : String(value);
 }
 
+function parseDateOrNow(value: unknown) {
+  if (!value) {
+    return new Date();
+  }
+  const parsed = value instanceof Date ? value : new Date(String(value));
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
 function normalizeComparable(value: unknown) {
   return String(value ?? '')
     .normalize('NFD')
@@ -130,7 +141,7 @@ export function previewImport(filePath: string, format: 'csv' | 'xlsx' | 'sqlite
     };
   }
 
-  const result = spawnSync('python', [scriptPath, absolutePath, JSON.stringify(options)], { encoding: 'utf-8' });
+  const result = spawnSync('python', [scriptPath, absolutePath, JSON.stringify(options)], { encoding: 'utf-8', maxBuffer: 80 * 1024 * 1024 });
 
   if (result.status !== 0) {
     throw new Error(result.stderr || 'Import preview failed');
@@ -244,6 +255,8 @@ function normalizeValidation(row: Record<string, unknown>, importCategory?: stri
     research_tasks: ['task_id', 'task_type'],
     lineage_claims: ['claim_id', 'student_person_id', 'student_name'],
     claim_evidence: ['claim_id', 'url'],
+    external_source_profiles: ['source_profile_url', 'external_name'],
+    external_fact_candidates: ['candidate_type', 'subject_name', 'source_url'],
     evidence: ['url', 'source_url']
   };
   const required = requiredByCategory[String(importCategory ?? '')];
@@ -266,6 +279,9 @@ function getEntityTypeFromImportCategory(importCategory?: string) {
   if (importCategory === 'organizations') {
     return 'organization';
   }
+  if (importCategory === 'external_source_profiles') {
+    return 'external_source_profile';
+  }
   if (importCategory === 'sources' || importCategory === 'evidence') {
     return 'source';
   }
@@ -280,6 +296,9 @@ function getEntityTypeFromImportCategory(importCategory?: string) {
   }
   if (importCategory === 'claim_evidence') {
     return 'evidence';
+  }
+  if (importCategory === 'external_fact_candidates') {
+    return 'external_fact_candidate';
   }
   if (importCategory === 'claims' || importCategory === 'lineage_claims') {
     return 'lineage_claim';
@@ -305,6 +324,31 @@ function optionalRawValue(row: Record<string, unknown>, key: string) {
 
 function normalizedPersonName(row: Record<string, unknown>) {
   return String((row.normalized_person as Record<string, unknown>)?.full_name ?? rawValue(row, 'full_name') ?? rawValue(row, 'person_name') ?? '');
+}
+
+async function findOrCreateImportedPerson(db: any, input: { id?: string | null; name: string; country?: string; city?: string; nickname?: string }) {
+  const nicknames = input.nickname ? [input.nickname] : [];
+  if (input.id) {
+    return db.person.upsert({
+      where: { id: input.id },
+      update: {
+        fullName: input.name,
+        country: input.country || undefined,
+        city: input.city || undefined,
+        nicknames
+      },
+      create: {
+        id: input.id,
+        fullName: input.name,
+        country: input.country || undefined,
+        city: input.city || undefined,
+        nicknames
+      }
+    });
+  }
+  const existing = await db.person.findFirst({ where: { fullName: { equals: input.name, mode: 'insensitive' } } });
+  if (existing) return existing;
+  return db.person.create({ data: { fullName: input.name, country: input.country || undefined, city: input.city || undefined, nicknames } });
 }
 
 function duplicateThreshold(importCategory: string) {
@@ -349,7 +393,7 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
   for (const [index, row] of rows.entries()) {
     const validation = normalizeValidation(row, String(importCategory));
     const duplicateCandidates = prepareDuplicateCandidates((row.duplicate_candidates as Array<Record<string, unknown>> | undefined) ?? [], String(importCategory));
-    const baseStatus = validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' ? 'review_required' : 'imported';
+    const baseStatus = validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' || importCategory === 'external_source_profiles' || importCategory === 'external_fact_candidates' ? 'review_required' : 'imported';
     const rowPayload = {
       importJobId: job.id,
       originalFileName: job.originalFileName,
@@ -363,21 +407,178 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
     let createdEntityId: string | null = null;
     if (db) {
       if (importCategory === 'organizations' || importCategory === 'organizations_sample') {
-        const organization = await db.organization.create({ data: { name: String((row.normalized_organization as Record<string, unknown>)?.name ?? rawValue(row, 'name')), type: String((row.normalized_organization as Record<string, unknown>)?.type ?? rawValue(row, 'organization_type', 'organization')) } });
+        const organizationId = optionalRawValue(row, 'organization_id');
+        const organization = await db.organization.upsert({
+          where: { id: organizationId ?? `org-${job.id}-${rowPayload.originalRowNumber}` },
+          update: {
+            name: String((row.normalized_organization as Record<string, unknown>)?.name ?? rawValue(row, 'name')),
+            type: String((row.normalized_organization as Record<string, unknown>)?.type ?? rawValue(row, 'organization_type', 'organization'))
+          },
+          create: {
+            id: organizationId ?? undefined,
+            name: String((row.normalized_organization as Record<string, unknown>)?.name ?? rawValue(row, 'name')),
+            type: String((row.normalized_organization as Record<string, unknown>)?.type ?? rawValue(row, 'organization_type', 'organization'))
+          }
+        });
         createdEntityId = organization.id;
         createdEntities.push({ entityType: 'organization', entityId: organization.id });
       } else if (importCategory === 'claims' || importCategory === 'lineage_claims') {
-        const studentName = String((row.normalized_claim as Record<string, unknown>)?.student_name ?? 'Imported student');
-        const teacherName = String((row.normalized_claim as Record<string, unknown>)?.teacher_name ?? 'Imported teacher');
-        const student = await db.person.create({ data: { fullName: studentName } });
-        const teacher = await db.person.create({ data: { fullName: teacherName } });
-        const claim = await db.lineageClaim.create({ data: { studentPersonId: student.id, teacherPersonId: teacher.id, claimType: String((row.normalized_claim as Record<string, unknown>)?.claim_type ?? 'black_belt_awarded_by'), relationshipLabel: String((row.normalized_claim as Record<string, unknown>)?.relationship_label ?? 'Imported claim'), status: 'pending_review', evidenceLevel: 'imported', confidenceScore: 0.5, notes: String((row.normalized_claim as Record<string, unknown>)?.notes ?? '') } });
+        const normalizedClaim = (row.normalized_claim as Record<string, unknown>) ?? {};
+        const studentName = String(normalizedClaim.student_name ?? rawValue(row, 'student_name', 'Imported student'));
+        const teacherName = String(normalizedClaim.teacher_name ?? rawValue(row, 'teacher_name', ''));
+        const student = await findOrCreateImportedPerson(db, { id: optionalRawValue(row, 'student_person_id'), name: studentName });
+        const teacher = teacherName ? await findOrCreateImportedPerson(db, { id: optionalRawValue(row, 'promoter_person_id'), name: teacherName }) : null;
+        const claim = await db.lineageClaim.upsert({
+          where: { id: optionalRawValue(row, 'claim_id') ?? `claim-${job.id}-${rowPayload.originalRowNumber}` },
+          update: {
+            studentPersonId: student.id,
+            teacherPersonId: teacher?.id,
+            claimType: String(normalizedClaim.claim_type ?? rawValue(row, 'claim_type', 'black_belt_awarded_by')),
+            relationshipLabel: String(normalizedClaim.relationship_label ?? rawValue(row, 'relationship_label', 'Imported claim')),
+            status: rawValue(row, 'status', 'pending_review'),
+            evidenceLevel: rawValue(row, 'evidence_level', 'imported'),
+            confidenceScore: 0.5,
+            notes: String(normalizedClaim.notes ?? rawValue(row, 'notes'))
+          },
+          create: {
+            id: optionalRawValue(row, 'claim_id') ?? undefined,
+            studentPersonId: student.id,
+            teacherPersonId: teacher?.id,
+            claimType: String(normalizedClaim.claim_type ?? rawValue(row, 'claim_type', 'black_belt_awarded_by')),
+            relationshipLabel: String(normalizedClaim.relationship_label ?? rawValue(row, 'relationship_label', 'Imported claim')),
+            status: rawValue(row, 'status', 'pending_review'),
+            evidenceLevel: rawValue(row, 'evidence_level', 'imported'),
+            confidenceScore: 0.5,
+            notes: String(normalizedClaim.notes ?? rawValue(row, 'notes'))
+          }
+        });
         createdEntityId = claim.id;
         createdEntities.push({ entityType: 'lineage_claim', entityId: claim.id });
-      } else if (importCategory === 'sources' || importCategory === 'evidence' || importCategory === 'claim_evidence') {
-        const source = await db.source.create({ data: { name: rawValue(row, 'source_name', rawValue(row, 'name', rawValue(row, 'url', 'Imported source'))), url: rawValue(row, 'url', rawValue(row, 'source_url')), sourceType: rawValue(row, 'source_type', 'imported') } });
+      } else if (importCategory === 'claim_evidence') {
+        const claimId = optionalRawValue(row, 'claim_id');
+        const claim = claimId ? await db.lineageClaim.findUnique({ where: { id: claimId } }) : null;
+        if (claim) {
+          const evidence = await db.claimEvidence.upsert({
+            where: { id: optionalRawValue(row, 'evidence_id') ?? `evidence-${job.id}-${rowPayload.originalRowNumber}` },
+            update: {
+              lineageClaimId: claim.id,
+              url: rawValue(row, 'url', rawValue(row, 'source_url')),
+              sourceType: rawValue(row, 'source_type', 'imported'),
+              captureDate: optionalRawValue(row, 'capture_date') ? new Date(String(optionalRawValue(row, 'capture_date'))) : undefined,
+              author: optionalRawValue(row, 'author') ?? undefined,
+              curatorNotes: optionalRawValue(row, 'curator_notes') ?? undefined
+            },
+            create: {
+              id: optionalRawValue(row, 'evidence_id') ?? undefined,
+              lineageClaimId: claim.id,
+              url: rawValue(row, 'url', rawValue(row, 'source_url')),
+              sourceType: rawValue(row, 'source_type', 'imported'),
+              captureDate: optionalRawValue(row, 'capture_date') ? new Date(String(optionalRawValue(row, 'capture_date'))) : undefined,
+              author: optionalRawValue(row, 'author') ?? undefined,
+              curatorNotes: optionalRawValue(row, 'curator_notes') ?? undefined
+            }
+          });
+          createdEntityId = evidence.id;
+          createdEntities.push({ entityType: 'evidence', entityId: evidence.id });
+        }
+      } else if (importCategory === 'external_source_profiles') {
+        const raw = (row.raw as Record<string, unknown>) ?? {};
+        const profileId = optionalRawValue(row, 'id') ?? `external-profile-${job.id}-${rowPayload.originalRowNumber}`;
+        const sourceUrl = rawValue(row, 'source_profile_url');
+        const profile = await db.externalSourceProfile.upsert({
+          where: { sourceProfileUrl: sourceUrl },
+          update: {
+            sourceName: rawValue(row, 'source_name', 'BJJ Heroes'),
+            externalName: rawValue(row, 'external_name'),
+            nickname: optionalRawValue(row, 'nickname') ?? undefined,
+            listedTeamText: optionalRawValue(row, 'listed_team_text') ?? undefined,
+            capturedAt: parseDateOrNow(raw.captured_at),
+            sourceStatus: rawValue(row, 'source_status', 'active'),
+            rawHash: rawValue(row, 'raw_hash', createHash('sha256').update(sourceUrl).digest('hex'))
+          },
+          create: {
+            id: profileId,
+            sourceName: rawValue(row, 'source_name', 'BJJ Heroes'),
+            sourceProfileUrl: sourceUrl,
+            externalName: rawValue(row, 'external_name'),
+            nickname: optionalRawValue(row, 'nickname') ?? undefined,
+            listedTeamText: optionalRawValue(row, 'listed_team_text') ?? undefined,
+            capturedAt: parseDateOrNow(raw.captured_at),
+            sourceStatus: rawValue(row, 'source_status', 'active'),
+            rawHash: rawValue(row, 'raw_hash', createHash('sha256').update(sourceUrl).digest('hex'))
+          }
+        });
+        createdEntityId = profile.id;
+        createdEntities.push({ entityType: 'external_source_profile', entityId: profile.id });
+      } else if (importCategory === 'sources' || importCategory === 'evidence') {
+        const sourceId = optionalRawValue(row, 'source_id');
+        const source = await db.source.upsert({
+          where: { id: sourceId ?? `source-${job.id}-${rowPayload.originalRowNumber}` },
+          update: {
+            name: rawValue(row, 'source_name', rawValue(row, 'name', rawValue(row, 'url', 'Imported source'))),
+            url: rawValue(row, 'url', rawValue(row, 'source_url', rawValue(row, 'source_profile_url'))),
+            sourceType: rawValue(row, 'source_type', 'imported')
+          },
+          create: {
+            id: sourceId ?? undefined,
+            name: rawValue(row, 'source_name', rawValue(row, 'name', rawValue(row, 'url', 'Imported source'))),
+            url: rawValue(row, 'url', rawValue(row, 'source_url', rawValue(row, 'source_profile_url'))),
+            sourceType: rawValue(row, 'source_type', 'imported')
+          }
+        });
         createdEntityId = source.id;
         createdEntities.push({ entityType: 'source', entityId: source.id });
+      } else if (importCategory === 'external_fact_candidates') {
+        const raw = (row.raw as Record<string, unknown>) ?? {};
+        const candidateId = optionalRawValue(row, 'id') ?? `external-fact-${job.id}-${rowPayload.originalRowNumber}`;
+        const externalProfileId = rawValue(row, 'external_profile_id');
+        const sourceUrl = rawValue(row, 'source_url');
+        const existingProfile = await db.externalSourceProfile.findUnique({ where: { id: externalProfileId } });
+        const profile = existingProfile ?? await db.externalSourceProfile.upsert({
+          where: { sourceProfileUrl: sourceUrl },
+          update: {},
+          create: {
+            id: externalProfileId || `external-profile-${job.id}-${rowPayload.originalRowNumber}`,
+            sourceName: 'BJJ Heroes',
+            sourceProfileUrl: sourceUrl,
+            externalName: rawValue(row, 'subject_name', 'Unknown external profile'),
+            capturedAt: parseDateOrNow(raw.imported_at),
+            sourceStatus: 'pending_review',
+            rawHash: createHash('sha256').update(sourceUrl).digest('hex')
+          }
+        });
+        const fact = await db.externalFactCandidate.upsert({
+          where: { id: candidateId },
+          update: {
+            externalProfileId: profile.id,
+            candidateType: rawValue(row, 'candidate_type'),
+            subjectName: rawValue(row, 'subject_name'),
+            objectName: optionalRawValue(row, 'object_name') ?? undefined,
+            structuredValue: rawValue(row, 'structured_value', '{}'),
+            sourceUrl,
+            sourceLocator: rawValue(row, 'source_locator', 'profile metadata'),
+            evidenceLevel: rawValue(row, 'evidence_level', 'specialized_source'),
+            status: rawValue(row, 'status', 'pending_review'),
+            confidenceScore: Number(raw.confidence_score ?? 0.5),
+            importedAt: parseDateOrNow(raw.imported_at)
+          },
+          create: {
+            id: candidateId,
+            externalProfileId: profile.id,
+            candidateType: rawValue(row, 'candidate_type'),
+            subjectName: rawValue(row, 'subject_name'),
+            objectName: optionalRawValue(row, 'object_name') ?? undefined,
+            structuredValue: rawValue(row, 'structured_value', '{}'),
+            sourceUrl,
+            sourceLocator: rawValue(row, 'source_locator', 'profile metadata'),
+            evidenceLevel: rawValue(row, 'evidence_level', 'specialized_source'),
+            status: rawValue(row, 'status', 'pending_review'),
+            confidenceScore: Number(raw.confidence_score ?? 0.5),
+            importedAt: parseDateOrNow(raw.imported_at)
+          }
+        });
+        createdEntityId = fact.id;
+        createdEntities.push({ entityType: 'external_fact_candidate', entityId: fact.id });
       } else if (importCategory === 'official_observations') {
         const observation = await db.officialObservation.create({ data: { title: rawValue(row, 'observation_id', 'Imported official observation'), description: JSON.stringify((row.raw as Record<string, unknown>) ?? row) } });
         createdEntityId = observation.id;
@@ -385,15 +586,48 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
       } else if (importCategory === 'research_queue' || importCategory === 'research_tasks') {
         createdEntityId = optionalRawValue(row, 'task_id');
         createdEntities.push({ entityType: 'review_task', entityId: createdEntityId ?? String(rowPayload.originalRowNumber) });
+      } else if (importCategory === 'person_affiliations') {
+        const personId = optionalRawValue(row, 'person_id');
+        const organizationId = optionalRawValue(row, 'organization_id');
+        if (personId && organizationId) {
+          const [person, organization] = await Promise.all([
+            db.person.findUnique({ where: { id: personId } }),
+            db.organization.findUnique({ where: { id: organizationId } })
+          ]);
+          if (person && organization) {
+            const affiliation = await db.personAffiliation.upsert({
+              where: { id: optionalRawValue(row, 'affiliation_id') ?? `affiliation-${job.id}-${rowPayload.originalRowNumber}` },
+              update: {
+                personId,
+                organizationId,
+                affiliationType: rawValue(row, 'relation_type', 'reported affiliation')
+              },
+              create: {
+                id: optionalRawValue(row, 'affiliation_id') ?? undefined,
+                personId,
+                organizationId,
+                affiliationType: rawValue(row, 'relation_type', 'reported affiliation')
+              }
+            });
+            createdEntityId = affiliation.id;
+            createdEntities.push({ entityType: 'affiliation', entityId: affiliation.id });
+          }
+        }
       } else {
-        const person = await db.person.create({ data: { fullName: normalizedPersonName(row) } });
+        const person = await findOrCreateImportedPerson(db, {
+          id: optionalRawValue(row, 'person_id'),
+          name: normalizedPersonName(row),
+          country: optionalRawValue(row, 'country') ?? undefined,
+          city: optionalRawValue(row, 'city') ?? undefined,
+          nickname: optionalRawValue(row, 'nickname') ?? undefined
+        });
         createdEntityId = person.id;
         createdEntities.push({ entityType: 'person', entityId: person.id });
       }
 
       const savedRow = await db.importRow.create({ data: { importJobId: rowPayload.importJobId as string, originalFileName: rowPayload.originalFileName as string, originalRowNumber: rowPayload.originalRowNumber as number, rawPayload: rowPayload.rawPayload as string, validationResult: rowPayload.validationResult as string, entityType: rowPayload.entityType as string, status: rowPayload.status as string, createdEntityId: createdEntityId ?? undefined, personId: createdEntityId && (importCategory === 'people' || importCategory === 'persons' || importCategory === 'people_sample') ? createdEntityId : undefined } });
       createdRows.push({ id: savedRow.id, ...rowPayload, createdEntityId });
-      if (validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' || (validation.errors as Array<string> | undefined)?.length || (validation.warnings as Array<string> | undefined)?.length) {
+      if (validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' || importCategory === 'external_source_profiles' || importCategory === 'external_fact_candidates' || (validation.errors as Array<string> | undefined)?.length || (validation.warnings as Array<string> | undefined)?.length) {
         const reviewQueue = await db.reviewQueue.create({ data: { entityType: 'import_row', entityId: savedRow.id, status: 'pending_review' } });
         reviewQueueEntries.push({ id: reviewQueue.id, entityType: 'import_row', entityId: savedRow.id, status: reviewQueue.status, createdAt: reviewQueue.createdAt });
       }
@@ -430,7 +664,7 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
       const fallbackRowId = `row-${job.id}-${rowPayload.originalRowNumber}`;
       createdRows.push({ id: fallbackRowId, ...rowPayload, entityType: importCategory, createdEntityId: fallbackEntityId });
       createdEntities.push({ entityType: fallbackEntityType, entityId: fallbackEntityId });
-      if (validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' || (validation.errors as Array<string> | undefined)?.length) {
+      if (validation.valid === false || duplicateCandidates.length || importCategory === 'research_queue' || importCategory === 'research_tasks' || importCategory === 'lineage_claims' || importCategory === 'claim_evidence' || importCategory === 'external_source_profiles' || importCategory === 'external_fact_candidates' || (validation.errors as Array<string> | undefined)?.length) {
         reviewQueueEntries.push({ id: `review-${job.id}-${rowPayload.originalRowNumber}`, entityType: 'import_row', entityId: fallbackRowId, status: 'pending_review', createdAt: new Date().toISOString() });
       }
       if (duplicateCandidates.length) {
@@ -743,7 +977,7 @@ export async function listImportReviewQueue(jobId: string) {
 
 export async function listImportImportedRecords(jobId: string) {
   const rows = await listImportRows(jobId);
-  const groups = ['People', 'Organizations', 'Sources', 'Lineage Claims', 'Evidence', 'Affiliations', 'Official Observations'].reduce((acc, key) => ({ ...acc, [key]: [] as Array<Record<string, unknown>> }), {} as Record<string, Array<Record<string, unknown>>>);
+  const groups = ['People', 'Organizations', 'Sources', 'External Source Profiles', 'External Fact Candidates', 'Lineage Claims', 'Evidence', 'Affiliations', 'Official Observations'].reduce((acc, key) => ({ ...acc, [key]: [] as Array<Record<string, unknown>> }), {} as Record<string, Array<Record<string, unknown>>>);
   const labelByType: Record<string, string> = {
     people: 'People',
     person: 'People',
@@ -753,6 +987,8 @@ export async function listImportImportedRecords(jobId: string) {
     sources: 'Sources',
     evidence: 'Evidence',
     claim_evidence: 'Evidence',
+    external_source_profiles: 'External Source Profiles',
+    external_fact_candidates: 'External Fact Candidates',
     official_observations: 'Official Observations',
     person_affiliations: 'Affiliations',
     research_queue: 'Lineage Claims',
@@ -766,12 +1002,14 @@ export async function listImportImportedRecords(jobId: string) {
   for (const row of rows as Array<Record<string, unknown>>) {
     if (!row.createdEntityId) continue;
     const group = labelByType[String(row.entityType)] ?? 'People';
+    const raw = parseJsonObject(row.rawPayload);
+    const isBjjHeroes = raw.source_name === 'BJJ Heroes' || raw.source === 'BJJ Heroes' || parseJsonObject(raw.source_attribution).source === 'BJJ Heroes';
     groups[group].push({
       id: row.createdEntityId,
       importRowId: row.id,
       sourceImportRow: row.originalRowNumber,
-      status: group === 'Lineage Claims' ? 'pending review' : row.status,
-      publicVisibility: group === 'Lineage Claims' || group === 'Evidence' ? 'not public' : 'admin only',
+      status: group === 'Lineage Claims' || group.startsWith('External') ? 'pending review' : row.status,
+      publicVisibility: group === 'Lineage Claims' || group === 'Evidence' || group.startsWith('External') ? 'not public' : 'admin only',
       evidenceCount: group === 'Lineage Claims' ? 0 : undefined,
       badges: group === 'People'
         ? ['Official competitive record', 'No lineage identified yet']
@@ -780,6 +1018,12 @@ export async function listImportImportedRecords(jobId: string) {
           : group === 'Official Observations'
             ? ['Official registry/ranking observation']
             : [],
+      sourceAttribution: isBjjHeroes ? {
+        source: 'BJJ Heroes',
+        sourceUrl: raw.source_profile_url ?? raw.source_url ?? raw.url,
+        use: 'Specialized discovery source',
+        editorialStatus: 'Requires review before lineage publication'
+      } : undefined,
       adminUrl: group === 'Lineage Claims' ? `/admin/review/claims/${row.createdEntityId}` : `/admin/imports/${jobId}?tab=Imported%20Records`
     });
   }

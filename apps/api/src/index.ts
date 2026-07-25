@@ -5,6 +5,7 @@ import multer from 'multer';
 import dotenv from 'dotenv';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { ZodError } from 'zod';
 import {
   approveRelationship,
   canonicalizeOrganizationDuplicate,
@@ -52,17 +53,97 @@ import {
   updateImportJobMapping
 } from './importService.js';
 import { decideClaimReview, getClaimReview, reclassifyClaimReview } from './reviewService.js';
-import { storeUploadFile } from './storage.js';
+import { readCommunityCertificate, storeUploadFile } from './storage.js';
+import {
+  getBjjHeroesStatus,
+  importManualBjjHeroesProfile,
+  pauseBjjHeroesConnector,
+  resumeBjjHeroesConnector,
+  runBjjHeroesDryRun
+} from './bjjHeroesService.js';
+import {
+  createLineageSubmission,
+  decideLineageSubmission,
+  getLineageSubmission,
+  getLineageSubmissionStatus,
+  listLineageSubmissions
+} from './communitySubmissionService.js';
 
 dotenv.config({ path: '../../.env' });
 
 const app = express();
 const port = Number(process.env.API_PORT ?? 3001);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 15 * 1024 * 1024 } });
+const certificateUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024, files: 9 },
+  fileFilter: (_req, file, callback) => {
+    const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (allowed.includes(file.mimetype)) callback(null, true);
+    else callback(new Error('Formato de certificado não permitido.'));
+  }
+});
+let prisma: any = null;
+const submissionAttempts = new Map<string, number[]>();
+
+async function getDb() {
+  if (process.env.VITEST) return null;
+  if (prisma) return prisma;
+  try {
+    const module = await import('@prisma/client');
+    prisma = new module.PrismaClient();
+    await prisma.$connect();
+    return prisma;
+  } catch {
+    prisma = null;
+    return null;
+  }
+}
+
+function slugify(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
 
 app.use(cors());
 app.use(helmet());
 app.use(express.json({ limit: '25mb' }));
+
+const requireAdmin: express.RequestHandler = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
+    verifyAuth(token);
+    next();
+  } catch (error) {
+    res.status(403).json({ error: (error as Error).message });
+  }
+};
+
+const receiveCertificate: express.RequestHandler = (req, res, next) => {
+  certificateUpload.any()(req, res, (error) => {
+    if (!error) return next();
+    const message =
+      error instanceof multer.MulterError && error.code === 'LIMIT_FILE_SIZE'
+        ? 'O certificado deve ter no máximo 10 MB.'
+        : (error as Error).message;
+    return res.status(400).json({ error: message });
+  });
+};
+
+function privateSubmissionView(submission: any) {
+  const { certificateStoragePath, certificates = [], ...visible } = submission;
+  const privateCertificates = certificates.map(({ storagePath, ...certificate }: any) => certificate);
+  return {
+    ...visible,
+    certificates: privateCertificates,
+    hasCertificate: Boolean(certificateStoragePath || privateCertificates.length),
+    certificateCount: privateCertificates.length || (certificateStoragePath ? 1 : 0)
+  };
+}
 
 const swaggerSpec = swaggerJSDoc({
   definition: {
@@ -102,6 +183,39 @@ app.get('/admin/metrics', async (_req, res) => {
   res.json(metrics);
 });
 
+app.get('/admin/sources/bjjheroes', (_req, res) => {
+  res.json(getBjjHeroesStatus());
+});
+
+app.get('/admin/imports/bjjheroes', (_req, res) => {
+  res.json(getBjjHeroesStatus());
+});
+
+app.post('/admin/sources/bjjheroes/pause', (req, res) => {
+  res.json(pauseBjjHeroesConnector(req.body?.reason));
+});
+
+app.post('/admin/sources/bjjheroes/resume', (_req, res) => {
+  res.json(resumeBjjHeroesConnector());
+});
+
+app.post('/admin/sources/bjjheroes/dry-run', (req, res) => {
+  try {
+    res.json(runBjjHeroesDryRun(req.body ?? {}));
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+});
+
+app.post('/admin/imports/bjjheroes/manual-profile', async (req, res) => {
+  try {
+    const result = await importManualBjjHeroesProfile(req.body ?? {});
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(400).json({ error: (error as Error).message });
+  }
+});
+
 app.post('/auth/login', (req, res) => {
   try {
     const { email, password } = req.body as { email: string; password: string };
@@ -111,8 +225,424 @@ app.post('/auth/login', (req, res) => {
   }
 });
 
-app.get('/people', (_req, res) => {
-  res.json(listPeople());
+app.get('/people', async (_req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.json(listPeople());
+    return;
+  }
+  const people = await db.person.findMany({
+    orderBy: { fullName: 'asc' },
+    select: { id: true, fullName: true, nicknames: true, country: true, city: true }
+  });
+  res.json(people);
+});
+
+app.get('/community/teachers', async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const query = String(req.query.q ?? '').trim();
+  if (query.length < 2) return res.json([]);
+  const teachers = await db.person.findMany({
+    where: { fullName: { contains: query, mode: 'insensitive' } },
+    orderBy: { fullName: 'asc' },
+    take: 12,
+    select: { id: true, fullName: true, team: true, city: true, country: true }
+  });
+  return res.json(teachers);
+});
+
+app.post('/community/lineage-submissions', receiveCertificate, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const rateKey = req.ip || req.socket.remoteAddress || 'unknown';
+  const cutoff = Date.now() - 60 * 60 * 1000;
+  const recentAttempts = (submissionAttempts.get(rateKey) ?? []).filter((attempt) => attempt > cutoff);
+  if (recentAttempts.length >= 5) {
+    return res.status(429).json({ error: 'Muitas solicitações recentes. Tente novamente mais tarde.' });
+  }
+  try {
+    const rawInput =
+      typeof req.body?.payload === 'string'
+        ? JSON.parse(req.body.payload)
+        : req.body;
+    const files = (Array.isArray(req.files) ? req.files : []) as Express.Multer.File[];
+    const totalCertificateBytes = files.reduce((total, file) => total + file.size, 0);
+    if (totalCertificateBytes > 40 * 1024 * 1024) {
+      return res.status(400).json({ error: 'O conjunto de certificados deve ter no máximo 40 MB.' });
+    }
+    const created = await createLineageSubmission(
+      db,
+      rawInput,
+      files.map((file) => ({
+        fieldName: file.fieldname,
+        originalname: file.originalname,
+        buffer: file.buffer,
+        size: file.size,
+        mimetype: file.mimetype
+      }))
+    );
+    recentAttempts.push(Date.now());
+    submissionAttempts.set(rateKey, recentAttempts);
+    return res.status(201).json(created);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: 'Revise os campos destacados.',
+        fields: error.flatten().fieldErrors
+      });
+    }
+    return res.status(400).json({ error: (error as Error).message });
+  }
+});
+
+app.get('/community/lineage-submissions/status/:protocol', async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const submission = await getLineageSubmissionStatus(db, req.params.protocol.toUpperCase());
+  return submission ? res.json(submission) : res.status(404).json({ error: 'Protocolo não encontrado.' });
+});
+
+app.get('/external-profiles/slug/:slug', async (req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.status(404).json({ error: 'External profile not found' });
+    return;
+  }
+  const profiles = await db.externalSourceProfile.findMany({
+    include: {
+      factCandidates: {
+        where: { status: 'pending_review' },
+        orderBy: [{ candidateType: 'asc' }, { importedAt: 'asc' }]
+      }
+    }
+  });
+  const profile = profiles.find((entry: any) => slugify(entry.externalName) === req.params.slug);
+  if (!profile) {
+    res.status(404).json({ error: 'External profile not found' });
+    return;
+  }
+  res.json({
+    id: profile.id,
+    sourceName: profile.sourceName,
+    sourceProfileUrl: profile.sourceProfileUrl,
+    externalName: profile.externalName,
+    nickname: profile.nickname,
+    listedTeamText: profile.listedTeamText,
+    capturedAt: profile.capturedAt,
+    sourceStatus: profile.sourceStatus,
+    editorialStatus: 'Requires review before lineage publication',
+    publicVisibility: 'not public lineage',
+    factCandidates: profile.factCandidates.map((candidate: any) => ({
+      id: candidate.id,
+      candidateType: candidate.candidateType,
+      subjectName: candidate.subjectName,
+      objectName: candidate.objectName,
+      structuredValue: candidate.structuredValue,
+      sourceUrl: candidate.sourceUrl,
+      sourceLocator: candidate.sourceLocator,
+      evidenceLevel: candidate.evidenceLevel,
+      status: candidate.status,
+      confidenceScore: candidate.confidenceScore
+    }))
+  });
+});
+
+app.get('/explore/tree', async (req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.status(503).json({ error: 'Database is not available' });
+    return;
+  }
+
+  const requestedName = String(req.query.name ?? '').trim();
+  const requestedSlug = String(req.query.slug ?? '').trim();
+  const personId = String(req.query.personId ?? '').trim();
+  const externalProfileId = String(req.query.externalProfileId ?? '').trim();
+  const limit = Math.min(Number(req.query.limit ?? 12), 24);
+
+  // A `slug`-only lookup (no `name`) can't be expressed as a SQL WHERE — slugify() collapses
+  // accents/case/spaces client-side — so it has to fetch a batch and match in memory. `take`
+  // must cover the whole table in that case, or names later in the alphabetical order (e.g.
+  // "Mitsuyo Maeda" past a few hundred other people) silently 404 as "Root not found".
+  const people = personId
+    ? await db.person.findMany({ where: { id: personId }, take: 1 })
+    : await db.person.findMany({
+      where: requestedName
+        ? { fullName: { contains: requestedName, mode: 'insensitive' } }
+        : {},
+      orderBy: { fullName: 'asc' },
+      take: requestedName ? 300 : 5000
+    });
+  const externalProfiles = externalProfileId
+    ? await db.externalSourceProfile.findMany({ where: { id: externalProfileId }, take: 1 })
+    : await db.externalSourceProfile.findMany({
+      where: requestedName
+        ? { externalName: { contains: requestedName, mode: 'insensitive' } }
+        : {},
+      orderBy: { externalName: 'asc' },
+      take: requestedName ? 300 : 5000
+    });
+
+  const rootPerson = personId
+    ? people[0]
+    : people.find((person: any) => requestedSlug ? slugify(person.fullName) === requestedSlug : person.fullName.toLowerCase() === requestedName.toLowerCase())
+      ?? people.find((person: any) => requestedSlug ? slugify(person.fullName).includes(requestedSlug) : person.fullName.toLowerCase().includes(requestedName.toLowerCase()));
+  const rootExternal = externalProfileId
+    ? externalProfiles[0]
+    : externalProfiles.find((profile: any) => requestedSlug ? slugify(profile.externalName) === requestedSlug : profile.externalName.toLowerCase() === requestedName.toLowerCase())
+      ?? externalProfiles.find((profile: any) => requestedSlug ? slugify(profile.externalName).includes(requestedSlug) : profile.externalName.toLowerCase().includes(requestedName.toLowerCase()));
+
+  const rootName = rootPerson?.fullName ?? rootExternal?.externalName ?? requestedName;
+  if (!rootName) {
+    res.status(404).json({ error: 'Root not found' });
+    return;
+  }
+
+  const rootId = rootPerson ? `person:${rootPerson.id}` : rootExternal ? `external:${rootExternal.id}` : `query:${slugify(rootName)}`;
+  const rootProfileUrl = rootExternal?.sourceProfileUrl;
+  // ExternalFactCandidate rows (the raw, un-audited BJJ Heroes bio scrape) are intentionally
+  // not rendered here anymore: team/state names ("Brazilian Top Team", "Minas Gerais") and
+  // mangled multi-name extractions ("Philip Smith andMurilo Santana") were showing up as if
+  // they were athletes. The same source bios were already re-extracted with proper entity
+  // resolution and manual audit into the records/ dataset (Person + LineageClaim), which is
+  // what actually powers the tree now. The raw candidates stay in the DB, unused here, as
+  // material for a future team/academy tree (v2.0) rather than mixed into the athlete one.
+  const claims = rootPerson
+    ? await db.lineageClaim.findMany({
+      where: {
+        OR: [
+          { studentPersonId: rootPerson.id },
+          { teacherPersonId: rootPerson.id }
+        ]
+      },
+      include: { studentPerson: true, teacherPerson: true, evidences: true },
+      orderBy: { createdAt: 'desc' },
+      take: limit
+    })
+    : [];
+
+  // "How many black belts has this person promoted?" — the question that started this whole
+  // project. Batched into one groupBy for every person who might appear as a node in this
+  // response, rather than a count() per node.
+  const personIdsForBeltCounts = Array.from(
+    new Set(
+      [rootPerson?.id, ...claims.flatMap((claim: any) => [claim.studentPersonId, claim.teacherPersonId])].filter(
+        (id): id is string => Boolean(id)
+      )
+    )
+  );
+  const beltCounts = personIdsForBeltCounts.length
+    ? await db.lineageClaim.groupBy({
+      by: ['teacherPersonId'],
+      where: {
+        teacherPersonId: { in: personIdsForBeltCounts },
+        claimType: 'black_belt_awarded_by',
+        status: { in: ['confirmed', 'corroborated', 'verified'] }
+      },
+      _count: { _all: true }
+    })
+    : [];
+  const beltCountByPersonId = new Map(beltCounts.map((entry: any) => [entry.teacherPersonId as string, entry._count._all as number]));
+
+  const nodes = new Map<string, Record<string, unknown>>();
+  const links: Array<Record<string, unknown>> = [];
+  nodes.set(rootId, {
+    id: rootId,
+    entityType: rootPerson ? 'person' : rootExternal ? 'external_profile' : 'query',
+    entityId: rootPerson?.id ?? rootExternal?.id,
+    name: rootName,
+    subtitle: rootPerson ? 'Local person record' : rootExternal ? 'External discovery profile' : 'Database search node',
+    description: rootPerson ? 'Local person record from the review-first database.' : rootExternal ? 'Imported external discovery profile pending editorial handling.' : 'Virtual explorer node built from matching fact candidates in the database.',
+    status: rootPerson ? 'verified' : 'pending',
+    sourceUrl: rootProfileUrl,
+    profileHref: rootPerson ? `/people/${slugify(rootPerson.fullName)}` : undefined,
+    blackBeltsAwarded: rootPerson ? beltCountByPersonId.get(rootPerson.id) ?? 0 : undefined,
+    expandable: true
+  });
+
+  // Note: rootExternal's source profile is intentionally not rendered as its own graph
+  // node — it's just "BJJ Heroes" (the source name), not a lineage entity, and only ever
+  // added visual clutter. Its URL is already exposed via the root node's own `sourceUrl`.
+
+  for (const claim of claims as any[]) {
+    const other = claim.studentPersonId === rootPerson?.id ? claim.teacherPerson : claim.studentPerson;
+    if (!other) continue;
+    const otherId = `person:${other.id}`;
+    const publicStatus = ['confirmed', 'corroborated', 'verified'].includes(claim.status);
+    nodes.set(otherId, {
+      id: otherId,
+      entityType: 'person',
+      entityId: other.id,
+      name: other.fullName,
+      subtitle: publicStatus ? 'Approved lineage' : 'Lineage claim pending',
+      description: claim.relationshipLabel,
+      status: publicStatus ? 'verified' : 'pending',
+      profileHref: `/people/${slugify(other.fullName)}`,
+      blackBeltsAwarded: beltCountByPersonId.get(other.id) ?? 0,
+      expandable: true
+    });
+    links.push({
+      id: `claim:${claim.id}`,
+      from: `person:${claim.teacherPersonId}`,
+      to: `person:${claim.studentPersonId}`,
+      label: claim.relationshipLabel,
+      status: publicStatus ? 'verified' : 'pending',
+      evidenceLevel: claim.evidenceLevel,
+      sourceCount: claim.evidences.length
+    });
+  }
+
+  res.json({
+    rootId,
+    expandedName: rootName,
+    nodes: Array.from(nodes.values()),
+    links,
+    counts: {
+      candidates: 0,
+      claims: claims.length,
+      nodes: nodes.size,
+      links: links.length
+    }
+  });
+});
+
+// Builds the full nested lineage forest (every disconnected tree, root-to-descendants)
+// in one shot from the whole Person + LineageClaim table — unlike /explore/tree (which
+// lazily returns just the immediate neighbors of one root), this is meant to be fetched
+// once and walked/collapsed entirely client-side, matching the motion-prototype UI.
+app.get('/explore/forest', async (_req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.status(503).json({ error: 'Database is not available' });
+    return;
+  }
+
+  const people = await db.person.findMany({
+    select: { id: true, fullName: true, nicknames: true, team: true, bio: true, profileUrl: true }
+  });
+  const claims = await db.lineageClaim.findMany({
+    where: { status: { in: ['confirmed', 'pending_review'] }, teacherPersonId: { not: null } },
+    select: { studentPersonId: true, teacherPersonId: true, claimType: true, status: true, notes: true },
+    orderBy: [{ status: 'asc' }, { createdAt: 'asc' }] // 'confirmed' sorts before 'pending_review'
+  });
+
+  const personById = new Map(people.map((p: any) => [p.id, p]));
+  const primaryTeacherClaim = new Map<string, (typeof claims)[number]>();
+  for (const claim of claims as any[]) {
+    if (!claim.teacherPersonId || !personById.has(claim.teacherPersonId) || !personById.has(claim.studentPersonId)) continue;
+    if (!primaryTeacherClaim.has(claim.studentPersonId)) primaryTeacherClaim.set(claim.studentPersonId, claim);
+  }
+
+  const childrenOf = new Map<string, Array<{ studentId: string; claim: (typeof claims)[number] }>>();
+  primaryTeacherClaim.forEach((claim, studentId) => {
+    const list = childrenOf.get(claim.teacherPersonId as string) ?? [];
+    list.push({ studentId, claim });
+    childrenOf.set(claim.teacherPersonId as string, list);
+  });
+
+  function buildNode(personId: string, claim: any, visited: Set<string>): Record<string, unknown> {
+    const person = personById.get(personId) as any;
+    const isRoot = !claim;
+    const confidence = isRoot ? 'root' : claim.status === 'confirmed' ? 'high' : 'medium';
+    const source = isRoot ? 'root' : claim.claimType === 'trained_under' ? 'manual_curation' : 'bio_extraction';
+    const kids = (childrenOf.get(personId) ?? [])
+      .filter((entry) => !visited.has(entry.studentId))
+      .map((entry) => buildNode(entry.studentId, entry.claim, new Set(visited).add(personId)));
+    return {
+      id: person.id,
+      name: person.fullName,
+      nickname: person.nicknames?.[0] ?? '',
+      team: person.team ?? '',
+      url: person.profileUrl ?? '',
+      bio: person.bio ?? '',
+      confidence,
+      source,
+      evidence: claim?.notes ?? '',
+      children: kids.length ? kids : undefined
+    };
+  }
+
+  function countAll(node: Record<string, unknown>): number {
+    const kids = (node.children as Array<Record<string, unknown>>) ?? [];
+    return kids.reduce((sum, kid) => sum + 1 + countAll(kid), 0);
+  }
+
+  const rootIds = people.map((p: any) => p.id).filter((id: string) => !primaryTeacherClaim.has(id));
+  const forest = rootIds
+    .map((id: string) => buildNode(id, null, new Set()))
+    .sort((a: any, b: any) => countAll(b) - countAll(a));
+
+  res.json(forest);
+});
+
+app.post('/external-profiles/:id/approve-person', async (req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.status(503).json({ error: 'Database is not available' });
+    return;
+  }
+  const profile = await db.externalSourceProfile.findUnique({
+    where: { id: req.params.id },
+    include: { factCandidates: true }
+  });
+  if (!profile) {
+    res.status(404).json({ error: 'External profile not found' });
+    return;
+  }
+
+  const existing = await db.person.findFirst({
+    where: { fullName: { equals: profile.externalName, mode: 'insensitive' } }
+  });
+  const nicknames = profile.nickname ? [profile.nickname] : [];
+  const person = existing
+    ? await db.person.update({
+      where: { id: existing.id },
+      data: { nicknames: Array.from(new Set([...(existing.nicknames ?? []), ...nicknames])) }
+    })
+    : await db.person.create({
+      data: {
+        fullName: profile.externalName,
+        nicknames
+      }
+    });
+
+  await db.externalFactCandidate.updateMany({
+    where: {
+      externalProfileId: profile.id,
+      candidateType: 'person_discovery'
+    },
+    data: { status: 'approved_person_record' }
+  });
+  await db.externalSourceProfile.update({
+    where: { id: profile.id },
+    data: { sourceStatus: 'approved_person_record' }
+  });
+  await db.reviewQueue.create({
+    data: { entityType: 'person', entityId: person.id, status: 'approved' }
+  }).catch(() => undefined);
+  await db.changeHistory.create({
+    data: {
+      entityType: 'person',
+      entityId: person.id,
+      action: 'approve_external_person_discovery',
+      changedBy: req.body?.reviewer ?? 'curator',
+      details: JSON.stringify({
+        externalProfileId: profile.id,
+        sourceName: profile.sourceName,
+        sourceProfileUrl: profile.sourceProfileUrl,
+        note: req.body?.notes ?? 'Approved person discovery only; lineage and affiliation remain pending review.'
+      })
+    }
+  }).catch(() => undefined);
+
+  res.status(201).json({
+    person,
+    externalProfileId: profile.id,
+    status: 'approved_person_record',
+    publicLineageCreated: false,
+    pendingCandidates: profile.factCandidates.filter((candidate: any) => candidate.candidateType !== 'person_discovery').length
+  });
 });
 
 app.post('/people', (req, res) => {
@@ -137,8 +667,113 @@ app.get('/public/lineage-graph', (_req, res) => {
   res.json(listPublicLineageGraph());
 });
 
-app.get('/public/people/:id', (req, res) => {
-  res.json(getPublicPersonProfile(req.params.id));
+app.get('/public/people/:id', async (req, res) => {
+  const db = await getDb();
+  if (!db) {
+    res.json(getPublicPersonProfile(req.params.id));
+    return;
+  }
+  const person = await db.person.findUnique({
+    where: { id: req.params.id },
+    include: {
+      affiliations: { include: { organization: true } },
+      studentClaims: {
+        where: { status: { in: ['confirmed', 'corroborated', 'verified'] } },
+        include: { teacherPerson: true, evidences: true }
+      },
+      teacherClaims: {
+        where: { status: { in: ['confirmed', 'corroborated', 'verified'] } },
+        include: { studentPerson: true, evidences: true }
+      }
+    }
+  });
+  if (!person) {
+    res.status(404).json({ error: 'Person not found' });
+    return;
+  }
+  const lineagePath: Array<Record<string, unknown>> = [];
+  const lineagePathClaims: Array<Record<string, unknown>> = [];
+  let current = person;
+  for (let depth = 0; depth < 8; depth += 1) {
+    lineagePath.push({
+      id: current.id,
+      fullName: current.fullName,
+      country: current.country,
+      nicknames: current.nicknames
+    });
+    const teacherClaim = await db.lineageClaim.findFirst({
+      where: {
+        studentPersonId: current.id,
+        status: { in: ['confirmed', 'corroborated', 'verified'] },
+        teacherPersonId: { not: null }
+      },
+      include: { teacherPerson: true, evidences: true },
+      orderBy: [{ evidenceLevel: 'asc' }, { createdAt: 'asc' }]
+    });
+    if (!teacherClaim?.teacherPerson || lineagePath.some((node) => node.id === teacherClaim.teacherPerson.id)) break;
+    // `/public/people/:id`'s own studentClaims/teacherClaims only cover the queried
+    // person — capture each hop's claim here too so callers (e.g. the explore Story
+    // Mode) can show a real relationshipLabel/evidenceLevel at every step, not just
+    // the last one.
+    lineagePathClaims.push({
+      id: teacherClaim.id,
+      studentPersonId: teacherClaim.studentPersonId,
+      studentName: current.fullName,
+      teacherPersonId: teacherClaim.teacherPersonId,
+      teacherName: teacherClaim.teacherPerson.fullName,
+      claimType: teacherClaim.claimType,
+      relationshipLabel: teacherClaim.relationshipLabel,
+      evidenceLevel: teacherClaim.evidenceLevel,
+      sourceCount: teacherClaim.evidences.length,
+      sourceUrls: teacherClaim.evidences.map((evidence: any) => evidence.url)
+    });
+    current = teacherClaim.teacherPerson;
+  }
+  lineagePath.reverse();
+  const publicRelationships = [
+    ...lineagePathClaims,
+    ...person.studentClaims.map((claim: any) => ({
+      id: claim.id,
+      studentPersonId: claim.studentPersonId,
+      studentName: person.fullName,
+      teacherPersonId: claim.teacherPersonId,
+      teacherName: claim.teacherPerson?.fullName,
+      claimType: claim.claimType,
+      relationshipLabel: claim.relationshipLabel,
+      evidenceLevel: claim.evidenceLevel,
+      sourceCount: claim.evidences.length,
+      sourceUrls: claim.evidences.map((evidence: any) => evidence.url)
+    })),
+    ...person.teacherClaims.map((claim: any) => ({
+      id: claim.id,
+      studentPersonId: claim.studentPersonId,
+      studentName: claim.studentPerson?.fullName,
+      teacherPersonId: claim.teacherPersonId,
+      teacherName: person.fullName,
+      claimType: claim.claimType,
+      relationshipLabel: claim.relationshipLabel,
+      evidenceLevel: claim.evidenceLevel,
+      sourceCount: claim.evidences.length,
+      sourceUrls: claim.evidences.map((evidence: any) => evidence.url)
+    }))
+  ].filter((claim, index, all) => all.findIndex((entry) => entry.id === claim.id) === index);
+  res.json({
+    personId: person.id,
+    fullName: person.fullName,
+    nicknames: person.nicknames,
+    country: person.country,
+    city: person.city,
+    lineageStatus: person.studentClaims.length ? 'Confirmed' : 'No verified lineage yet',
+    affiliations: person.affiliations.map((affiliation: any) => ({
+      id: affiliation.id,
+      organizationId: affiliation.organizationId,
+      organizationName: affiliation.organization.name,
+      affiliationType: affiliation.affiliationType
+    })),
+    lineagePath,
+    publicRelationships,
+    promotionGroups: []
+  });
 });
 
 app.get('/organizations/review', (_req, res) => {
@@ -317,6 +952,81 @@ app.get('/imports/:id/download', async (req, res) => {
 
 app.get('/review/claims', (_req, res) => {
   res.json(listRelationships());
+});
+
+app.get('/review/submissions', requireAdmin, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const submissions = await listLineageSubmissions(db, String(req.query.status ?? 'pending_review'));
+  return res.json(submissions.map(privateSubmissionView));
+});
+
+app.get('/review/submissions/:id', requireAdmin, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const submission = await getLineageSubmission(db, String(req.params.id));
+  return submission ? res.json(privateSubmissionView(submission)) : res.status(404).json({ error: 'Solicitação não encontrada.' });
+});
+
+app.get('/review/submissions/:id/certificate', requireAdmin, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const submission = await getLineageSubmission(db, String(req.params.id));
+  if (!submission?.certificateStoragePath) {
+    return res.status(404).json({ error: 'Esta solicitação não possui certificado.' });
+  }
+  try {
+    const certificate = await readCommunityCertificate(submission.certificateStoragePath);
+    const originalName = submission.certificateOriginalName || 'certificado';
+    res.type(submission.certificateMimeType || 'application/octet-stream');
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(originalName).replaceAll("'", '%27')}`
+    );
+    return res.send(certificate);
+  } catch (error) {
+    return res.status(404).json({ error: (error as Error).message });
+  }
+});
+
+app.get('/review/submissions/:id/certificates/:certificateId', requireAdmin, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const submission = await getLineageSubmission(db, String(req.params.id));
+  const certificate = submission?.certificates?.find(
+    (entry: any) => entry.id === String(req.params.certificateId)
+  );
+  if (!certificate) {
+    return res.status(404).json({ error: 'Certificado não encontrado nesta solicitação.' });
+  }
+  try {
+    const file = await readCommunityCertificate(certificate.storagePath);
+    res.type(certificate.mimeType || 'application/octet-stream');
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodeURIComponent(certificate.originalName).replaceAll("'", '%27')}`
+    );
+    return res.send(file);
+  } catch (error) {
+    return res.status(404).json({ error: (error as Error).message });
+  }
+});
+
+app.post('/review/submissions/:id/:action', requireAdmin, async (req, res) => {
+  const db = await getDb();
+  if (!db) return res.status(503).json({ error: 'Database is not available' });
+  const action = req.params.action as 'approve' | 'reject' | 'request_evidence';
+  if (!['approve', 'reject', 'request_evidence'].includes(action)) {
+    return res.status(400).json({ error: 'Ação editorial inválida.' });
+  }
+  try {
+    const updated = await decideLineageSubmission(db, String(req.params.id), action, req.body ?? {});
+    return res.status(201).json(privateSubmissionView(updated));
+  } catch (error) {
+    return res.status(400).json({ error: (error as Error).message });
+  }
 });
 
 app.get('/review/claims/:id', async (req, res) => {

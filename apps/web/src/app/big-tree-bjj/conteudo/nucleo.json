@@ -1,0 +1,2079 @@
+{
+  "_leia": "CAMADA DE FATOS. Nunca traduzir. Uma cópia única por fato. Selo, datas, vínculos, graduações e referências vivem só aqui — assim é estruturalmente impossível um idioma afirmar algo diferente do outro.",
+  "_versao": "0.2",
+  "_selos": {
+    "DOC": 4,
+    "ATE": 3,
+    "TRA": 2,
+    "ESP": 1
+  },
+  "_canonica": "pt",
+  "_idiomas": [
+    "pt",
+    "en",
+    "es"
+  ],
+  "pessoas": {
+    "miyako": {
+      "variantes": [
+        "Sada Miyako",
+        "Miyako"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ESP",
+      "chegada_brasil": "1908-12-17",
+      "chegada_selo": "DOC",
+      "atuacao_local": "Rio de Janeiro, capital federal",
+      "atuacao_periodo": "1908–?",
+      "graduacoes_recebidas": [],
+      "registro": [
+        "F-1908",
+        "F-1909"
+      ],
+      "conflitos": [
+        "C-06"
+      ],
+      "prioridade": "P1"
+    },
+    "maeda": {
+      "variantes": [
+        "Mitsuyo Maeda",
+        "Conde Koma",
+        "Esai Maeda",
+        "前田 光世"
+      ],
+      "nasc": "1878",
+      "nasc_selo": "ATE",
+      "morte": "1941",
+      "morte_selo": "ATE",
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ATE",
+      "chegada_brasil": "1914",
+      "chegada_selo": "ATE",
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "1914–1941",
+      "graduacoes_recebidas": [
+        {
+          "de": "kodokan",
+          "ano": 1897,
+          "selo": "ATE"
+        }
+      ],
+      "graduacoes_concedidas": [
+        {
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "a": [
+            "ferro",
+            "lopes",
+            "gomes",
+            "delarocque",
+            "pereira"
+          ],
+          "selo": "DOC"
+        }
+      ],
+      "registro": [],
+      "conflitos": [
+        "C-03"
+      ],
+      "prioridade": "P1"
+    },
+    "ferro": {
+      "variantes": [
+        "Jacyntho Ferro",
+        "Jacinto Ferro"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": "1929",
+      "morte_selo": "ATE",
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "c. 1917–1929",
+      "graduacoes_recebidas": [
+        {
+          "de": "maeda",
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1921"
+      ],
+      "conflitos": [],
+      "prioridade": "P1"
+    },
+    "aleixo": {
+      "variantes": [
+        "Mário Aleixo",
+        "Mario Aleixo"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1913–1931",
+      "graduacoes_recebidas": [],
+      "registro": [],
+      "conflitos": [
+        "C-08"
+      ],
+      "prioridade": "P1"
+    },
+    "donato": {
+      "variantes": [
+        "Donato Pires dos Reis",
+        "Donato Pires"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Belém, Pará",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Belo Horizonte, Rio de Janeiro, São Paulo",
+      "atuacao_periodo": "1928–1939",
+      "graduacoes_recebidas": [
+        {
+          "de": "ferro",
+          "ano": null,
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1921",
+        "F-1930"
+      ],
+      "conflitos": [
+        "C-09"
+      ],
+      "prioridade": "P1"
+    },
+    "franca": {
+      "variantes": [
+        "Luiz França",
+        "Luiz França Filho",
+        "Luís França"
+      ],
+      "nasc": "1910-06-02",
+      "nasc_selo": "ATE",
+      "morte": "1982",
+      "morte_selo": "ATE",
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro, zona norte e subúrbio",
+      "atuacao_periodo": "1932–1970s",
+      "graduacoes_recebidas": [
+        {
+          "de": "satake",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "graduacoes_concedidas": [
+        {
+          "ano": 1942,
+          "grau": "instrutor",
+          "a": [
+            "fadda"
+          ],
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [
+        "C-01",
+        "C-02"
+      ],
+      "prioridade": "P1"
+    },
+    "carlos": {
+      "variantes": [
+        "Carlos Gracie",
+        "Carlos Gracie Sênior"
+      ],
+      "nasc": "1902-09-14",
+      "nasc_selo": "ATE",
+      "morte": "1994-10-07",
+      "morte_selo": "ATE",
+      "local_nasc": "Belém, Pará",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Belo Horizonte, Rio de Janeiro",
+      "atuacao_periodo": "1928–1960s",
+      "graduacoes_recebidas": [
+        {
+          "de": "ferro",
+          "ano": null,
+          "selo": "DOC"
+        },
+        {
+          "de": "maeda",
+          "ano": null,
+          "selo": "TRA"
+        }
+      ],
+      "registro": [
+        "F-1921",
+        "F-1930"
+      ],
+      "conflitos": [
+        "C-04",
+        "C-05"
+      ],
+      "prioridade": "P1"
+    },
+    "fadda": {
+      "variantes": [
+        "Oswaldo Fadda",
+        "Osvaldo Fadda"
+      ],
+      "nasc": "1921",
+      "nasc_selo": "ATE",
+      "morte": "2005",
+      "morte_selo": "ATE",
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Bento Ribeiro e subúrbio do Rio de Janeiro",
+      "atuacao_periodo": "1950–2000s",
+      "graduacoes_recebidas": [
+        {
+          "de": "franca",
+          "ano": 1942,
+          "grau": "instrutor",
+          "selo": "ATE"
+        }
+      ],
+      "cargos": [
+        {
+          "entidade": "Federação de Jiu-Jitsu da Guanabara",
+          "cargo": "primeiro vice-técnico",
+          "ano": 1967,
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P1"
+    },
+    "satake": {
+      "variantes": [
+        "Soshihiro Satake",
+        "Soishiro Satake"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "atuacao_local": "Manaus, Amazonas",
+      "atuacao_periodo": "c. 1915–1925",
+      "registro": [],
+      "conflitos": [
+        "C-02",
+        "C-10"
+      ],
+      "prioridade": "P2"
+    },
+    "kano": {
+      "variantes": [
+        "Jigoro Kano",
+        "嘉納 治五郎"
+      ],
+      "nasc": "1860",
+      "nasc_selo": "ATE",
+      "morte": "1938",
+      "morte_selo": "ATE",
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Tóquio, Japão",
+      "atuacao_periodo": "1882–1938",
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "omori": {
+      "variantes": [
+        "Geo Omori",
+        "George Omori"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ESP",
+      "atuacao_local": "São Paulo",
+      "atuacao_periodo": "1925–?",
+      "registro": [],
+      "conflitos": [
+        "C-11"
+      ],
+      "prioridade": "P2"
+    },
+    "kakihara": {
+      "variantes": [
+        "M. Kakihara",
+        "Kakihara"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ESP",
+      "chegada_brasil": "1908-12-17",
+      "chegada_selo": "DOC",
+      "atuacao_local": "Rio de Janeiro, capital federal",
+      "atuacao_periodo": "1908–?",
+      "registro": [
+        "F-1908",
+        "F-1909"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "yano": {
+      "variantes": [
+        "Takeo Yano"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ESP",
+      "atuacao_local": "Brasil, localidades a determinar",
+      "atuacao_periodo": "a determinar",
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "lopes": {
+      "variantes": [
+        "Waldemar Lopes"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "c. 1920–?",
+      "graduacoes_recebidas": [
+        {
+          "de": "maeda",
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1920"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "gomes": {
+      "variantes": [
+        "Raphael Gomes",
+        "Rafael Gomes"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "c. 1920–?",
+      "graduacoes_recebidas": [
+        {
+          "de": "maeda",
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1920"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "delarocque": {
+      "variantes": [
+        "Guilherme DelaRocque",
+        "Guilherme De La Roque"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "c. 1920–?",
+      "graduacoes_recebidas": [
+        {
+          "de": "maeda",
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1920"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "pereira": {
+      "variantes": [
+        "Matheus Pereira",
+        "Dr. Matheus Pereira"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "c. 1920–?",
+      "graduacoes_recebidas": [
+        {
+          "de": "maeda",
+          "ano": 1920,
+          "grau": "primeiro galão",
+          "selo": "DOC"
+        }
+      ],
+      "registro": [
+        "F-1920"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "ruas": {
+      "variantes": [
+        "Vinicius Ruas"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Manaus e Rio de Janeiro",
+      "atuacao_periodo": "a determinar",
+      "graduacoes_recebidas": [
+        {
+          "de": "satake",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "bianor": {
+      "variantes": [
+        "Bianor Oliveira"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "a determinar",
+      "atuacao_periodo": "a determinar",
+      "registro": [],
+      "conflitos": [
+        "C-12"
+      ],
+      "prioridade": "P2"
+    },
+    "gastaopai": {
+      "variantes": [
+        "Gastão Gracie",
+        "Gastão Gracie pai"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Belém, Pará",
+      "atuacao_periodo": "a determinar",
+      "papel": "empresário; pai dos irmãos Gracie",
+      "registro": [],
+      "conflitos": [
+        "C-13"
+      ],
+      "prioridade": "P2"
+    },
+    "helio": {
+      "variantes": [
+        "Hélio Gracie",
+        "Helio Gracie"
+      ],
+      "nasc": "1913",
+      "nasc_selo": "ATE",
+      "morte": "2009",
+      "morte_selo": "ATE",
+      "local_nasc": "Belém, Pará",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1930s–2000s",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "cargos": [
+        {
+          "entidade": "Federação de Jiu-Jitsu da Guanabara",
+          "cargo": "presidente",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967",
+          "_nota": "Rebaixado de DOC para ATE: F-1967 (ata de fundação) tem acervo não localizado por esta obra. Múltiplas fontes secundárias convergem no mesmo organograma, mas nenhuma é a ata original."
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "george": {
+      "variantes": [
+        "George Gracie",
+        "Jorge Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro e São Paulo",
+      "atuacao_periodo": "1930–1940s",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [
+        "F-1930",
+        "F-1931"
+      ],
+      "conflitos": [],
+      "prioridade": "P2"
+    },
+    "oswaldo": {
+      "variantes": [
+        "Oswaldo Gracie",
+        "Osvaldo Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "a determinar",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "gastaojr": {
+      "variantes": [
+        "Gastão Gracie Jr.",
+        "Gastão Gracie Filho"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "a determinar",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "rocha": {
+      "variantes": [
+        "Edgard Rocha"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1930",
+      "papel": "esportista; adversário da demonstração de abertura",
+      "registro": [
+        "F-1930"
+      ],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "kato": {
+      "variantes": [
+        "Yukio Kato",
+        "Jukio Kato"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Japão",
+      "local_nasc_selo": "ESP",
+      "atuacao_local": "Rio de Janeiro, São Paulo",
+      "atuacao_periodo": "1951",
+      "papel": "judoca; quinto dan; integrante da comitiva de Kimura no Brasil",
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "kimura": {
+      "variantes": [
+        "Masahiko Kimura"
+      ],
+      "nasc": "1917",
+      "nasc_selo": "ATE",
+      "morte": "1993",
+      "morte_selo": "ATE",
+      "local_nasc": "Kumamoto, Japão",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Rio de Janeiro (turnê)",
+      "atuacao_periodo": "1951",
+      "papel": "judoca; campeão do Campeonato All-Japan de Judô",
+      "registro": [],
+      "conflitos": [
+        "C-14"
+      ],
+      "prioridade": "P3"
+    },
+    "santana": {
+      "variantes": [
+        "Waldemar Santana",
+        "Valdemar Santana",
+        "Cabo Santana",
+        "Leopardo Negro"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Bahia",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1950s–1970s",
+      "graduacoes_recebidas": [
+        {
+          "de": "helio",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [
+        "C-15",
+        "C-16"
+      ],
+      "prioridade": "P3"
+    },
+    "carlson": {
+      "variantes": [
+        "Carlson Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1950s–1990s",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "cargos": [
+        {
+          "entidade": "Federação de Jiu-Jitsu da Guanabara",
+          "cargo": "diretor técnico",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967",
+          "_nota": "Rebaixado de DOC para ATE: F-1967 (ata de fundação) tem acervo não localizado por esta obra. Múltiplas fontes secundárias convergem no mesmo organograma, mas nenhuma é a ata original."
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [
+        "C-16"
+      ],
+      "prioridade": "P3"
+    },
+    "barretoalvaro": {
+      "variantes": [
+        "Álvaro Barreto"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1967",
+      "cargos": [
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "escola fundadora",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967"
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "barretojoao": {
+      "variantes": [
+        "João Alberto Barreto"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1950s–1967",
+      "papel": "parceiro de treino de Waldemar Santana na academia da família, antes da ruptura deste",
+      "cargos": [
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "diretor de educação",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967"
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "binda": {
+      "variantes": [
+        "Hélcio Leal Binda"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1967",
+      "cargos": [
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "escola fundadora",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967"
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "barradas": {
+      "variantes": [
+        "Orlando Barradas"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1967",
+      "cargos": [
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "segundo vice-técnico",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967"
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [],
+      "prioridade": "P3"
+    },
+    "robson": {
+      "variantes": [
+        "Robson Gracie",
+        "Carlos Robson Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro",
+      "atuacao_periodo": "1967–2020s",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "cargos": [
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "vice-diretor de educação",
+          "ano": 1967,
+          "selo": "ATE",
+          "fonte": "F-1967"
+        },
+        {
+          "entidade": "federacao_guanabara",
+          "cargo": "presidente",
+          "ano": null,
+          "selo": "ATE",
+          "_nota": "Décadas depois, já sob o nome de federação do estado do Rio, tornou-se o presidente mais longevo no cargo. A entidade que ele viria a presidir é a mesma que fundou como vice-diretor de educação."
+        }
+      ],
+      "registro": [
+        "F-1967"
+      ],
+      "conflitos": [
+        "C-17"
+      ],
+      "prioridade": "P3"
+    },
+    "rorion": {
+      "variantes": [
+        "Rorion Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Rio de Janeiro",
+      "local_nasc_selo": "ESP",
+      "atuacao_local": "Torrance, Califórnia, Estados Unidos",
+      "atuacao_periodo": "1978–1995",
+      "papel": "levou o ensino da família aos Estados Unidos; cofundador da organização de torneios que se tornaria o principal evento de MMA do mundo",
+      "graduacoes_recebidas": [
+        {
+          "de": "helio",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P4"
+    },
+    "royce": {
+      "variantes": [
+        "Royce Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Estados Unidos",
+      "atuacao_periodo": "1993–2016",
+      "graduacoes_recebidas": [
+        {
+          "de": "helio",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [
+        "F-UFC1"
+      ],
+      "conflitos": [],
+      "prioridade": "P4"
+    },
+    "carlosjr": {
+      "variantes": [
+        "Carlos Gracie Jr.",
+        "Carlinhos Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": "Rio de Janeiro, Barra da Tijuca",
+      "atuacao_periodo": "1986–presente",
+      "papel": "fundador de rede de academias; fundador da confederação nacional e da federação internacional que passariam a organizar o calendário competitivo mundial da modalidade",
+      "graduacoes_recebidas": [
+        {
+          "de": "carlos",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [
+        "F-CBJJ"
+      ],
+      "conflitos": [
+        "C-18"
+      ],
+      "prioridade": "P4"
+    },
+    "danaher": {
+      "variantes": [
+        "John Danaher"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Nova Zelândia",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Academia Renzo Gracie, Nova York, Estados Unidos",
+      "atuacao_periodo": "2011–presente",
+      "papel": "sistematizou um método de ataques à perna que se tornaria dominante na competição de submissão sem kimono de elite",
+      "graduacoes_recebidas": [
+        {
+          "de": "_renzo_gracie",
+          "ano": null,
+          "selo": "ATE"
+        }
+      ],
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P4"
+    },
+    "pedreira": {
+      "variantes": [
+        "Roberto Pedreira"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": null,
+      "atuacao_periodo": "2014–presente",
+      "papel": "pesquisador; autor de obra em múltiplos volumes reconstruída a partir de jornais brasileiros de época sobre a história do jiu-jitsu e do vale-tudo no Brasil, e de obra companheira sobre as origens japonesas",
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P7"
+    },
+    "drysdale": {
+      "variantes": [
+        "Robert Drysdale"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": "Estados Unidos",
+      "local_nasc_selo": "ATE",
+      "atuacao_local": "Las Vegas, Estados Unidos",
+      "atuacao_periodo": "2018–presente",
+      "papel": "campeão mundial de jiu-jitsu e de luta agarrada sem kimono; formado em História; diretor de documentário e autor de livro sobre a origem do jiu-jitsu no Brasil",
+      "registro": [
+        "F-1921"
+      ],
+      "conflitos": [],
+      "prioridade": "P7"
+    },
+    "reila": {
+      "variantes": [
+        "Reila Gracie"
+      ],
+      "nasc": null,
+      "nasc_selo": null,
+      "morte": null,
+      "morte_selo": null,
+      "local_nasc": null,
+      "local_nasc_selo": null,
+      "atuacao_local": null,
+      "atuacao_periodo": "década de pesquisa até publicação",
+      "papel": "filha de Carlos Gracie; autora da biografia do pai, obra de referência da narrativa familiar tradicional, publicada por uma editora e não uma pesquisadora ou historiadora de formação",
+      "registro": [
+        "F-REILA2008"
+      ],
+      "conflitos": [
+        "C-06"
+      ],
+      "prioridade": "P7"
+    }
+  },
+  "vinculos": [
+    {
+      "de": "kodokan",
+      "para": "maeda",
+      "selo": "ATE",
+      "ano": 1897,
+      "tipo": "formacao"
+    },
+    {
+      "de": "maeda",
+      "para": "ferro",
+      "selo": "DOC",
+      "ano": 1920,
+      "tipo": "graduacao",
+      "fonte": "F-1920"
+    },
+    {
+      "de": "maeda",
+      "para": "carlos",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "reivindicado"
+    },
+    {
+      "de": "maeda",
+      "para": "franca",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "reivindicado"
+    },
+    {
+      "de": "maeda",
+      "para": "aleixo",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "reivindicado"
+    },
+    {
+      "de": "maeda",
+      "para": "donato",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "reivindicado"
+    },
+    {
+      "de": "ferro",
+      "para": "donato",
+      "selo": "DOC",
+      "ano": 1921,
+      "tipo": "aluno",
+      "fonte": "F-1921"
+    },
+    {
+      "de": "ferro",
+      "para": "carlos",
+      "selo": "DOC",
+      "ano": 1921,
+      "tipo": "aluno",
+      "fonte": "F-1921"
+    },
+    {
+      "de": "donato",
+      "para": "carlos",
+      "selo": "ATE",
+      "ano": 1928,
+      "tipo": "aluno"
+    },
+    {
+      "de": "satake",
+      "para": "franca",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "omori",
+      "para": "franca",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "franca",
+      "para": "fadda",
+      "selo": "ATE",
+      "ano": 1942,
+      "tipo": "graduacao"
+    },
+    {
+      "de": "miyako",
+      "para": "_marinha_1909",
+      "selo": "DOC",
+      "ano": 1909,
+      "tipo": "aluno_coletivo",
+      "fonte": "F-1909"
+    },
+    {
+      "de": "kano",
+      "para": "kodokan",
+      "selo": "ATE",
+      "ano": 1882,
+      "tipo": "fundacao",
+      "_nota": "Rebaixado de DOC para ATE: consenso universal da literatura, sem fonte primaria apontada por esta obra. Sobe quando o registro fundacional for localizado no acervo do Kodokan."
+    },
+    {
+      "de": "maeda",
+      "para": "lopes",
+      "selo": "DOC",
+      "ano": 1920,
+      "tipo": "graduacao",
+      "fonte": "F-1920"
+    },
+    {
+      "de": "maeda",
+      "para": "gomes",
+      "selo": "DOC",
+      "ano": 1920,
+      "tipo": "graduacao",
+      "fonte": "F-1920"
+    },
+    {
+      "de": "maeda",
+      "para": "delarocque",
+      "selo": "DOC",
+      "ano": 1920,
+      "tipo": "graduacao",
+      "fonte": "F-1920"
+    },
+    {
+      "de": "maeda",
+      "para": "pereira",
+      "selo": "DOC",
+      "ano": 1920,
+      "tipo": "graduacao",
+      "fonte": "F-1920"
+    },
+    {
+      "de": "maeda",
+      "para": "bianor",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "reivindicado"
+    },
+    {
+      "de": "satake",
+      "para": "ruas",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "kakihara",
+      "para": "_marinha_1909",
+      "selo": "DOC",
+      "ano": 1909,
+      "tipo": "aluno_coletivo",
+      "fonte": "F-1909"
+    },
+    {
+      "de": "carlos",
+      "para": "helio",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "carlos",
+      "para": "george",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "carlos",
+      "para": "oswaldo",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "carlos",
+      "para": "gastaojr",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "donato",
+      "para": "acad1930",
+      "selo": "DOC",
+      "ano": 1930,
+      "tipo": "direcao",
+      "fonte": "F-1930"
+    },
+    {
+      "de": "carlos",
+      "para": "acad1930",
+      "selo": "DOC",
+      "ano": 1930,
+      "tipo": "docencia",
+      "fonte": "F-1930"
+    },
+    {
+      "de": "george",
+      "para": "acad1930",
+      "selo": "DOC",
+      "ano": 1930,
+      "tipo": "docencia",
+      "fonte": "F-1930"
+    },
+    {
+      "de": "donato",
+      "para": "george",
+      "selo": "ATE",
+      "ano": 1939,
+      "tipo": "assistente"
+    },
+    {
+      "de": "gastaopai",
+      "para": "maeda",
+      "selo": "TRA",
+      "ano": null,
+      "tipo": "relacao_pessoal"
+    },
+    {
+      "de": "helio",
+      "para": "santana",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno"
+    },
+    {
+      "de": "carlos",
+      "para": "carlson",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "filho_aluno"
+    },
+    {
+      "de": "carlos",
+      "para": "robson",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "filho_aluno"
+    },
+    {
+      "de": "helio",
+      "para": "federacao_guanabara",
+      "selo": "ATE",
+      "ano": 1967,
+      "tipo": "presidencia",
+      "fonte": "F-1967"
+    },
+    {
+      "de": "fadda",
+      "para": "federacao_guanabara",
+      "selo": "ATE",
+      "ano": 1967,
+      "tipo": "cargo",
+      "fonte": "F-1967"
+    },
+    {
+      "de": "carlson",
+      "para": "federacao_guanabara",
+      "selo": "ATE",
+      "ano": 1967,
+      "tipo": "cargo",
+      "fonte": "F-1967"
+    },
+    {
+      "de": "helio",
+      "para": "rorion",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno_filho"
+    },
+    {
+      "de": "helio",
+      "para": "royce",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno_filho"
+    },
+    {
+      "de": "carlos",
+      "para": "carlosjr",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "aluno_filho"
+    },
+    {
+      "de": "rorion",
+      "para": "ufc",
+      "selo": "ATE",
+      "ano": 1993,
+      "tipo": "fundacao",
+      "fonte": "F-UFC1"
+    },
+    {
+      "de": "carlosjr",
+      "para": "ibjjf",
+      "selo": "ATE",
+      "ano": 1994,
+      "tipo": "fundacao",
+      "fonte": "F-CBJJ"
+    },
+    {
+      "de": "barretojoao",
+      "para": "ufc",
+      "selo": "ATE",
+      "ano": 1993,
+      "tipo": "arbitragem",
+      "fonte": "F-UFC1"
+    },
+    {
+      "de": "drysdale",
+      "para": "_documentario_2020",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "autoria"
+    },
+    {
+      "de": "pedreira",
+      "para": "_choque_craze",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "autoria"
+    },
+    {
+      "de": "reila",
+      "para": "carlos",
+      "selo": "ATE",
+      "ano": null,
+      "tipo": "filha"
+    }
+  ],
+  "fontes": {
+    "F-1908": {
+      "veiculo": "Gazeta de Notícias",
+      "data": "1908-12-17",
+      "pagina": "4",
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 01",
+      "prioridade": 3
+    },
+    "F-1909": {
+      "veiculo": "Gazeta de Notícias",
+      "data": "1909-06-27",
+      "pagina": "8",
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 02",
+      "prioridade": 3
+    },
+    "F-1921": {
+      "veiculo": null,
+      "data": "1921",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 03",
+      "prioridade": 1
+    },
+    "F-1930": {
+      "veiculo": "Correio da Manhã",
+      "data": "1930-09-09",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 04",
+      "prioridade": 2
+    },
+    "F-1931": {
+      "veiculo": null,
+      "data": "1931-12-03",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 05",
+      "prioridade": 4
+    },
+    "F-1967": {
+      "veiculo": "Ata de fundação — Federação de Jiu-Jitsu da Guanabara",
+      "data": "1967-04-25",
+      "pagina": null,
+      "acervo": "a localizar",
+      "digitalizado": false,
+      "chapa": "Chapa 06",
+      "prioridade": 1
+    },
+    "F-MARINHA": {
+      "veiculo": "Assentamentos de Luiz França",
+      "data": "1932",
+      "pagina": null,
+      "acervo": "Arquivo da Marinha do Brasil",
+      "digitalizado": false,
+      "chapa": "Chapa 07",
+      "prioridade": 2
+    },
+    "F-1920": {
+      "veiculo": null,
+      "data": "1920",
+      "pagina": null,
+      "acervo": "Imprensa paraense · a identificar",
+      "digitalizado": false,
+      "chapa": "Chapa 08",
+      "prioridade": 1
+    },
+    "F-KODOKAN": {
+      "veiculo": "Registro fundacional do Kodokan",
+      "data": "1882",
+      "pagina": null,
+      "acervo": "Kodokan Library, Tóquio",
+      "digitalizado": false,
+      "chapa": "Chapa 09",
+      "prioridade": 3
+    },
+    "F-1951-KATO": {
+      "veiculo": null,
+      "data": "1951-09",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 10",
+      "prioridade": 3
+    },
+    "F-1951-KIMURA": {
+      "veiculo": null,
+      "data": "1951-10-23",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 11",
+      "prioridade": 2,
+      "_nota_apuracao": "O combate mais coberto da historiografia do jiu-jitsu, e ainda assim esta obra não localizou recorte de jornal com veículo e página. Provável estar em O Globo, Jornal do Brasil ou Correio da Manhã de 24 de outubro de 1951."
+    },
+    "F-1955-SANTANA": {
+      "veiculo": null,
+      "data": "1955-05-24",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 12",
+      "prioridade": 3,
+      "_nota_apuracao": "A proibição subsequente do vale-tudo no Rio de Janeiro é citada por várias fontes secundárias sem apontar o decreto ou a norma. Localizar o ato administrativo seria uma peça documental forte."
+    },
+    "F-CARLSON-SANTANA": {
+      "veiculo": null,
+      "data": "1955/1956",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 13",
+      "prioridade": 4,
+      "_nota_apuracao": "Fontes secundárias divergem sobre número de combates, datas e resultados da série Carlson x Santana. Ver conflito C-16."
+    },
+    "F-1973-JUN": {
+      "veiculo": null,
+      "data": "1973-06",
+      "pagina": null,
+      "acervo": "Diário Oficial da União · a localizar",
+      "digitalizado": false,
+      "chapa": "Chapa 14",
+      "prioridade": 3,
+      "_nota_apuracao": "Reconhecimento legal do jiu-jitsu como esporte no Brasil. Ato normativo específico não identificado por nenhuma fonte secundária consultada."
+    },
+    "F-1973-DEZ": {
+      "veiculo": null,
+      "data": "1973-12",
+      "pagina": null,
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 15",
+      "prioridade": 3,
+      "_nota_apuracao": "1º Torneio Oficial de Jiu-Jitsu do Brasil, na Associação Atlética Banco do Brasil, Rio de Janeiro."
+    },
+    "F-1974-LC20": {
+      "veiculo": "Lei Complementar nº 20",
+      "data": "1974-07-01",
+      "pagina": null,
+      "acervo": "Diário Oficial da União",
+      "digitalizado": false,
+      "chapa": "Chapa 16",
+      "prioridade": 4,
+      "_nota": "Fato de história política geral, não específico do jiu-jitsu: legitima a fusão dos estados do Rio de Janeiro e da Guanabara, instalada em março de 1975. Referenciado aqui porque força a rebatização da federação."
+    },
+    "F-UFC1": {
+      "veiculo": null,
+      "data": "1993-11-12",
+      "pagina": null,
+      "acervo": "transmissão de pay-per-view; registro em vídeo amplamente distribuído",
+      "digitalizado": true,
+      "chapa": null,
+      "prioridade": 5,
+      "_nota": "Evento amplamente documentado em vídeo e em múltiplas fontes secundárias convergentes. Selo permanece ATE porque a obra não trata gravação televisiva de terceiros como equivalente ao documento primário em papel que o restante do protocolo exige, mas a convergência aqui é excepcionalmente alta."
+    },
+    "F-CBJJ": {
+      "veiculo": null,
+      "data": "1994",
+      "pagina": null,
+      "acervo": "a localizar",
+      "digitalizado": false,
+      "chapa": "Chapa 17",
+      "prioridade": 5,
+      "_nota_apuracao": "Ata de fundação da confederação. Fontes secundárias divergem sobre se a federação internacional nasceu no mesmo ano ou anos depois. Conflito C-18."
+    },
+    "F-1909-CYRIACO": {
+      "veiculo": "O Paiz",
+      "data": "1909-05-02",
+      "pagina": "2",
+      "acervo": "Hemeroteca Digital · Biblioteca Nacional",
+      "digitalizado": false,
+      "chapa": "Chapa 18",
+      "prioridade": 2,
+      "_nota": "Localizada via citação em artigo acadêmico (ver F-ACAD2017), não diretamente pela obra. A cobertura de época descreve o combate entre Miyako e o capoeirista Cyríaco ocorrendo e terminando com Cyríaco descalço, contrariando a versão que nega a realização do combate."
+    },
+    "F-REILA2008": {
+      "veiculo": "Carlos Gracie: O Criador de uma Dinastia (livro)",
+      "data": "2008",
+      "pagina": null,
+      "acervo": "edição comercial, amplamente disponível",
+      "digitalizado": true,
+      "chapa": null,
+      "prioridade": 6,
+      "_nota": "Biografia escrita pela filha de Carlos Gracie, mãe de Roger Gracie. Fonte secundária publicada, não documento primário — mas citada nesta obra por seu peso na narrativa tradicional, sempre com selo TRA ou ATE conforme o caso, nunca DOC."
+    },
+    "F-ACAD2017": {
+      "veiculo": "Revista Movimento (Porto Alegre) — artigo acadêmico comparando a biografia de Reila Gracie a fontes jornalísticas de época",
+      "data": "2017",
+      "pagina": null,
+      "acervo": "publicação acadêmica de acesso aberto",
+      "digitalizado": true,
+      "chapa": null,
+      "prioridade": 6,
+      "_nota": "Primeira fonte usada por esta obra que já fez, de forma sistemática e anterior a este projeto, exatamente o exercício que esta obra propõe: comparar a narrativa familiar linha a linha contra a imprensa de época."
+    }
+  },
+  "conflitos": [
+    {
+      "id": "C-01",
+      "sobre": "franca",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-02",
+      "sobre": "franca",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-03",
+      "sobre": "maeda",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-04",
+      "sobre": "carlos",
+      "selo_a": "TRA",
+      "selo_b": "DOC",
+      "status": "resolvido_provisorio",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-05",
+      "sobre": "carlos",
+      "selo_a": "TRA",
+      "selo_b": "DOC",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-06",
+      "sobre": "miyako",
+      "selo_a": "ATE",
+      "selo_b": "DOC",
+      "status": "inclinado_para_b",
+      "categoria_conflito": "origem",
+      "_nota": "Localizada cobertura de época (F-1909-CYRIACO) que descreve o combate ocorrendo, com Cyríaco descalço ao final — o que sustenta a versão B com peso documental que a versão A não tem. Conflito permanece aberto porque a obra não confirmou pessoalmente o recorte, apenas a citação acadêmica dele."
+    },
+    {
+      "id": "C-07",
+      "sobre": null,
+      "selo_a": "ATE",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-08",
+      "sobre": "aleixo",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-09",
+      "sobre": "donato",
+      "selo_a": "ATE",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-10",
+      "sobre": "satake",
+      "selo_a": "ATE",
+      "selo_b": "ESP",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-11",
+      "sobre": "omori",
+      "selo_a": "ESP",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-12",
+      "sobre": "bianor",
+      "selo_a": "TRA",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-13",
+      "sobre": "gastaopai",
+      "selo_a": "TRA",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-14",
+      "sobre": "kimura",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-15",
+      "sobre": "santana",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "pos_vinculo"
+    },
+    {
+      "id": "C-16",
+      "sobre": "santana",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "pos_vinculo"
+    },
+    {
+      "id": "C-17",
+      "sobre": "robson",
+      "selo_a": "ATE",
+      "selo_b": null,
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    },
+    {
+      "id": "C-18",
+      "sobre": "ibjjf",
+      "selo_a": "ATE",
+      "selo_b": "ATE",
+      "status": "aberto",
+      "categoria_conflito": "origem"
+    }
+  ],
+  "entidades": {
+    "acad1930": {
+      "variantes": [
+        "Academia de Jiu-Jitsu",
+        "Academia Gracie"
+      ],
+      "fundacao": "1930-09-09",
+      "fundacao_selo": "DOC",
+      "encerramento": null,
+      "endereco": "Rua Marques de Abrantes, 106, Rio de Janeiro",
+      "endereco_selo": "DOC",
+      "direcao": [
+        {
+          "quem": "donato",
+          "cargo": "diretor",
+          "selo": "DOC",
+          "fonte": "F-1930"
+        }
+      ],
+      "corpo_docente": [
+        {
+          "quem": "carlos",
+          "selo": "DOC",
+          "fonte": "F-1930"
+        },
+        {
+          "quem": "george",
+          "selo": "DOC",
+          "fonte": "F-1930"
+        }
+      ],
+      "modalidades": [
+        "jiu-jitsu",
+        "capoeira",
+        "boxe"
+      ],
+      "modalidades_selo": "DOC",
+      "registro": [
+        "F-1930"
+      ],
+      "conflitos": [],
+      "prioridade": "P1"
+    },
+    "federacao_guanabara": {
+      "variantes": [
+        "Federação de Jiu-Jitsu da Guanabara",
+        "Federação Guanabara de Jiu-Jitsu",
+        "hoje: Federação de Jiu-Jitsu do Estado do Rio de Janeiro",
+        "FJJRIO"
+      ],
+      "fundacao": "1967-04-25",
+      "fundacao_selo": "ATE",
+      "regulamentacao": "Conselho Nacional de Desportos",
+      "regulamentacao_selo": "ATE",
+      "escolas_fundadoras": 5,
+      "escolas_fundadoras_selo": "ATE",
+      "organograma": [
+        {
+          "cargo": "presidente",
+          "quem": "helio",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "presidente do conselho consultivo",
+          "quem": "carlos",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "diretor do departamento técnico",
+          "quem": "carlson",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "primeiro vice-técnico",
+          "quem": "fadda",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "segundo vice-técnico",
+          "quem": "barradas",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "diretor de educação",
+          "quem": "barretojoao",
+          "selo": "ATE"
+        },
+        {
+          "cargo": "vice-diretor de educação",
+          "quem": "robson",
+          "selo": "ATE"
+        }
+      ],
+      "encerramento": null,
+      "sucessora": null,
+      "registro": [
+        "F-1967",
+        "F-1973-JUN",
+        "F-1973-DEZ"
+      ],
+      "conflitos": [],
+      "prioridade": "P1"
+    },
+    "ufc": {
+      "variantes": [
+        "Ultimate Fighting Championship",
+        "UFC"
+      ],
+      "fundacao": "1993",
+      "fundacao_selo": "ATE",
+      "endereco": "McNichols Sports Arena, Denver, Colorado, Estados Unidos",
+      "endereco_selo": "ATE",
+      "direcao": [
+        {
+          "quem": "rorion",
+          "cargo": "cofundador",
+          "selo": "ATE"
+        }
+      ],
+      "modalidades": [
+        "artes marciais mistas"
+      ],
+      "modalidades_selo": "ATE",
+      "registro": [
+        "F-UFC1"
+      ],
+      "conflitos": [],
+      "prioridade": "P4"
+    },
+    "ibjjf": {
+      "variantes": [
+        "Confederação Brasileira de Jiu-Jitsu",
+        "CBJJ",
+        "International Brazilian Jiu-Jitsu Federation",
+        "IBJJF"
+      ],
+      "fundacao": "1994",
+      "fundacao_selo": "ATE",
+      "direcao": [
+        {
+          "quem": "carlosjr",
+          "cargo": "fundador e presidente",
+          "selo": "ATE"
+        }
+      ],
+      "modalidades": [
+        "jiu-jitsu esportivo, com e sem kimono"
+      ],
+      "modalidades_selo": "ATE",
+      "registro": [
+        "F-CBJJ"
+      ],
+      "conflitos": [
+        "C-18"
+      ],
+      "prioridade": "P4"
+    },
+    "kodokan": {
+      "variantes": [
+        "Kodokan",
+        "講道館"
+      ],
+      "fundacao": "1882",
+      "fundacao_selo": "ATE",
+      "endereco": "Tóquio, Japão",
+      "endereco_selo": "ATE",
+      "registro": [],
+      "conflitos": [],
+      "prioridade": "P1"
+    }
+  },
+  "combates": [
+    {
+      "id": "K-1930-ROCHA",
+      "data": "1930-09-09",
+      "a": "carlos",
+      "b": "rocha",
+      "contexto": "acad1930",
+      "resultado": "vitoria_a",
+      "metodo": "domínio",
+      "duracao_s": 160,
+      "peso_a_kg": 59,
+      "peso_b_kg": 90,
+      "selo": "DOC",
+      "fonte": "F-1930"
+    },
+    {
+      "id": "K-1931-ALEIXO",
+      "data": "1931-12-03",
+      "a": "george",
+      "b": "aleixo",
+      "contexto": null,
+      "resultado": "vitoria_a",
+      "metodo": "chave de braço",
+      "round": 2,
+      "selo": "ATE",
+      "fonte": "F-1931"
+    },
+    {
+      "id": "K-1951-KATO1",
+      "data": "1951-09-06",
+      "a": "helio",
+      "b": "kato",
+      "contexto": null,
+      "resultado": "empate",
+      "metodo": null,
+      "duracao_min": 30,
+      "selo": "ATE",
+      "fonte": "F-1951-KATO"
+    },
+    {
+      "id": "K-1951-KATO2",
+      "data": "1951-09-29",
+      "a": "helio",
+      "b": "kato",
+      "contexto": null,
+      "resultado": "vitoria_a",
+      "metodo": "estrangulamento pela guarda",
+      "selo": "ATE",
+      "fonte": "F-1951-KATO",
+      "_nota": "Data da revanche varia entre fontes secundárias: 29 de setembro segundo umas, cálculo de '23 dias depois' da primeira luta segundo outras, o que apontaria para fim de setembro também."
+    },
+    {
+      "id": "K-1951-KIMURA",
+      "data": "1951-10-23",
+      "a": "kimura",
+      "b": "helio",
+      "contexto": null,
+      "resultado": "vitoria_a",
+      "metodo": "ude-garami (chave de braço)",
+      "duracao_min": 13,
+      "publico": "estimativas entre 20 mil e 40 mil, variando por fonte",
+      "selo": "ATE",
+      "fonte": "F-1951-KIMURA"
+    },
+    {
+      "id": "K-1955-SANTANA",
+      "data": "1955-05-24",
+      "a": "santana",
+      "b": "helio",
+      "contexto": null,
+      "resultado": "vitoria_a",
+      "metodo": "chute na cabeça (nocaute)",
+      "duracao_min": 224,
+      "duracao_selo": "ATE",
+      "_nota_duracao": "Fontes secundárias divergem entre 3h43min e 3h45min.",
+      "selo": "ATE",
+      "fonte": "F-1955-SANTANA"
+    },
+    {
+      "id": "K-1955-CARLSON1",
+      "data": "1955",
+      "a": "carlson",
+      "b": "santana",
+      "contexto": null,
+      "resultado": "disputado",
+      "metodo": null,
+      "selo": "ATE",
+      "fonte": "F-CARLSON-SANTANA",
+      "conflitos": [
+        "C-16"
+      ],
+      "_nota": "Fontes secundárias divergem sobre o resultado deste primeiro confronto entre os dois: empate segundo parte da bibliografia, vitória de Carlson segundo outra parte. Conflito C-16."
+    },
+    {
+      "id": "K-1956-CARLSON2",
+      "data": "1956",
+      "a": "carlson",
+      "b": "santana",
+      "contexto": null,
+      "resultado": "vitoria_a",
+      "metodo": null,
+      "selo": "ATE",
+      "fonte": "F-CARLSON-SANTANA",
+      "conflitos": [
+        "C-16"
+      ],
+      "_nota": "Data exata e número de ordem deste combate na série divergem entre fontes. Conflito C-16."
+    },
+    {
+      "id": "K-1993-JIMMERSON",
+      "data": "1993-11-12",
+      "a": "royce",
+      "b": "_jimmerson",
+      "contexto": "ufc",
+      "resultado": "vitoria_a",
+      "metodo": "desistência sob pressão posicional",
+      "duracao_s": 57,
+      "selo": "ATE",
+      "fonte": "F-UFC1"
+    },
+    {
+      "id": "K-1993-SHAMROCK",
+      "data": "1993-11-12",
+      "a": "royce",
+      "b": "_shamrock",
+      "contexto": "ufc",
+      "resultado": "vitoria_a",
+      "metodo": "estrangulamento",
+      "duracao_s": 52,
+      "selo": "ATE",
+      "fonte": "F-UFC1"
+    },
+    {
+      "id": "K-1993-GORDEAU",
+      "data": "1993-11-12",
+      "a": "royce",
+      "b": "_gordeau",
+      "contexto": "ufc",
+      "resultado": "vitoria_a",
+      "metodo": "estrangulamento pelas costas",
+      "duracao_s": 104,
+      "arbitro": "barretojoao",
+      "arbitro_selo": "ATE",
+      "selo": "ATE",
+      "fonte": "F-UFC1"
+    }
+  ]
+}

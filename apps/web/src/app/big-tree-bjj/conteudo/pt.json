@@ -1,0 +1,624 @@
+{
+  "_leia": "CAMADA DE PROSA — língua canônica. Só texto narrativo. Nenhuma data, selo ou referência de fonte pode aparecer aqui: isso vive em nucleo.json e se renderiza por template. Editar um campo aqui invalida automaticamente a tradução correspondente.",
+  "_versao": "0.2",
+  "_idioma": "pt",
+  "_canonica": true,
+  "verbetes": {
+    "miyako": {
+      "nome": "Sada Miyako",
+      "epiteto": null,
+      "abertura": "O primeiro professor japonês de jiu-jitsu de que há registro em solo brasileiro, e a figura que desloca o marco de origem da arte no país. Chegou contratado pelo Estado, não por uma família, e ensinou dentro de uma instituição pública.",
+      "formacao": "Desconhecida. Nenhuma fonte consultada informa escola, filiação ou professor. É a maior lacuna do verbete, e ela importa: sem saber de onde ele vinha, não se pode afirmar que linhagem entrou no Brasil com ele.",
+      "atuacao": "Desembarcou na capital federal a bordo do navio Benjamin, junto com o professor Kakihara, ambos contratados como instrutores dos marinheiros brasileiros. Meses depois, marinheiros já formados por eles seguiam para instruir aprendizes na escola do estado da Bahia, enquanto outros permaneciam ensinando na capital. Protagonizou também lutas entre modalidades distintas em teatros cariocas.",
+      "descendencia": "Um contingente de marinheiros brasileiros formados dentro da Marinha, coletivamente registrado pela imprensa e individualmente anônimo. Nenhuma linhagem nominal descende dele — o que explica seu desaparecimento da bibliografia de linhagem, que só sabe contar histórias de mestre para discípulo.",
+      "nota": "A existência dele desmonta duas premissas de uma vez. A primeira é a de que o jiu-jitsu entrou no Brasil pelo Pará; a segunda, a de que o combate entre modalidades diferentes foi um formato inaugurado pelos Gracie. Ambas as coisas já aconteciam no Rio antes de Maeda desembarcar.",
+      "lacuna": "Origem, formação, datas de nascimento e morte, destino após os primeiros anos no Brasil. Não se sabe sequer se permaneceu no país.",
+      "apuracao": "Percorrer a série completa da Gazeta de Notícias entre a chegada e o fim da década, identificando toda menção aos dois professores. Buscar registros de contratação na Marinha. Identificar o professor Kakihara, hoje apenas um sobrenome."
+    },
+    "maeda": {
+      "nome": "Mitsuyo Maeda",
+      "epiteto": "Conde Koma",
+      "abertura": "A fonte técnica de onde brota a linhagem brasileira dominante — e, ao mesmo tempo, o nome mais reivindicado e menos documentado da história do jiu-jitsu no Brasil. Ensinou dezenas de pessoas; a bibliografia lembra de duas, e das duas nenhuma tem vínculo comprovado com ele.",
+      "formacao": "Aprendiz do Kodokan, formado no sistema que Kano organizara duas décadas antes. Partiu em missão de difusão e passou por Estados Unidos, Europa, México, Cuba e América Central antes de chegar ao Brasil, aceitando desafios públicos como forma de demonstração.",
+      "atuacao": "Fixou-se em Belém e ali permaneceu até morrer, com academia em funcionamento e passagens por clubes e colégios da cidade. Viajava com frequência pelo Brasil e pelo exterior para exibições, e nesses períodos deixava a instrução com alunos graduados — detalhe operacional que explica quase toda a confusão posterior sobre quem foi aluno de quem.",
+      "descendencia": "Cinco brasileiros promovidos numa mesma cerimônia, entre eles Jacyntho Ferro. É a única graduação de brasileiros por ele que se pode confirmar. Fora dessa lista, tudo é reivindicação.",
+      "nota": "Que ele tenha ensinado muita gente na América Latina é certo; que o ensino tenha se enraizado no Brasil e não no México ou em Cuba é o fato que pede explicação, e a resposta não está nele — está nos brasileiros que assumiram a instrução na ausência dele.",
+      "lacuna": "Itinerário completo da missão de difusão, com registros de imigração e imprensa local de cada país. É material farto e praticamente inexplorado em português.",
+      "apuracao": "Matrícula no acervo do Kodokan. Imprensa paraense do período de residência, para reconstruir a rotina da academia e a lista de alunos. Registro de imigração na chegada."
+    },
+    "ferro": {
+      "nome": "Jacyntho Ferro",
+      "epiteto": null,
+      "abertura": "O elo. Principal aluno brasileiro de Maeda, instrutor da academia de Belém na ausência do mestre, e professor documentado das duas figuras que fundariam a primeira academia do país. A narrativa consagrada o apaga porque a existência dele quebra a linha reta entre o Japão e o sobrenome Gracie.",
+      "formacao": "Formado na academia de Belém, ao longo dos anos em que Maeda esteve na cidade. Foi promovido junto com outros quatro brasileiros na única cerimônia de graduação confirmada do mestre.",
+      "atuacao": "Assumia a instrução sempre que Maeda viajava para exibições, o que era frequente. Na prática, foi ele quem deu a maior parte das aulas que a bibliografia atribui a Maeda.",
+      "descendencia": "Donato Pires dos Reis e Carlos Gracie, ambos identificados como seus alunos pela imprensa da época. Toda a linhagem Gracie, portanto, passa por ele antes de chegar aos Gracie.",
+      "nota": "Morreu antes que qualquer disputa pública sobre linhagem se instalasse, e não deixou família nem academia que defendesse seu nome. Não fossem alguns artigos de jornal, teria desaparecido por completo. É o exemplo mais limpo de como a história aqui foi escrita por quem sobreviveu com aparato de imprensa.",
+      "lacuna": "Datas e local de nascimento, trajetória anterior à academia, circunstâncias da morte, e se deixou outros alunos além dos dois conhecidos.",
+      "apuracao": "Imprensa paraense entre a chegada de Maeda e a morte dele. Registro civil e de óbito em Belém. Identificar o veículo e a data exata do artigo que o nomeia como professor de Donato e Carlos."
+    },
+    "aleixo": {
+      "nome": "Mário Aleixo",
+      "epiteto": null,
+      "abertura": "O primeiro brasileiro a abrir um clube de jiu-jitsu no país — e fez isso antes de Maeda desembarcar. Terminou a trajetória pública sendo finalizado por um Gracie, o que resume simbolicamente a passagem de uma geração para a outra.",
+      "formacao": "Reivindicada a partir de Maeda, o que é cronologicamente problemático: o clube dele antecede a chegada do japonês ao Brasil. A formação anterior permanece inteiramente por estabelecer.",
+      "atuacao": "Clube próprio no Rio de Janeiro, na década anterior à chegada dos Gracie à cidade. Enfrentou George Gracie em combate público e perdeu, finalizado por chave de braço no segundo assalto.",
+      "descendencia": "Nenhuma linhagem rastreável até hoje.",
+      "nota": "O caso dele é útil por um motivo metodológico: mostra que ser aluno de Maeda virou, no Brasil, uma credencial reivindicada retroativamente por praticamente todo pioneiro — inclusive por quem já ensinava antes de o mestre chegar. A reivindicação é um dado histórico sobre o mercado da época, não sobre a transmissão técnica.",
+      "lacuna": "Datas de nascimento e morte, formação real, localização e período de funcionamento do clube, e o que fez depois da derrota.",
+      "apuracao": "Anúncios e notas de imprensa carioca na década do clube. Cobertura do combate com George Gracie."
+    },
+    "donato": {
+      "nome": "Donato Pires dos Reis",
+      "epiteto": null,
+      "abertura": "Dirigiu a primeira academia de jiu-jitsu do Brasil de que há registro, com Carlos e George Gracie trabalhando como seus professores. Poucos anos depois havia sumido da narrativa oficial, e a academia levava outro nome.",
+      "formacao": "Aluno de Jacyntho Ferro, na órbita da academia de Belém. Afirmou em entrevistas ter recebido certificação do próprio Maeda — alegação que seus contemporâneos nunca contestaram, mas que nenhum documento confirma.",
+      "atuacao": "Contratado para treinar a polícia de Minas Gerais por dois anos. Pouco antes de assumir, encontrou Carlos Gracie por acaso no Rio e o convidou como instrutor assistente. Terminado o contrato, abriu a academia da Marques de Abrantes. Anos depois montou nova academia em São Paulo, dessa vez com George Gracie como assistente.",
+      "descendencia": "Carlos Gracie teve com ele seu primeiro treinamento formal, segundo a biografia escrita pela própria filha de Carlos.",
+      "nota": "Contestou publicamente, na imprensa carioca, a versão de que Carlos teria sido aluno de Maeda. É o testemunho mais forte contra a narrativa consagrada, porque parte de um sócio da mesma academia, publicado enquanto os dois estavam vivos, e nunca respondido com documento.",
+      "lacuna": "Datas de nascimento e morte, trajetória posterior a São Paulo, e a existência ou não da certificação que ele dizia ter recebido.",
+      "apuracao": "Contrato com a polícia mineira nos arquivos do estado. Imprensa carioca em torno da disputa com os Gracie. Registro civil em Belém."
+    },
+    "franca": {
+      "nome": "Luiz França",
+      "epiteto": null,
+      "abertura": "Fundador da principal linhagem não-Gracie do jiu-jitsu brasileiro. Ensinou por décadas dentro de uma instituição que arquiva tudo, e não deixou papel — o que diz mais sobre como a história foi escrita do que sobre ele.",
+      "formacao": "Vínculo mais firme com Satake, em Manaus. As fontes acrescentam passagens por outros professores japoneses e uma ligação com Maeda que aparece sempre acompanhada de ressalva. Historiadores praticantes chegaram a especular que teria aprendido com os próprios Gracie ou sido em boa parte autodidata.",
+      "atuacao": "Ingressou na Marinha e serviu no Corpo de Fuzileiros Navais. Ensinou militares e moradores das comunidades da zona norte carioca, com ênfase em defesa pessoal e sem cobrar da maior parte dos alunos, enquanto a família Gracie se firmava nos bairros nobres da zona sul.",
+      "descendencia": "Oswaldo Fadda, a quem concedeu o grau de instrutor, e através dele as equipes que levariam a linhagem à competição de alto nível.",
+      "nota": "Sua atuação como precursor do sistema de defesa pessoal do Corpo de Fuzileiros Navais nunca foi registrada na administração esportiva da Marinha, sobrevivendo apenas como relato oral de antigos alunos. É a explicação mais econômica para o vazio documental: ele ensinou à margem do organograma, e não gerou papel. Os Gracie, ao contrário, viviam de imprensa.",
+      "lacuna": "Local de nascimento em disputa entre dois estados. A cronologia do início do treino é internamente contraditória: uma versão o colocaria treinando ainda criança, outra na adolescência, e as duas não podem estar certas.",
+      "apuracao": "Assentamentos militares e registros do ensino de defesa pessoal no Corpo de Fuzileiros Navais. Registro civil nos dois estados em disputa. Registros do clube de Manaus onde teria treinado."
+    },
+    "carlos": {
+      "nome": "Carlos Gracie",
+      "epiteto": null,
+      "abertura": "Arquiteto da dinastia que levaria o jiu-jitsu brasileiro ao mundo, e centro da disputa historiográfica mais importante da arte: de quem, afinal, ele aprendeu.",
+      "formacao": "Identificado pela imprensa da época como aluno de Jacyntho Ferro. A biografia escrita por sua filha registra que teve o primeiro treinamento formal sob Donato Pires dos Reis, voltado à defesa pessoal. A versão familiar de discipulado direto sob Maeda não encontra respaldo documental, e foi contestada em vida por dois contemporâneos: Donato e Geo Omori.",
+      "atuacao": "Instrutor assistente de Donato junto à polícia mineira, depois professor na academia da Marques de Abrantes, que dirigiria sozinho pouco depois sob o nome da família. Construiu em torno do sobrenome uma máquina de desafios públicos e cobertura de imprensa.",
+      "descendencia": "Os irmãos, entre eles Hélio, e a partir deles todo o clã. Nenhum dos irmãos teve contato com Maeda.",
+      "nota": "A alegação de discipulado direto não é invenção do nada: é uma compressão, que apaga dois intermediários brasileiros e liga o nome ao Japão em linha reta. Vale lembrar que era argumento comercial. Numa época em que legitimidade se media por proximidade com mestres japoneses, encurtar a linhagem valia dinheiro.",
+      "lacuna": "A data do retorno ao Rio diverge entre a biografia familiar e as fontes de imprensa do período, com cinco anos de diferença — e esses cinco anos são justamente o intervalo em que a formação teria acontecido.",
+      "apuracao": "Imprensa carioca e paraense no intervalo em disputa. O artigo que o nomeia como aluno de Ferro, com veículo, data e página."
+    },
+    "fadda": {
+      "nome": "Oswaldo Fadda",
+      "epiteto": null,
+      "abertura": "Recebeu de Luiz França uma linhagem sem marca, sem clã e sem imprensa, e a manteve viva sozinho no subúrbio carioca até que ela produzisse campeões mundiais. O forasteiro de uma década virou cofundador da federação na seguinte.",
+      "formacao": "Recebeu o grau de instrutor das mãos de Luiz França. Segundo o próprio Fadda, França transmitiu o que sabia sem segredos — farpa deliberada, numa época em que a acusação corrente contra as academias fechadas era justamente a de reter técnica.",
+      "atuacao": "Ensinou de graça em praças e praias, muitas vezes sem tatame, e usou o jiu-jitsu no atendimento a pessoas com deficiência, sobretudo vítimas de poliomielite. Sem renda alguma com o ensino, chegou a anunciar na seção de obituários do jornal local. Abriu academia própria no subúrbio e especializou a equipe em chaves de pé, parte do currículo então desprezada como inferior.",
+      "descendencia": "As equipes que levariam a linhagem não-Gracie à competição de alto nível, e através delas os campeões mundiais e de MMA formados a partir dos anos noventa.",
+      "nota": "Desafiou a Academia Gracie e sua equipe venceu, justamente pelas chaves de pé. Hélio Gracie admitiu à imprensa que bastava um Fadda para mostrar que o jiu-jitsu não era privilégio dos Gracie. Dezessete anos depois, o mesmo suburbano tratado como de fora seria cofundador da federação que esportivizou a arte, ocupando o cargo de primeiro vice-técnico ao lado dos Gracie.",
+      "lacuna": "Cadeia de graduações entre ele e os fundadores das equipes que hoje reivindicam a linhagem, ainda não montada nó a nó.",
+      "apuracao": "Ata de fundação da federação. Imprensa carioca em torno do desafio e da academia do subúrbio. Livros de graduação da própria academia, se preservados pela família."
+    },
+    "kano": {
+      "nome": "Jigoro Kano",
+      "epiteto": null,
+      "abertura": "O homem que transformou um conjunto disperso de escolas de combate numa pedagogia exportável. Sem essa reorganização, nada do que veio depois no Brasil teria acontecido — nem os japoneses teriam saído do Japão com uma missão de difusão nas costas.",
+      "formacao": "Formado nas escolas tradicionais de agarramento do fim do período em que a classe samurai ainda existia, num momento em que essas escolas atravessavam colapso econômico e perda de função social.",
+      "atuacao": "Fundou em Tóquio a instituição que sintetizou o corpo técnico das escolas antigas num método com currículo, hierarquia visível e vocação educacional. O sistema foi adotado pelo Estado japonês e passou a ser exportado por discípulos enviados ao exterior.",
+      "descendencia": "Uma geração de enviados que espalhou o método pelas Américas e pela Europa. Entre eles, o que se estabeleceria no norte do Brasil.",
+      "nota": "O detalhe que a bibliografia brasileira quase sempre omite: o que os japoneses trouxeram ao Brasil no início do século era o sistema dele, e era chamado indistintamente de jiu-jitsu ou de judô pela imprensa da época. A separação entre as duas coisas é posterior e brasileira, não japonesa.",
+      "lacuna": "A relação pessoal dele com cada enviado, e o grau em que a missão de difusão foi política de Estado ou iniciativa individual dos discípulos.",
+      "apuracao": "Acervo da instituição que fundou, em Tóquio: matrículas, correspondência e registros das missões ao exterior."
+    },
+    "satake": {
+      "nome": "Soshihiro Satake",
+      "epiteto": null,
+      "abertura": "O professor japonês do norte do Brasil de quem parte o vínculo mais firme da linhagem não-Gracie. Ensinou em Manaus enquanto Maeda ensinava em Belém, e a bibliografia de linhagem trata os dois como se fossem um só.",
+      "formacao": "Judoca japonês, formado no mesmo sistema que produziu os demais enviados. A filiação exata de escola não foi estabelecida por esta obra.",
+      "atuacao": "Atividade registrada em clube esportivo de Manaus, ao longo de cerca de uma década.",
+      "descendencia": "Luiz França, de quem descende toda a linhagem que passa por Fadda, e Vinicius Ruas, que viria a presidir a federação estadual de judô do Rio de Janeiro.",
+      "nota": "É a figura que desfaz a ideia de um funil único. Havia mais de um professor japonês ensinando no norte do Brasil ao mesmo tempo, em cidades diferentes, e a linhagem que sobreviveu fora do eixo Gracie veio de Manaus, não de Belém.",
+      "lacuna": "Datas de nascimento e morte, chegada e saída do Brasil, e a escola de origem.",
+      "apuracao": "Registros do clube de Manaus. Imprensa amazonense do período. Registros de imigração."
+    },
+    "omori": {
+      "nome": "Geo Omori",
+      "epiteto": null,
+      "abertura": "O professor japonês de São Paulo, e uma das duas testemunhas contemporâneas que contradisseram publicamente a versão oficial sobre a formação de Carlos Gracie.",
+      "formacao": "Não estabelecida. Nenhuma fonte consultada informa escola ou professor.",
+      "atuacao": "Estabeleceu-se em São Paulo e ali ensinou e competiu. Enfrentou no ringue dois dos irmãos Gracie.",
+      "descendencia": "Luiz França consta entre seus alunos, o que dá a França três professores atestados e nenhum documentado.",
+      "nota": "Declarou publicamente que Carlos Gracie não havia sido instruído diretamente por Maeda. É testemunho de adversário — tem peso probatório real, mas com interesse na disputa, e a obra registra o viés em vez de escondê-lo.",
+      "lacuna": "Origem, formação, datas, e o destino após o período paulista.",
+      "apuracao": "Imprensa esportiva paulista do período. Registros de imigração. Cobertura dos combates com os Gracie."
+    },
+    "kakihara": {
+      "nome": "M. Kakihara",
+      "epiteto": null,
+      "abertura": "Chegou ao Brasil no mesmo navio e no mesmo contrato que Sada Miyako, e sobreviveu na história como um sobrenome e uma inicial. É o nome mais apagado de toda esta obra.",
+      "formacao": "Desconhecida.",
+      "atuacao": "Contratado junto com Miyako como instrutor dos marinheiros brasileiros na capital federal.",
+      "descendencia": "O mesmo contingente anônimo de marinheiros formados pela dupla.",
+      "nota": "Que dois professores tenham chegado juntos, sob o mesmo contrato, e que apenas um deles tenha deixado qualquer rastro narrativo, é em si um dado sobre como esta história foi conservada: sobrou quem apareceu em ringue e em teatro, não quem apenas deu aula.",
+      "lacuna": "Tudo. Prenome, origem, formação, período de permanência no Brasil e destino.",
+      "apuracao": "Lista de passageiros do navio. Registros de contratação da Marinha. A série completa da imprensa carioca nos anos seguintes à chegada."
+    },
+    "yano": {
+      "nome": "Takeo Yano",
+      "epiteto": null,
+      "abertura": "Um dos japoneses ativos no Brasil em paralelo ao eixo que a bibliografia consagrou. Entra nesta obra como nome a apurar, não como verbete estabelecido.",
+      "formacao": "Não estabelecida por esta obra.",
+      "atuacao": "Não estabelecida por esta obra.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "A obra registra a existência dele porque o desaparecimento coletivo dos japoneses que atuaram fora de Belém é, ele próprio, o objeto de estudo. Mas registrar existência não é escrever biografia, e esta entrada não pretende ser uma.",
+      "lacuna": "Todos os campos. Este verbete está aberto na íntegra.",
+      "apuracao": "Levantamento de imprensa esportiva brasileira em busca de toda menção ao nome, antes de qualquer afirmação sobre ele."
+    },
+    "lopes": {
+      "nome": "Waldemar Lopes",
+      "epiteto": null,
+      "abertura": "Um dos cinco brasileiros promovidos por Maeda na única cerimônia de graduação confirmada do mestre. Fora desse fato, a história não guardou nada dele.",
+      "formacao": "Formado na academia de Belém, no período de residência de Maeda na cidade.",
+      "atuacao": "Não estabelecida.",
+      "descendencia": "Nenhuma linhagem rastreável.",
+      "nota": "Ele e os outros três colegas de cerimônia são a prova mais direta de que graduação não gera memória histórica. Quatro homens com o mesmo grau, no mesmo dia, do mesmo mestre que a bibliografia mundial venera — e nenhum deles tem biografia escrita.",
+      "lacuna": "Datas, origem, trajetória posterior à promoção e eventuais alunos.",
+      "apuracao": "Imprensa paraense a partir do ano da promoção. Registro civil em Belém."
+    },
+    "gomes": {
+      "nome": "Raphael Gomes",
+      "epiteto": null,
+      "abertura": "Promovido por Maeda na mesma cerimônia que Ferro. Nome sem biografia.",
+      "formacao": "Formado na academia de Belém, no período de residência de Maeda na cidade.",
+      "atuacao": "Não estabelecida.",
+      "descendencia": "Nenhuma linhagem rastreável.",
+      "nota": "A grafia do prenome varia entre fontes, o que sugere que nenhuma delas consultou registro primário.",
+      "lacuna": "Datas, origem, trajetória posterior à promoção e eventuais alunos.",
+      "apuracao": "Imprensa paraense a partir do ano da promoção. Registro civil em Belém."
+    },
+    "delarocque": {
+      "nome": "Guilherme DelaRocque",
+      "epiteto": null,
+      "abertura": "Promovido por Maeda na mesma cerimônia que Ferro. O sobrenome, incomum, é a melhor pista de busca disponível sobre ele.",
+      "formacao": "Formado na academia de Belém, no período de residência de Maeda na cidade.",
+      "atuacao": "Não estabelecida.",
+      "descendencia": "Nenhuma linhagem rastreável.",
+      "nota": "O sobrenome aparece grafado de ao menos duas formas na bibliografia, junto e separado. Fixar a grafia correta em registro primário é pré-requisito para qualquer busca em acervo.",
+      "lacuna": "Datas, origem, grafia canônica do nome, trajetória posterior e eventuais alunos.",
+      "apuracao": "Registro civil e cartorial em Belém, aproveitando a raridade do sobrenome. Imprensa paraense."
+    },
+    "pereira": {
+      "nome": "Matheus Pereira",
+      "epiteto": null,
+      "abertura": "Promovido por Maeda na mesma cerimônia que Ferro, e o único dos cinco tratado pelas fontes com título profissional — o que sugere alguém de formação superior e posição social distinta da dos colegas.",
+      "formacao": "Formado na academia de Belém, no período de residência de Maeda na cidade.",
+      "atuacao": "Não estabelecida.",
+      "descendencia": "Nenhuma linhagem rastreável.",
+      "nota": "O tratamento por título é a única textura social que temos sobre a turma de Belém, e sugere que a academia de Maeda atendia elite profissional local, não apenas praticantes de origem popular. Se confirmado, muda a leitura sobre que público o jiu-jitsu tinha no Pará.",
+      "lacuna": "Qual profissão, datas, trajetória posterior e eventuais alunos.",
+      "apuracao": "Registros profissionais em Belém, cruzando o nome com listas de médicos e advogados do período. Imprensa paraense."
+    },
+    "ruas": {
+      "nome": "Vinicius Ruas",
+      "epiteto": null,
+      "abertura": "Aluno de Satake em Manaus que seguiu pelo caminho institucional do judô, e não pelo do jiu-jitsu — o que ilustra como as duas coisas ainda eram a mesma até a separação se consolidar.",
+      "formacao": "Aluno de Satake, no mesmo período e cidade em que Luiz França treinava com o mesmo professor.",
+      "atuacao": "Veio a presidir a federação estadual de judô do Rio de Janeiro.",
+      "descendencia": "Não estabelecida no âmbito do jiu-jitsu.",
+      "nota": "É tio de um lutador que se tornaria conhecido no vale-tudo e no MMA décadas depois, o que mostra que a rede formada em Manaus reaparece em pontos inesperados da história posterior.",
+      "lacuna": "Datas, período de treino com Satake e circunstâncias da migração para o judô institucional.",
+      "apuracao": "Arquivos da federação estadual de judô. Imprensa esportiva carioca."
+    },
+    "bianor": {
+      "nome": "Bianor Oliveira",
+      "epiteto": null,
+      "abertura": "Nome que circula na bibliografia como possível aluno de Maeda, sem que nenhuma fonte apresente base para a afirmação.",
+      "formacao": "Reivindicada a partir de Maeda, sem documento.",
+      "atuacao": "Não estabelecida.",
+      "descendencia": "Não estabelecida.",
+      "nota": "Entra na obra pelo mesmo motivo que Mário Aleixo: o conjunto de pessoas que reivindicaram Maeda como professor é maior que o conjunto de pessoas que ele comprovadamente formou, e essa diferença é um dado histórico sobre o valor de mercado do nome do japonês.",
+      "lacuna": "Todos os campos.",
+      "apuracao": "Levantamento de imprensa em busca da origem da atribuição, antes de qualquer afirmação."
+    },
+    "gastaopai": {
+      "nome": "Gastão Gracie",
+      "epiteto": null,
+      "abertura": "O pai dos irmãos Gracie, e a viga que sustenta toda a narrativa tradicional de origem. Se a amizade dele com o mestre japonês não existiu como se conta, a versão oficial perde o seu ponto de partida.",
+      "formacao": "Não se atribui a ele prática de jiu-jitsu.",
+      "atuacao": "Empresário influente em Belém, teria ajudado o mestre japonês a se estabelecer na cidade quando este chegou vinculado ao projeto de colônia.",
+      "descendencia": "Os filhos que fundariam a dinastia.",
+      "nota": "A narrativa consagrada funciona assim: o pai faz amizade com o japonês, o japonês retribui ensinando o filho mais velho. É uma história de gratidão pessoal, não de matrícula em academia — e por isso mesmo nunca precisou de comprovante. Nenhuma fonte consultada apresenta documento dessa relação. Sendo ele figura de negócios numa cidade com imprensa ativa, o silêncio documental é ele próprio um dado.",
+      "lacuna": "Datas, ramo de atividade, e qualquer registro da relação com o mestre japonês.",
+      "apuracao": "Registros comerciais e de junta comercial em Belém. Documentação do projeto de colônia japonesa no Pará, onde uma intermediação empresarial deixaria rastro. Imprensa paraense."
+    },
+    "helio": {
+      "nome": "Hélio Gracie",
+      "epiteto": null,
+      "abertura": "O irmão mais novo, que se tornaria o rosto público da família e o reformador técnico da arte — e cuja formação é a prova mais limpa de que a linha reta entre o Japão e o sobrenome Gracie é uma compressão.",
+      "formacao": "Aprendeu com os irmãos, dentro da academia da capital, sem nunca ter estado na órbita do mestre japonês nem da cidade onde este ensinava. De constituição franzina, é descrito como tendo passado um período apenas observando as aulas antes de assumir uma delas na ausência do irmão.",
+      "atuacao": "Instrutor, depois protagonista de décadas de desafios públicos amplamente cobertos pela imprensa. Presidiu a primeira federação da modalidade quando ela foi criada.",
+      "descendencia": "Filhos e sobrinhos que formariam a geração seguinte do clã, e através deles a difusão internacional.",
+      "nota": "A cadeia tradicional coloca o mestre japonês, depois o irmão mais velho, depois ele. O segundo elo é contestado por documento e o terceiro nunca encontrou o primeiro. Vale registrar que foi ele quem, depois de perder o desafio para a equipe do subúrbio, admitiu à imprensa que bastava um adversário daqueles para mostrar que a arte não era privilégio da família — declaração que, vinda de quem veio, é a concessão mais significativa de toda esta história.",
+      "lacuna": "Datas de nascimento e morte circulam sem que nenhuma fonte aponte registro civil.",
+      "apuracao": "Registro civil em Belém e no Rio. Ata de fundação da federação, que confirmaria o cargo."
+    },
+    "george": {
+      "nome": "George Gracie",
+      "epiteto": null,
+      "abertura": "O irmão que mais lutou e que pior encaixa na narrativa oficial da família — porque trabalhou como assistente do homem que a versão consagrada trata como figura menor.",
+      "formacao": "Aprendeu com o irmão mais velho, dentro da academia da capital.",
+      "atuacao": "Professor na primeira academia desde a inauguração. Enfrentou publicamente o pioneiro que abrira clube no Rio na década anterior e venceu por finalização. Anos depois, mudou-se para São Paulo para atuar como assistente na academia aberta por Donato Pires dos Reis.",
+      "descendencia": "Ramo próprio dentro do clã, que se desenvolveria em paralelo ao do irmão mais novo.",
+      "nota": "O detalhe que a bibliografia de linhagem nunca explora: se Donato era o coadjuvante que a versão familiar sugere, por que um Gracie foi trabalhar como assistente dele quase uma década depois da separação? Um homem sem prestígio técnico não contrata um Gracie como auxiliar, nem um Gracie aceita o posto.",
+      "lacuna": "Datas de nascimento e morte, e a cronologia completa dos combates públicos.",
+      "apuracao": "Imprensa esportiva carioca e paulista das duas décadas de atividade. Registro civil."
+    },
+    "oswaldo": {
+      "nome": "Oswaldo Gracie",
+      "epiteto": null,
+      "abertura": "Um dos irmãos da segunda geração, presente em toda lista da família e ausente de toda narrativa.",
+      "formacao": "Aprendeu com o irmão mais velho.",
+      "atuacao": "Não estabelecida por esta obra.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "A família é sempre citada como um bloco de irmãos, mas a bibliografia só desenvolve dois deles. Os outros existem como nomes numa enumeração, o que reproduz dentro do próprio clã o mesmo apagamento que ele praticou para fora.",
+      "lacuna": "Todos os campos além do vínculo familiar e do parentesco de formação.",
+      "apuracao": "Imprensa carioca. Registro civil. Arquivo de família, se acessível."
+    },
+    "gastaojr": {
+      "nome": "Gastão Gracie Jr.",
+      "epiteto": null,
+      "abertura": "Um dos irmãos da segunda geração, na mesma condição documental do anterior.",
+      "formacao": "Aprendeu com o irmão mais velho.",
+      "atuacao": "Não estabelecida por esta obra.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "Registrado aqui para que a enumeração da segunda geração fique completa e para que a assimetria de tratamento entre os irmãos seja visível na própria base.",
+      "lacuna": "Todos os campos além do vínculo familiar e do parentesco de formação.",
+      "apuracao": "Imprensa carioca. Registro civil. Arquivo de família, se acessível."
+    },
+    "rocha": {
+      "nome": "Edgard Rocha",
+      "epiteto": null,
+      "abertura": "O esportista que perdeu a demonstração de abertura da primeira academia do país em pouco mais de dois minutos, cedendo mais de trinta quilos ao adversário. Perdeu, e por isso entrou para a história com nome e sobrenome.",
+      "formacao": "Não estabelecida. As fontes o descrevem como esportista, sem especificar modalidade.",
+      "atuacao": "Não estabelecida além da demonstração.",
+      "descendencia": "Nenhuma.",
+      "nota": "É raro que o derrotado de uma demonstração seja nomeado pela imprensa; normalmente ele é um anônimo conveniente. Que este tenha nome, sobrenome e peso registrados sugere que era figura conhecida do meio esportivo carioca, e portanto rastreável. Identificar quem ele era muda a leitura do evento: uma coisa é vencer um voluntário da plateia, outra é vencer alguém que o público reconhecia.",
+      "lacuna": "Quem era, que esporte praticava, e o que fez depois.",
+      "apuracao": "Seção esportiva da imprensa carioca nos anos anteriores e posteriores à demonstração, buscando o nome."
+    },
+    "acad1930": {
+      "nome": "Academia de Jiu-Jitsu",
+      "epiteto": null,
+      "abertura": "A primeira academia de jiu-jitsu do Brasil de que há registro. Foi dirigida por Donato Pires dos Reis, teve Carlos e George Gracie como professores, e pouco depois passaria a levar o nome da família.",
+      "formacao": null,
+      "atuacao": "Funcionou em endereço próprio na zona sul da capital federal. A inauguração teve cobertura de imprensa e demonstração pública, na qual o professor mais leve dominou um esportista muito mais pesado em pouco mais de dois minutos.",
+      "descendencia": "Convertida na academia da família, tornou-se o centro a partir do qual toda a dinastia se organizou.",
+      "nota": "O detalhe que desmonta a leitura purista: ela não era uma academia de jiu-jitsu. Oferecia também capoeira e boxe. Era um ginásio de esportes de combate, o que faz muito mais sentido para o mercado da época do que a imagem retrospectiva de um templo dedicado a uma arte única. A especialização veio depois, junto com a marca.",
+      "lacuna": "Data exata da mudança de nome e da saída de Donato da direção.",
+      "apuracao": "Anúncios e notas na imprensa carioca no período seguinte à inauguração, rastreando quando o nome muda no expediente."
+    },
+    "kato": {
+      "nome": "Yukio Kato",
+      "epiteto": null,
+      "abertura": "A porta de entrada. Antes de qualquer duelo com o campeão japonês ser cogitado, a família Gracie teve de provar seu valor contra ele — o suficiente para virar nota de rodapé numa história que passou a girar inteiramente em torno de outro nome.",
+      "formacao": "Judoca japonês de alta graduação, integrante da comitiva que viajou ao Brasil para demonstrações.",
+      "atuacao": "Enfrentou o representante da família duas vezes em poucas semanas: a primeira luta terminou empatada, a segunda com sua derrota por estrangulamento.",
+      "descendencia": "Nenhuma no Brasil.",
+      "nota": "Sem essas duas lutas, a mais famosa não teria acontecido: foi a condição que a comitiva japonesa impôs, e foi a derrota dele que forçou o campeão a entrar pessoalmente na disputa. É a peça de abertura de uma sequência que se tornaria o evento mais coberto de toda a história do jiu-jitsu no Brasil.",
+      "lacuna": "Origem, formação completa, datas de nascimento e morte, e o que fez após a passagem pelo Brasil.",
+      "apuracao": "Imprensa esportiva carioca e paulista do período da turnê. Registros de imigração da comitiva japonesa."
+    },
+    "kimura": {
+      "nome": "Masahiko Kimura",
+      "epiteto": null,
+      "abertura": "O nome que batiza até hoje uma das chaves mais usadas do jiu-jitsu mundial nasce de uma derrota, não de uma vitória do lado brasileiro — e é exatamente essa derrota que a família transformou no maior ativo de imagem de sua história.",
+      "formacao": "Campeão do principal torneio nacional de judô do Japão, com invencibilidade sustentada por mais de uma década antes da viagem ao Brasil.",
+      "atuacao": "Veio ao país como parte de uma turnê de exibições, condicionando o duelo com o representante da família à derrota prévia de um companheiro de comitiva. Venceu o combate mais coberto desta obra por uma chave de braço, depois de o adversário recusar-se a bater na lona mesmo tendo o braço comprometido — o que levou o córner a interromper a luta por ele. Seguiu a turnê sul-americana com outras vitórias antes de retornar ao Japão.",
+      "descendencia": "Nenhuma no Brasil.",
+      "nota": "O resultado técnico foi dele, mas o resultado histórico coube ao adversário: a recusa em desistir, mesmo debaixo de uma chave que comprometia o braço, é o episódio mais citado de toda a bibliografia de linhagem como prova do caráter da arte praticada pela família. A chave usada para vencer passou a levar o nome dele nos tatames brasileiros até hoje — homenagem rara de se prestar a quem se venceu.",
+      "lacuna": "Apesar de ser o combate mais citado de toda a historiografia consultada, nenhuma fonte usada por esta obra aponta o recorte de jornal original, com veículo e página. É a lacuna mais visível de todo o Livro IV.",
+      "apuracao": "Jornais cariocas do dia seguinte ao combate, especialmente os de maior circulação esportiva do período. Registros de imigração da turnê."
+    },
+    "santana": {
+      "nome": "Waldemar Santana",
+      "epiteto": "Leopardo Negro",
+      "abertura": "Começou como funcionário da academia da família, tornou-se aluno, virou parceiro de treino dos mais graduados e terminou como o homem que protagonizou a luta mais longa já registrada nesta arte — derrotando o próprio mestre que o expulsara.",
+      "formacao": "Formado dentro da própria academia da família, a partir de um vínculo que começou como emprego, não como matrícula.",
+      "atuacao": "Trabalhava na nova sede da academia quando passou a servir de parceiro de treino aos alunos mais graduados. Expulso depois de aceitar uma luta remunerada sem autorização, viria a enfrentar o antigo mestre num combate que se estendeu por quase quatro horas, vencido por um chute na cabeça. A repercussão do episódio, tratada pela imprensa da época como excessivamente violenta, é apontada por fontes secundárias como o motivo da proibição subsequente do formato de combate sem regras na cidade — o que forçou a revanche para o formato de jiu-jitsu com regras. Enfrentaria o filho do líder da família em múltiplos combates nos anos seguintes.",
+      "descendencia": "Não fundou linhagem própria identificada por esta obra.",
+      "nota": "É o primeiro grande rival da família a sair de dentro da própria casa, e sua trajetória inverte a lógica de todos os outros conflitos desta obra: aqui não há disputa sobre quem foi aluno de quem — isso é incontestado — mas sobre o que aconteceu depois que o aluno venceu o mestre.",
+      "lacuna": "Datas de nascimento e morte. Duração exata do combate com Hélio, que varia por poucos minutos entre fontes. Número exato e resultado de cada um dos combates posteriores contra o filho do líder da família — a bibliografia secundária diverge de forma considerável nesse ponto.",
+      "apuracao": "Registro civil na Bahia. Imprensa carioca da época do combate e dos anos seguintes, reconstruindo a série completa contra Carlson Gracie combate a combate. O decreto ou norma que teria proibido o vale-tudo no Rio."
+    },
+    "carlson": {
+      "nome": "Carlson Gracie",
+      "epiteto": null,
+      "abertura": "Entrou na história como o filho chamado para restaurar a honra da família depois da derrota do tio, e décadas mais tarde ocupou um dos postos técnicos da primeira federação da modalidade — a mesma em que o suburbano rival da família também tinha assento.",
+      "formacao": "Aprendeu com o pai, dentro da academia da família.",
+      "atuacao": "Convocado para enfrentar o antigo funcionário da academia depois de este derrotar o tio, em uma série de combates cujo número e resultado exatos a bibliografia não registra de forma consistente. Ocupou, décadas depois, o cargo de diretor técnico na primeira federação da modalidade, ao lado de representantes de todas as vertentes então existentes, inclusive o professor do subúrbio.",
+      "descendencia": "Formaria, nas décadas seguintes, uma das principais academias competitivas da família, com influência disseminada até a era do MMA — capítulo que cabe ao Livro VI.",
+      "nota": "Sua presença no mesmo organograma de fundação que o professor de origem humilde é o mesmo dado que já apareceu no verbete de Fadda, visto agora do outro lado: aos olhos da nova federação, linhagem de elite e linhagem de subúrbio ocupavam a mesma mesa de fundação, ainda que décadas antes uma tivesse tratado a outra como forasteira.",
+      "lacuna": "Datas de nascimento e morte. A sequência exata dos combates contra o rival da família: número de encontros, datas e resultados divergem entre as fontes secundárias consultadas.",
+      "apuracao": "Ata de fundação da federação. Imprensa carioca da época dos combates contra Santana, para reconstruir a série completa combate a combate."
+    },
+    "federacao_guanabara": {
+      "nome": "Federação de Jiu-Jitsu da Guanabara",
+      "epiteto": null,
+      "abertura": "A primeira federação da modalidade no mundo, e o documento organizacional mais revelador desta obra: no mesmo organograma, lado a lado, estão a elite da zona sul e o professor do subúrbio que ela havia tratado como forasteiro décadas antes.",
+      "formacao": null,
+      "atuacao": "Fundada sob regulamentação do órgão federal de esportes da época, a partir de cinco escolas fundadoras. Trouxe à modalidade sistema de faixas, divisões etárias, tempo de combate e critérios de pontuação, além do primeiro curso de arbitragem. Anos depois, o jiu-jitsu obteve reconhecimento legal como esporte no país, e a federação organizou o primeiro torneio oficial da modalidade no Brasil.",
+      "descendencia": "Sobreviveu à fusão administrativa que extinguiu o estado em cujo nome fora fundada, sendo rebatizada com o nome do novo estado resultante. Sob esse novo nome, seguiu em atividade até o presente, e viria a ser presidida décadas depois por um dos nomes que constavam do organograma original.",
+      "nota": "O detalhe mais importante deste verbete não está em nenhuma frase isolada, mas na lista de cargos: presidência e conselho consultivo com a família que construiu a marca; departamento técnico com o filho mais talentoso dela; e logo abaixo, ocupando o posto de primeiro vice-técnico, o professor do subúrbio cuja equipe havia vencido a Academia Gracie por chaves de pé menos de duas décadas antes. A obra já registrou esse fato do lado de Fadda; aqui ele aparece do lado institucional — como política deliberada de unificação, não como coincidência de calendário.",
+      "lacuna": "A ata de fundação original não foi localizada por esta obra; tudo o que se sabe do organograma vem de fontes secundárias que convergem entre si, mas nenhuma delas é o documento primário. O ato normativo do reconhecimento legal como esporte também não foi identificado.",
+      "apuracao": "Ata de fundação, provavelmente em cartório de registro de entidades do Rio de Janeiro ou no acervo da própria federação sucessora. Diário Oficial da União do ano do reconhecimento legal. Cobertura de imprensa do primeiro torneio oficial."
+    },
+    "barretoalvaro": {
+      "nome": "Álvaro Barreto",
+      "epiteto": null,
+      "abertura": "Uma das cinco lideranças fundadoras da primeira federação da modalidade, e um nome que a bibliografia registra no organograma sem nunca desenvolver.",
+      "formacao": "Não estabelecida por esta obra.",
+      "atuacao": "Liderava uma das cinco escolas fundadoras da federação.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "É o quinto nome de um grupo de cinco em que dois já têm biografia desenvolvida nesta obra e os outros três permanecem apenas como assinatura num organograma. A assimetria de tratamento entre os fundadores é, ela mesma, um retrato de como a memória do esporte se organizou em torno de poucos sobrenomes.",
+      "lacuna": "Todos os campos além da participação na fundação.",
+      "apuracao": "Registro da escola que liderava. Imprensa esportiva carioca da época da fundação."
+    },
+    "barretojoao": {
+      "nome": "João Alberto Barreto",
+      "epiteto": null,
+      "abertura": "Aparece duas vezes nesta obra antes de ter verbete próprio: como um dos graduados a quem o funcionário rebelde da academia servia de parceiro de treino, e como diretor de educação na fundação da primeira federação.",
+      "formacao": "Não estabelecida por esta obra.",
+      "atuacao": "Treinava na academia da família nos anos anteriores à fundação da federação, onde recebeu o cargo de diretor de educação.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "A recorrência do nome em dois momentos distintos — como parceiro de treino informal e depois como dirigente formal — sugere uma trajetória de confiança dentro do círculo mais próximo da família, mas esta obra não reconstruiu os anos entre um episódio e outro.",
+      "lacuna": "Toda a trajetória entre servir de parceiro de treino e assumir cargo de diretoria.",
+      "apuracao": "Imprensa esportiva carioca do período entre os dois episódios."
+    },
+    "binda": {
+      "nome": "Hélcio Leal Binda",
+      "epiteto": null,
+      "abertura": "Uma das cinco lideranças fundadoras da primeira federação da modalidade, na mesma condição documental de Álvaro Barreto.",
+      "formacao": "Não estabelecida por esta obra.",
+      "atuacao": "Liderava uma das cinco escolas fundadoras da federação.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "Registrado para que a lista dos cinco fundadores permaneça completa nesta base, ainda que sem desenvolvimento biográfico.",
+      "lacuna": "Todos os campos além da participação na fundação.",
+      "apuracao": "Registro da escola que liderava. Imprensa esportiva carioca da época da fundação."
+    },
+    "barradas": {
+      "nome": "Orlando Barradas",
+      "epiteto": null,
+      "abertura": "Ocupou o segundo posto técnico da federação recém-fundada, um degrau abaixo do professor do subúrbio — o que situa, lado a lado num mesmo organograma, dois nomes de origens muito diferentes dentro da hierarquia técnica mais alta da nova entidade.",
+      "formacao": "Não estabelecida por esta obra.",
+      "atuacao": "Segundo vice-técnico na fundação da federação.",
+      "descendencia": "Não estabelecida por esta obra.",
+      "nota": "Como os demais fundadores menos documentados, sua presença no organograma é o único fato firme que esta obra pôde estabelecer sobre ele.",
+      "lacuna": "Todos os campos além do cargo na fundação.",
+      "apuracao": "Imprensa esportiva carioca da época da fundação."
+    },
+    "robson": {
+      "nome": "Robson Gracie",
+      "epiteto": null,
+      "abertura": "Entrou na fundação da primeira federação como o cargo mais júnior do organograma da família, e décadas depois se tornaria a figura mais longeva na presidência da mesma entidade, já sob outro nome.",
+      "formacao": "Aprendeu com o pai, dentro da academia da família.",
+      "atuacao": "Ocupou o posto de vice-diretor de educação na fundação da federação. Ao longo das décadas seguintes, a entidade passaria por reorganizações administrativas decorrentes de mudanças no mapa político do estado, e ele viria a presidi-la por um período mais longo que qualquer outro dirigente.",
+      "descendencia": "Filhas que disputariam, já neste século, a sucessão na presidência da mesma federação.",
+      "nota": "A trajetória dele amarra o início e o presente desta obra num único fio: o mesmo nome que assina o organograma de fundação, ao lado do professor do subúrbio, reaparece décadas depois no comando da entidade sucessora — e disputas por essa mesma presidência seguem ativas até a atualidade, entre membros da geração seguinte da família.",
+      "lacuna": "Datas de nascimento e morte. A cronologia exata de sua presidência: início, duração e circunstâncias da sucessão.",
+      "apuracao": "Atas da federação ao longo das décadas. Registros de assembleia geral da entidade sucessora."
+    },
+    "rorion": {
+      "nome": "Rorion Gracie",
+      "epiteto": null,
+      "abertura": "Levou o ensino da família para fora do Brasil e, uma geração depois, criou o evento que faria pela imagem internacional da arte o que a demonstração de abertura da primeira academia tinha feito localmente: uma vitrine pública desenhada para provar um ponto.",
+      "formacao": "Aprendeu com o pai, dentro da academia da família.",
+      "atuacao": "Estabeleceu-se nos Estados Unidos e passou a ensinar a partir de casa antes de abrir academia própria. Anos depois, associou-se a um promotor de eventos para criar um torneio de eliminação simples entre estilos de luta diferentes, desenhado para demonstrar publicamente a eficácia do sistema da família contra adversários maiores.",
+      "descendencia": "O irmão mais novo, escolhido para representar a família no torneio, e através dele a explosão de interesse internacional pela arte que se seguiu.",
+      "nota": "A lógica do evento que ele ajudou a criar é a mesma lógica dos desafios públicos que a família cultivava desde a fundação da primeira academia: colocar o menor contra o maior, em público, e deixar o resultado falar. Só que desta vez o palco era o mundo inteiro, transmitido, e não apenas um Estado.",
+      "lacuna": "Datas de nascimento, trajetória completa nos primeiros anos nos Estados Unidos antes da criação do torneio.",
+      "apuracao": "Registros de imigração. Documentação societária da organização do evento e do contrato original com o promotor."
+    },
+    "royce": {
+      "nome": "Royce Gracie",
+      "epiteto": null,
+      "abertura": "Escolhido para representar a família num torneio contra lutadores de outros estilos justamente por não ser o mais decorado nem o mais forte fisicamente dos irmãos — a lógica era provar que a técnica, não o físico, decidia o confronto.",
+      "formacao": "Aprendeu com o pai, dentro da academia da família.",
+      "atuacao": "Venceu três combates na mesma noite contra adversários de estilos e tamanhos diferentes, finalizando todos, no torneio de estreia da organização criada pelo irmão mais velho. O resultado projetou o sistema da família a um público internacional que até então mal conhecia sua existência.",
+      "descendencia": "Não estabelecida por esta obra no âmbito da linhagem técnica; a influência dele é de projeção pública, não de descendência direta de alunos.",
+      "nota": "É a inversão exata do argumento usado décadas antes contra o subúrbio: ali, o menor e mais pobre venceu por especialização técnica; aqui, o menor e mais leve da própria elite vence pelo mesmo princípio, só que diante das câmeras do mundo inteiro. A arte que nasceu provando que tamanho não decide voltou a provar o mesmo ponto, numa escala completamente diferente.",
+      "lacuna": "Datas de nascimento, formação técnica detalhada, cronologia completa de combates.",
+      "apuracao": "Registros do próprio torneio, amplamente preservados em vídeo. Entrevistas contemporâneas ao evento."
+    },
+    "carlosjr": {
+      "nome": "Carlos Gracie Jr.",
+      "epiteto": "Carlinhos",
+      "abertura": "Construiu, a partir de uma associação local de torneios, a estrutura que transformaria o jiu-jitsu de disputa doméstica de linhagem em esporte com calendário, ranking e economia próprios.",
+      "formacao": "Aprendeu com o pai, dentro da academia da família.",
+      "atuacao": "Fundou rede de academias e, a partir do sucesso de competições locais organizadas por essa rede, criou a confederação nacional que viria a se expandir para federação internacional, responsável pelos principais torneios da modalidade em escala global.",
+      "descendencia": "Gerações de competidores formados pela rede de academias que fundou, e a estrutura organizacional sob a qual a maior parte da competição de alto nível do esporte passou a operar.",
+      "nota": "A trajetória dele fecha um ciclo que começou com a primeira academia do país: assim como aquela precisou de um diretor não pertencente à família para nascer, a esportivização plena da arte, um século depois, teve como arquiteto um membro direto da terceira geração — o pêndulo entre organização institucional e propriedade familiar do jiu-jitsu completa uma volta inteira.",
+      "lacuna": "Datas exatas de fundação da confederação nacional e da federação internacional divergem entre fontes secundárias quanto a se nasceram no mesmo ano ou anos depois uma da outra.",
+      "apuracao": "Ata de fundação da confederação. Registro societário da federação internacional."
+    },
+    "danaher": {
+      "nome": "John Danaher",
+      "epiteto": null,
+      "abertura": "Sistematizou, dentro de uma academia fundada por um neto do próprio Carlos Gracie, um método de ataques à perna que devolveria ao centro do esporte exatamente a especialidade que, setenta anos antes, havia custado ao subúrbio o desprezo da elite carioca.",
+      "formacao": "Formado dentro da academia de um neto de Carlos Gracie, nos Estados Unidos.",
+      "atuacao": "Passou a treinar um grupo dedicado de competidores num sistema de ataques à perna construído a partir de um pequeno número de posições centrais, tornado público através de série instrucional amplamente distribuída. Alunos formados nesse sistema passaram a dominar as principais competições de luta agarrada sem kimono do mundo, vencendo torneios abertos por finalizações de perna.",
+      "descendencia": "Uma geração de competidores de elite formados no sistema, e a normalização das chaves de perna como arma central, não secundária, do repertório competitivo de alto nível.",
+      "nota": "Esta obra registra a conexão como observação editorial, não como fato de terceiros: a equipe que ele fundou, décadas depois, tornou dominante exatamente o conjunto de técnicas que a equipe do subúrbio já usava para vencer a Academia Gracie na era dos desafios — as mesmas chaves de pé que a elite carioca havia tratado como golpe menor. O currículo do professor sem marca, sem clã e sem imprensa acabou por se tornar, com meio século de atraso e por uma rota que não passa por sua linhagem direta, o estado da arte da competição de elite mundial.",
+      "lacuna": "Trajetória de formação técnica anterior à criação do próprio método. Datas exatas de nascimento.",
+      "apuracao": "Registros da academia de origem em Nova York. Entrevistas e material instrucional publicado pelo próprio."
+    },
+    "ufc": {
+      "nome": "Ultimate Fighting Championship",
+      "epiteto": null,
+      "abertura": "O evento de estreia converteu uma disputa doméstica de linhagem brasileira num mercado global de artes marciais mistas — e, sem que a maior parte do público percebesse, colocou no papel de árbitro um nome que já constava do organograma de fundação da primeira federação da modalidade, quase três décadas antes.",
+      "formacao": null,
+      "atuacao": "Realizou torneio de eliminação simples entre lutadores de estilos diferentes, com regras mínimas, projetado para determinar qual arte marcial prevaleceria num confronto real. O representante da família venceu três combates na mesma noite, todos por finalização.",
+      "descendencia": "Tornou-se, nas décadas seguintes, a principal organização de artes marciais mistas do mundo, ainda que sob controle societário e regulamentação completamente distintos dos da fundação.",
+      "nota": "Um dos dois árbitros do evento de estreia era veterano de arbitragem de vale-tudo brasileiro, e constava, quase trinta anos antes, do organograma de fundação da primeira federação de jiu-jitsu do mundo, no cargo de diretor de educação. A rede de pessoas que institucionalizou o esporte no Brasil na época da primeira federação é, em parte, a mesma que o exportou décadas depois para o mercado americano.",
+      "lacuna": "Documentação societária completa da fundação e do contrato original entre os fundadores.",
+      "apuracao": "Registro empresarial da organização fundadora. Contratos e documentação do evento de estreia, se preservados pelos organizadores originais."
+    },
+    "ibjjf": {
+      "nome": "Confederação Brasileira de Jiu-Jitsu e Federação Internacional",
+      "epiteto": null,
+      "abertura": "A estrutura que deu ao jiu-jitsu esportivo o que a Federação da Guanabara tinha dado a ele quase trinta anos antes em escala carioca: regras uniformes, calendário e um sistema de faixas — desta vez em escala mundial.",
+      "formacao": null,
+      "atuacao": "Nasceu de uma associação local de torneios que cresceu rapidamente a partir do sucesso de suas competições, formalizando-se em confederação nacional e, na sequência, em federação internacional responsável pelos principais campeonatos mundiais da modalidade.",
+      "descendencia": "O calendário competitivo sob o qual a maior parte do jiu-jitsu esportivo de alto nível passou a operar globalmente, incluindo o campeonato mundial anual da modalidade.",
+      "nota": "A entidade repete, em escala internacional e sob comando de um único ramo da família, o mesmo movimento que a Federação da Guanabara havia feito em sua fundação sob comando compartilhado entre vertentes rivais: transformar disputa de prestígio em estrutura de regras. A diferença está em quem senta à mesa — ali, elite e subúrbio dividiam o organograma; aqui, a organização nasce e permanece sob um único ramo familiar.",
+      "lacuna": "Se a confederação nacional e a federação internacional nasceram no mesmo ano ou em momentos distintos: fontes secundárias divergem.",
+      "apuracao": "Ata de fundação de ambas as entidades. Registro societário."
+    },
+    "pedreira": {
+      "nome": "Roberto Pedreira",
+      "epiteto": null,
+      "abertura": "Reconstruiu, a partir de jornais de época levantados um a um, a história do jiu-jitsu e do vale-tudo no Brasil que a bibliografia de linhagem preferia contar por tradição oral. É a fonte cuja abordagem mais se aproxima do método desta própria obra.",
+      "formacao": "Não estabelecida por esta obra; o nome sob o qual publica é reconhecido como pseudônimo.",
+      "atuacao": "Produziu obra em múltiplos volumes sobre a história do jiu-jitsu e do vale-tudo no Brasil, construída sobre reportagens de jornal contemporâneas aos fatos, e obra companheira sobre as origens da arte no Japão, no mesmo método.",
+      "descendencia": "Não se aplica.",
+      "nota": "É descrito por leitores especializados como abertamente hostil à narrativa consagrada pela família — o que a obra registra como viés declarado, e viés declarado é preferível a viés disfarçado, porque permite ao leitor pesar a informação sabendo de onde ela vem. O valor do trabalho está menos nas conclusões do que no material primário levantado: reportagens de jornal contemporâneas que mostram a realidade do jiu-jitsu e do vale-tudo da época sem o verniz retrospectivo que a bibliografia de linhagem costuma aplicar.",
+      "lacuna": "Identidade real por trás do pseudônimo, credenciais de formação, metodologia declarada de seleção de fontes.",
+      "apuracao": "Contato direto com o autor ou editora. Verificação cruzada de uma amostra de suas citações de jornal contra a Hemeroteca Digital, para aferir taxa de precisão."
+    },
+    "drysdale": {
+      "nome": "Robert Drysdale",
+      "epiteto": null,
+      "abertura": "Campeão mundial que se tornou historiador da própria arte, e a quem esta obra deve a peça documental mais citada em todo o Livro II: foi ele quem trouxe a público, num documentário, o artigo de jornal em que Donato contesta a versão de que Carlos teria conhecido Maeda.",
+      "formacao": "Formação superior em História, além da formação técnica em jiu-jitsu.",
+      "atuacao": "Único competidor americano a vencer os dois torneios mais prestigiados do jiu-jitsu e da luta agarrada sem kimono. Dirigiu documentário sobre a origem do jiu-jitsu no Brasil e publicou livro companheiro com as entrevistas, artigos de pesquisa e conclusões que não couberam no filme.",
+      "descendencia": "Não se aplica no sentido técnico; no sentido historiográfico, o trabalho dele é a base sobre a qual grande parte da revisão documentada nesta obra se apoia.",
+      "nota": "Ele próprio tem posição pública em disputas contemporâneas da comunidade do jiu-jitsu, o que esta obra registra pela mesma razão que registra o viés de Pedreira: não para descartar o trabalho, mas para que o leitor o avalie com essa informação em mãos. A força do trabalho dele está em ser competidor de elite e historiador de formação ao mesmo tempo — raríssima combinação, que dá peso tanto ao rigor documental quanto à compreensão técnica do que os documentos descrevem.",
+      "lacuna": "Metodologia completa de seleção e verificação das fontes usadas no documentário e no livro. Financiamento e possíveis condicionantes editoriais da produção.",
+      "apuracao": "O próprio livro publicado, como fonte primária sobre o processo de pesquisa. Contato direto para esclarecer a citação do artigo que identifica Donato e Carlos como alunos de Ferro, que segue como a lacuna documental mais urgente desta obra."
+    },
+    "reila": {
+      "nome": "Reila Gracie",
+      "epiteto": null,
+      "abertura": "Escreveu a obra de referência da narrativa familiar tradicional — não como historiadora de formação, mas como filha, e ela mesma descreveu o livro como um gesto de gratidão ao pai. É a fonte mais citada desta obra, e também a mais estruturalmente interessada em seu próprio resultado.",
+      "formacao": "Formação em artes plásticas, não em história ou jornalismo.",
+      "atuacao": "Passou anos em pesquisa, incluindo depoimentos orais de familiares, para reconstruir a trajetória do pai desde os bisavós até a morte dele. A obra é tratada pela bibliografia de linhagem como a fonte mais completa e detalhada sobre a vida de Carlos Gracie.",
+      "descendencia": "Mãe de um dos maiores campeões da história recente da arte, o que ela própria descreveu como parte da pressão emocional de escrever o livro.",
+      "nota": "Um estudo acadêmico dedicado a comparar a obra dela, linha a linha, contra jornais contemporâneos aos fatos encontrou divergências relevantes — entre elas, um combate que ela nega ter ocorrido e que a imprensa de época registra como tendo efetivamente acontecido. Isso não invalida o valor do livro como fonte: ele continua sendo o relato mais detalhado da memória familiar, com depoimentos que não existem em nenhum outro lugar. Mas é, precisamente, memória familiar — e esta obra a trata com o selo correspondente a isso, nunca como documento primário.",
+      "lacuna": "Metodologia de apuração da pesquisa oral: quem foi entrevistado, quando, e como as divergências entre depoentes foram tratadas.",
+      "apuracao": "O próprio livro, cotejado sistematicamente contra a Hemeroteca Digital para os episódios que também têm cobertura de imprensa — exercício que um artigo acadêmico já começou a fazer e que esta obra deveria completar."
+    },
+    "kodokan": {
+      "nome": "Kodokan",
+      "epiteto": null,
+      "abertura": "A instituição-mãe. Toda linhagem que esta obra rastreia, japonesa ou brasileira, remonta a este único ponto de origem institucional.",
+      "formacao": null,
+      "atuacao": "Reorganizou o corpo técnico das escolas tradicionais de agarramento japonesas num método com currículo, hierarquia e vocação de exportação, formando a geração de enviados que levaria o sistema ao exterior.",
+      "descendencia": "A missão de difusão que trouxe o sistema às Américas e à Europa, e por essa via, a toda a árvore desta obra.",
+      "nota": "Esta obra rebaixou o próprio selo de fundação desta entidade de Documentado para Atestado ao perceber que citava a data sem apontar o registro fundacional — ver protocolo editorial, seção de tratamento de conflito. O fato é consenso universal; o documento que o funda, esta obra ainda não viu.",
+      "lacuna": "Registro fundacional primário. Relação institucional exata entre a fundação e o início da missão de difusão internacional.",
+      "apuracao": "Acervo da própria instituição, em Tóquio."
+    }
+  },
+  "conflitos": {
+    "C-01": {
+      "objeto": "Local de nascimento de Luiz França",
+      "a": "Manaus, Amazonas",
+      "b": "Estado de Alagoas",
+      "teste": "Registro civil nos dois estados"
+    },
+    "C-02": {
+      "objeto": "Início do treino de Luiz França",
+      "a": "Ainda criança, com Satake em Manaus",
+      "b": "Aos quinze anos, uma década depois",
+      "teste": "Registros do clube de Manaus"
+    },
+    "C-03": {
+      "objeto": "Chegada de Maeda ao Brasil",
+      "a": "Desembarque no Pará",
+      "b": "Fixação em Belém um ano depois",
+      "teste": "Registro de imigração e imprensa paraense"
+    },
+    "C-04": {
+      "objeto": "Professor de Carlos Gracie",
+      "a": "Maeda, diretamente",
+      "b": "Jacyntho Ferro, depois Donato Pires",
+      "teste": "Resolvido a favor de B pela imprensa da época; aberto a documento novo"
+    },
+    "C-05": {
+      "objeto": "Retorno de Carlos Gracie ao Rio",
+      "a": "Data da biografia familiar",
+      "b": "Data das fontes de imprensa do período",
+      "teste": "Hemeroteca no intervalo em disputa"
+    },
+    "C-06": {
+      "objeto": "O combate de Miyako com o capoeirista Cyríaco",
+      "a": "Ocorreu conforme narrado",
+      "b": "Foi farsa, e Miyako talvez nem fosse lutador de jiu-jitsu",
+      "teste": "Cobertura de imprensa contemporânea"
+    },
+    "C-07": {
+      "objeto": "Primeira atestação do termo jūjutsu",
+      "a": "Século XVII, sem documento apontado",
+      "b": null,
+      "teste": "Densho de escolas Edo no acervo do Kodokan"
+    },
+    "C-08": {
+      "objeto": "Formação de Mário Aleixo",
+      "a": "Aluno de Maeda",
+      "b": "Impossível: o clube dele antecede a chegada de Maeda ao Brasil",
+      "teste": "Imprensa carioca da década do clube"
+    },
+    "C-09": {
+      "objeto": "Certificação de Donato Pires dos Reis",
+      "a": "Recebeu certificação do próprio Maeda",
+      "b": null,
+      "teste": "Documento nunca exibido; buscar em arquivo de família"
+    },
+    "C-10": {
+      "objeto": "Escola de origem de Satake",
+      "a": "Judô da instituição fundada por Kano",
+      "b": "Filiação não estabelecida",
+      "teste": "Registros de matrícula em Tóquio e de imigração"
+    },
+    "C-11": {
+      "objeto": "Formação de Geo Omori",
+      "a": "Não estabelecida por nenhuma fonte",
+      "b": null,
+      "teste": "Registros de imigração e imprensa paulista"
+    },
+    "C-12": {
+      "objeto": "Bianor Oliveira como aluno de Maeda",
+      "a": "Afirmado pela bibliografia",
+      "b": "Sem base apresentada por nenhuma fonte",
+      "teste": "Origem da atribuição na imprensa"
+    },
+    "C-13": {
+      "objeto": "A relação entre Gastão Gracie e o mestre japonês",
+      "a": "Amizade que motivou o ensino ao filho mais velho, por gratidão",
+      "b": "Nenhum documento apresentado por qualquer fonte",
+      "teste": "Registros comerciais em Belém e documentação do projeto de colônia japonesa"
+    },
+    "C-14": {
+      "objeto": "Público presente no combate entre Kimura e Hélio Gracie",
+      "a": "Cerca de 20 mil espectadores",
+      "b": "Até 40 mil, ou mesmo acima de 200 mil segundo fonte tercearia menos confiável",
+      "teste": "Cobertura de imprensa do dia seguinte, com contagem oficial do estádio"
+    },
+    "C-15": {
+      "objeto": "Duração exata do combate entre Santana e Hélio Gracie",
+      "a": "3 horas e 43 minutos",
+      "b": "3 horas e 45 minutos",
+      "teste": "Cronometragem registrada pela imprensa presente no Maracanãzinho"
+    },
+    "C-16": {
+      "objeto": "Número e resultado dos combates entre Carlson Gracie e Waldemar Santana",
+      "a": "Primeiro encontro empatado em 1955, com vitória de Carlson apenas em 1956",
+      "b": "Sequência de até cinco combates ao longo de mais de uma década, com resultado predominante de empates",
+      "teste": "Reconstrução combate a combate pela imprensa esportiva carioca de cada ano citado"
+    },
+    "C-17": {
+      "objeto": "Identidade entre o Robson Gracie fundador de 1967 e o Carlos Robson Gracie presidente décadas depois",
+      "a": "É a mesma pessoa, num arco de continuidade de quase seis décadas na mesma entidade",
+      "b": null,
+      "teste": "Atas da federação que confirmem o nome completo do vice-diretor de educação de 1967 e sua identidade com o presidente posterior"
+    },
+    "C-18": {
+      "objeto": "Ano de fundação da federação internacional em relação à confederação nacional",
+      "a": "Fundada no mesmo ano da confederação nacional",
+      "b": "Fundada anos depois, como expansão internacional da confederação já consolidada",
+      "teste": "Registro societário de constituição de cada uma das duas entidades, com data de arquivamento"
+    }
+  }
+}

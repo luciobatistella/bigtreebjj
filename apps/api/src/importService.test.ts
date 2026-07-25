@@ -27,6 +27,13 @@ import {
   publishLineageRelationship,
   reclassifyRelationship
 } from './domain.js';
+import {
+  getBjjHeroesStatus,
+  importManualBjjHeroesProfile,
+  pauseBjjHeroesConnector,
+  resumeBjjHeroesConnector,
+  runBjjHeroesDryRun
+} from './bjjHeroesService.js';
 
 describe('import service workflow', () => {
   const writeTempCsv = (name: string, content: string) => {
@@ -375,5 +382,49 @@ describe('import service workflow', () => {
     expect(group.teacherRoles.length).toBe(2);
     expect(profile.promotionGroups[0].publicLabel).toContain('multiple instructors');
     expect(graph.some((edge) => edge.studentPersonId === 'P0321')).toBe(false);
+  });
+
+  it('runs the BJJ Heroes connector dry-run in conservative mode', () => {
+    const status = runBjjHeroesDryRun({ mode: 'conservative', limit: 10 });
+
+    expect(status.connectorName).toBe('BJJ Heroes Discovery Connector');
+    expect(status.profilesQueued).toBeGreaterThanOrEqual(10);
+  });
+
+  it('imports a manual BJJ Heroes URL as pending review candidates', async () => {
+    resumeBjjHeroesConnector();
+    const result = await importManualBjjHeroesProfile({
+      profileUrl: 'https://www.bjjheroes.com/bjj-fighters/example-person',
+      externalName: 'Example Person',
+      listedTeamText: 'Example Team'
+    });
+    const imported = result as any;
+    const records = await listImportImportedRecords(String(imported.candidateImportJobId));
+
+    expect(result.reviewTasksCreated).toBeGreaterThanOrEqual(2);
+    expect(records['External Fact Candidates'][0].status).toBe('pending review');
+    expect(records['External Fact Candidates'][0].publicVisibility).toBe('not public');
+    expect((records['External Fact Candidates'][0].sourceAttribution as any).source).toBe('BJJ Heroes');
+  });
+
+  it('pauses BJJ Heroes manual import when curator pauses connector', async () => {
+    pauseBjjHeroesConnector('test pause');
+
+    await expect(importManualBjjHeroesProfile({
+      profileUrl: 'https://www.bjjheroes.com/bjj-fighters/paused-person',
+      externalName: 'Paused Person'
+    })).rejects.toThrow('paused');
+
+    resumeBjjHeroesConnector();
+    expect(getBjjHeroesStatus().paused).toBe(false);
+  });
+
+  it('blocks BJJ Heroes authorized partner mode without env authorization', () => {
+    const previous = process.env.BJJHEROES_AUTHORIZED_PARTNER;
+    delete process.env.BJJHEROES_AUTHORIZED_PARTNER;
+
+    expect(() => runBjjHeroesDryRun({ mode: 'authorized_partner', limit: 30 })).toThrow('authorized_partner');
+
+    if (previous !== undefined) process.env.BJJHEROES_AUTHORIZED_PARTNER = previous;
   });
 });

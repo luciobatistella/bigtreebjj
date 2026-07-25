@@ -1,5 +1,6 @@
 node_modules/
 .pnpm-store/
+.local/
 .env
 .env.local
 .env.*.local
@@ -8,5 +9,17 @@ out/
 dist/
 coverage/
 *.log
+*.py[cod]
+*.tsbuildinfo
+__pycache__/
+apps/api/data/generated/
 .DS_Store
 .vscode/
+.claude/
+
+# Arquivos recebidos em runtime (imports e certificados privados).
+# Datasets canônicos pertencem a data/imports; uploads nunca devem ir ao Git.
+data/uploads/
+
+# Snapshot local que contém cache completo do Next.js.
+apps/web/next-env.d.zip

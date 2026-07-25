@@ -1,0 +1,135 @@
+/* ============================================================
+   LineageTree (.ltree-) — anexar ao final de src/app/globals.css
+   Paleta alinhada ao restante do produto (dourado sobre escuro).
+   ============================================================ */
+
+.ltree-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  background:
+    radial-gradient(ellipse 90% 65% at 50% 0%, rgba(28, 23, 16, 0.9) 0%, rgba(10, 8, 5, 0) 70%),
+    #0a0805;
+  touch-action: none;
+}
+.ltree-wrap:active { cursor: grabbing; }
+.ltree-svg { display: block; user-select: none; }
+
+/* ---------- arestas ---------- */
+.ltree-edge {
+  fill: none;
+  stroke-width: 1.5;
+  transition: stroke 0.4s ease, opacity 0.4s ease, stroke-width 0.4s ease;
+}
+.ltree-edge--verified   { stroke: #5f9c76; opacity: 0.6; }
+.ltree-edge--pending    { stroke: #c98f4c; opacity: 0.6; stroke-dasharray: 6 5; }
+.ltree-edge--historical { stroke: #8a8070; opacity: 0.5; stroke-dasharray: 3 4; }
+
+/* trace: acende em sequência via transition-delay indexado */
+.ltree-edge--on-path {
+  stroke: #e8c078;
+  stroke-width: 2.6;
+  opacity: 1;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 6px rgba(232, 192, 120, 0.55));
+  transition-delay: calc(var(--trace-i, 0) * 230ms);
+}
+.ltree-edge--dim { opacity: 0.08; transition-delay: 0ms; }
+
+/* ---------- cards ---------- */
+.ltree-card { cursor: pointer; }
+.ltree-card-bg {
+  fill: #191408;
+  stroke: rgba(201, 151, 76, 0.2);
+  stroke-width: 1;
+  transition: stroke 0.25s ease, filter 0.25s ease;
+}
+.ltree-card:hover .ltree-card-bg { stroke: #8a6a34; }
+.ltree-card--selected .ltree-card-bg {
+  stroke: #e8c078;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 14px rgba(232, 192, 120, 0.35));
+}
+.ltree-card--ancestor .ltree-card-bg { stroke: rgba(123, 158, 201, 0.35); }
+.ltree-card--ancestor.ltree-card--selected .ltree-card-bg { stroke: #e8c078; }
+
+.ltree-avatar-ring {
+  fill: #12100a;
+  stroke: #8a6a34;
+  stroke-width: 1.6;
+  transition: stroke 0.25s ease;
+}
+.ltree-card--selected .ltree-avatar-ring { stroke: #e8c078; }
+.ltree-card--pending .ltree-avatar-ring { stroke: #c98f4c; }
+.ltree-card--historical .ltree-avatar-ring { stroke: #8a8070; }
+
+.ltree-initials {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  fill: #e8c078;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.ltree-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: #f1e7d3;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.ltree-team {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 9.5px;
+  fill: #6b6255;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* trace nos cards: acende em sequência, escurece o resto */
+.ltree-card,
+.ltree-edge {
+  transition-property: opacity, stroke, stroke-width, filter;
+}
+.ltree-card { transition: opacity 0.4s ease; }
+.ltree-card--on-path { opacity: 1; transition-delay: calc(var(--trace-i, 0) * 230ms); }
+.ltree-tracing .ltree-card--dim { opacity: 0.15; transition-delay: 0ms; }
+.ltree-card--on-path .ltree-avatar-ring {
+  stroke: #e8c078;
+  transition-delay: calc(var(--trace-i, 0) * 230ms);
+}
+
+/* ---------- badge de expandir ---------- */
+.ltree-expand circle {
+  fill: #1d180f;
+  stroke: #8a6a34;
+  stroke-width: 1;
+  transition: stroke 0.2s ease;
+}
+.ltree-expand text {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  fill: #e8c078;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.ltree-card:hover .ltree-expand circle { stroke: #e8c078; }
+
+/* ---------- entrada ---------- */
+@keyframes ltree-pop {
+  0% { opacity: 0; transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.7); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translate(var(--tx, 0), var(--ty, 0)) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ltree-edge,
+  .ltree-card,
+  .ltree-card--on-path,
+  .ltree-edge--on-path { transition: none; }
+}

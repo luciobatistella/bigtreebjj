@@ -1,0 +1,84 @@
+/* ============================================================
+   The Big Tree — modo cinema + correções
+   Anexar ao final de src/app/globals.css
+   ============================================================ */
+
+/* --------------------------------------------------------------
+   CORREÇÃO (bug de zoom duplo):
+   Remover `transform: scale(var(--tree-zoom));` das DUAS regras
+   existentes em globals.css (linhas ~168 e ~761). O zoom já é
+   aplicado dentro do canvas pelo CameraRig via `externalZoom` —
+   o scale no wrapper borra o WebGL e desalinha o hit-test.
+   -------------------------------------------------------------- */
+
+/* ---------- letterbox ---------- */
+.cinema-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: #000;
+  z-index: 60;
+  transition: height 0.7s cubic-bezier(0.6, 0, 0.3, 1);
+  pointer-events: none;
+}
+.cinema-bar--top { top: 0; }
+.cinema-bar--bottom { bottom: 0; }
+body.cinema .cinema-bar { height: 9vh; }
+
+/* esconde o chrome da UI durante a história */
+body.cinema .lineage-topbar,
+body.cinema .lineage-rail,
+body.cinema .lineage-controls,
+body.cinema .lineage-detail,
+body.cinema .lineage-minimap,
+body.cinema .lineage-toolbar,
+body.cinema .lineage-statusbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.lineage-topbar,
+.lineage-rail,
+.lineage-controls,
+.lineage-detail,
+.lineage-minimap,
+.lineage-toolbar,
+.lineage-statusbar {
+  transition: opacity 0.4s ease;
+}
+
+/* ---------- barra de história em modo cinema ---------- */
+body.cinema .story-mode-bar {
+  bottom: calc(9vh + 18px);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  text-align: center;
+}
+body.cinema .story-mode-copy strong {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #e8c078;
+  text-shadow: 0 0 34px rgba(201, 151, 76, 0.55);
+  display: block;
+}
+body.cinema .story-mode-copy p {
+  color: #9c9384;
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+body.cinema .story-mode-progress span {
+  background: rgba(201, 151, 76, 0.25);
+}
+body.cinema .story-mode-progress span.active,
+body.cinema .story-mode-progress span.done {
+  background: #e8c078;
+  box-shadow: 0 0 10px rgba(232, 192, 120, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-bar { transition: none; }
+}
