@@ -285,6 +285,18 @@ export default function HomePage() {
       </header>
 
       <section className="ed-hero" aria-label="The Big Tree BJJ">
+        <video
+          className="ed-hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          <source src="/filme-bg-tbt.mp4" type="video/mp4" />
+        </video>
         <div className="ed-hero-stage">
           <p className="ed-hero-overline">{copy.hero.overline}</p>
           <div className="ed-hero-emblem">
