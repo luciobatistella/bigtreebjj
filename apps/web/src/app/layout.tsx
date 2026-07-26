@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { GoogleAnalytics } from './analytics/GoogleAnalytics';
 import {
   GoogleTagManagerNoScript,
   GoogleTagManagerScript
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang={locale === 'en' ? 'en' : 'pt-BR'}>
       <head>
         <GoogleTagManagerScript />
+        <GoogleAnalytics />
       </head>
       <body>
         <GoogleTagManagerNoScript />
