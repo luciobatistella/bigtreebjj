@@ -182,10 +182,12 @@ function explorerPersonPath(person: Pick<TreeNodeM, "name">) {
 
 export default function MotionForest({
   locale,
-  initialPersonId
+  initialPersonId,
+  initialCelebration = false
 }: {
   locale: Locale;
   initialPersonId?: string;
+  initialCelebration?: boolean;
 }) {
   const copy = explorerCopy[locale];
   const numberLocale = locale === "en" ? "en-US" : "pt-BR";
@@ -1123,17 +1125,6 @@ export default function MotionForest({
           void currentStep.offsetWidth;
           currentStep.classList.add("mt-story-progressing");
         }
-
-        const track = lineageTrackRef.current;
-        if (track && lineageCeremony.on && beats.length > 1) {
-          const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-          track.scrollTo({
-            left: maxScroll * (lineageStoryIndex / (beats.length - 1)),
-            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-              ? "auto"
-              : "smooth"
-          });
-        }
       }
       function restartLineageStoryPlayback() {
         window.clearInterval(lineageStoryTimer);
@@ -1301,7 +1292,6 @@ export default function MotionForest({
         const button = lineageShareRef.current;
         if (!node || !button) return;
         const directUrl = new URL(explorerPersonPath(node), window.location.origin);
-        directUrl.searchParams.set("celebrate", "1");
         const url = directUrl.toString();
         try {
           await navigator.clipboard.writeText(url);
@@ -1331,9 +1321,15 @@ export default function MotionForest({
       const onLineageStoryLeave = (event: PointerEvent) => {
         if (event.pointerType === "mouse" && lineageCeremony.on) restartLineageStoryPlayback();
       };
+      const onLineageTouchStart = (event: PointerEvent) => {
+        if (event.pointerType !== "mouse") window.clearInterval(lineageStoryTimer);
+      };
       lineageStoryRef.current?.addEventListener("click", onLineageStoryClick);
       lineageStoryRef.current?.addEventListener("pointerenter", onLineageStoryEnter);
       lineageStoryRef.current?.addEventListener("pointerleave", onLineageStoryLeave);
+      lineageStageRef.current?.addEventListener("pointerdown", onLineageTouchStart, {
+        passive: true
+      });
       const onKeyDown = (e: KeyboardEvent) => {
         const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement;
         if (e.key === "Escape") {
@@ -1375,6 +1371,7 @@ export default function MotionForest({
         lineageStoryRef.current?.removeEventListener("click", onLineageStoryClick);
         lineageStoryRef.current?.removeEventListener("pointerenter", onLineageStoryEnter);
         lineageStoryRef.current?.removeEventListener("pointerleave", onLineageStoryLeave);
+        lineageStageRef.current?.removeEventListener("pointerdown", onLineageTouchStart);
         window.removeEventListener("keydown", onKeyDown);
         window.clearTimeout(lineageShareResetTimer);
         window.clearTimeout(lineageTrackResetTimer);
@@ -1997,7 +1994,8 @@ export default function MotionForest({
       const requestedPerson = initialPersonId ?? urlParams.get("person");
       const requestedSearch = urlParams.get("search")?.trim() ?? "";
       const requestedDetail = urlParams.get("detail") === "1";
-      const requestedCelebration = urlParams.get("celebrate") === "1";
+      const requestedCelebration =
+        initialCelebration || urlParams.get("celebrate") === "1";
       const requestedTree = Number(urlParams.get("tree") ?? "0");
       const searchSlug = slugify(requestedSearch);
       const requestedPersonSlug = requestedPerson
@@ -2090,7 +2088,7 @@ export default function MotionForest({
       cancelAnimationFrame(raf);
       cleanups.forEach((fn) => fn());
     };
-  }, [copy, initialPersonId, locale, numberLocale]);
+  }, [copy, initialCelebration, initialPersonId, locale, numberLocale]);
 
   return (
     <div ref={rootRef} className="mt-root">
@@ -2304,9 +2302,9 @@ export default function MotionForest({
           />
 
           <div className="mt-lineage-ribbon">
+            <p className="mt-lineage-swipe-hint">{copy.lineageSwipeHint}</p>
             <div ref={lineageTrackRef} className="mt-lineage-track" />
           </div>
-          <p className="mt-lineage-swipe-hint">{copy.lineageSwipeHint}</p>
 
           <footer className="mt-lineage-footer">
             <p ref={lineageClosingRef} />

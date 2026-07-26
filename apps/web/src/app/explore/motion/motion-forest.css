@@ -551,12 +551,17 @@
    CERIMÔNIA FULLSCREEN DA LINHAGEM
    ============================================================ */
 .mt-lineage-stage {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 100;
+  width: 100%;
+  height: 100dvh;
   min-height: 100dvh;
   overflow-y: auto;
   overflow-x: clip;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
@@ -737,7 +742,7 @@
   padding: clamp(34px, 5vh, 68px) clamp(26px, 4vw, 76px) clamp(26px, 4vh, 52px);
 }
 .mt-lineage-exit {
-  position: absolute;
+  position: fixed;
   top: max(18px, env(safe-area-inset-top));
   right: max(20px, env(safe-area-inset-right));
   z-index: 4;
@@ -1077,6 +1082,8 @@
   padding: 24px 2% 38px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   scrollbar-width: thin;
   scrollbar-color: rgba(232,192,120,.32) transparent;
   scroll-snap-type: x proximity;
@@ -1434,7 +1441,7 @@
 }
 .mt-lineage-swipe-hint {
   display: none;
-  margin: -8px 0 0;
+  margin: 0;
   color: var(--mt-gold);
   font-size: 8px;
   letter-spacing: .14em;
@@ -1765,8 +1772,9 @@
   .mt-lineage-track {
     gap: 8px;
     min-height: 440px;
-    padding: 20px 18px 34px;
+    padding: 46px 18px 34px;
     scroll-padding-inline: 18px;
+    scroll-snap-type: x mandatory;
   }
   .mt-lineage-card {
     flex-basis: min(44vw, 176px);
@@ -1791,6 +1799,7 @@
   }
   .mt-lineage-join-card {
     min-height: 150px;
+    height: auto;
     padding: 20px 18px 17px;
   }
   .mt-lineage-join-card > strong {
@@ -1799,7 +1808,29 @@
   }
   .mt-lineage-join-card > p { font-size: 9px; }
   .mt-lineage-join-card > b { font-size: 8px; }
-  .mt-lineage-swipe-hint { display: block; }
+  .mt-lineage-swipe-hint {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border: 1px solid rgba(232,192,120,.24);
+    border-radius: 999px;
+    color: #dcb66d;
+    background: rgba(10,7,4,.82);
+    box-shadow: 0 8px 30px rgba(0,0,0,.36);
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateX(-50%);
+  }
+  .mt-lineage-swipe-hint::before {
+    content: "↔";
+    font-size: 13px;
+    animation: mtLineageSwipeCue 1.4s ease-in-out infinite;
+  }
   .mt-lineage-footer {
     flex-direction: column;
     gap: 15px;
@@ -1807,6 +1838,11 @@
   }
   .mt-lineage-footer > p { max-width: 34ch; font-size: 17px; }
   .mt-lineage-footer > button { min-height: 48px; }
+}
+
+@keyframes mtLineageSwipeCue {
+  0%, 100% { transform: translateX(-2px); opacity: .62; }
+  50% { transform: translateX(2px); opacity: 1; }
 }
 
 @media (max-width: 520px) {
@@ -1833,7 +1869,7 @@
   .mt-lineage-crest, .mt-lineage-crest::after, .mt-lineage-nameplate h2,
   .mt-lineage-nameplate p, .mt-lineage-story::before, .mt-lineage-story-beat,
   .mt-lineage-story-steps button i::after, .mt-lineage-join-card,
-  .mt-lineage-join-card::after {
+  .mt-lineage-join-card::after, .mt-lineage-swipe-hint::before {
     transition: none;
     animation: none;
   }

@@ -7,5 +7,11 @@ export default function PublicLineagePage({
   params: { slug: string };
 }) {
   const locale = getServerLocale();
-  return <MotionForest locale={locale} initialPersonId={params.slug} />;
+  return (
+    <MotionForest
+      locale={locale}
+      initialPersonId={params.slug}
+      initialCelebration
+    />
+  );
 }
