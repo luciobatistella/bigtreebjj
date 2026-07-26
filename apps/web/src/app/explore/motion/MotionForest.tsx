@@ -166,7 +166,17 @@ function slugify(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-export default function MotionForest({ locale }: { locale: Locale }) {
+function explorerPersonPath(id: string) {
+  return `/explore/person/${encodeURIComponent(id)}`;
+}
+
+export default function MotionForest({
+  locale,
+  initialPersonId
+}: {
+  locale: Locale;
+  initialPersonId?: string;
+}) {
   const copy = explorerCopy[locale];
   const numberLocale = locale === "en" ? "en-US" : "pt-BR";
   const rootRef = useRef<HTMLDivElement>(null);
@@ -193,9 +203,13 @@ export default function MotionForest({ locale }: { locale: Locale }) {
   const detailOpenRef = useRef<HTMLButtonElement>(null);
   const minimapRef = useRef<HTMLCanvasElement>(null);
   const shareRef = useRef<HTMLButtonElement>(null);
-  const capNameRef = useRef<HTMLElement>(null);
-  const capSubRef = useRef<HTMLElement>(null);
-  const storyExitRef = useRef<HTMLButtonElement>(null);
+  const lineageStageRef = useRef<HTMLDivElement>(null);
+  const lineageTrackRef = useRef<HTMLDivElement>(null);
+  const lineageNameRef = useRef<HTMLElement>(null);
+  const lineageLeadRef = useRef<HTMLParagraphElement>(null);
+  const lineageClosingRef = useRef<HTMLParagraphElement>(null);
+  const lineageShareRef = useRef<HTMLButtonElement>(null);
+  const lineageExitRef = useRef<HTMLButtonElement>(null);
   const detailCloseRef = useRef<HTMLButtonElement>(null);
 
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -278,6 +292,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       let TREE: TreeNodeM = null as unknown as TreeNodeM;
       let currentTreeIndex = 0;
       let layoutDirty = true;
+      let urlSyncReady = false;
 
       function cloneTree(src: ForestNode, depth = 0, collapseAt = 3): TreeNodeM {
         const node: TreeNodeM = {
@@ -586,6 +601,12 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       let path: TreeNodeM[] = [];
       let pathSet = new Set<string>();
       let revealT0 = 0;
+      function syncExplorerUrl(node: TreeNodeM | null) {
+        if (!urlSyncReady) return;
+        const nextPath = node ? explorerPersonPath(node.id) : "/explore";
+        if (`${window.location.pathname}${window.location.search}` === nextPath) return;
+        window.history.replaceState(window.history.state, "", nextPath);
+      }
       function saveExplorerReturnState() {
         const openNodeIds: string[] = [];
         visitAll(TREE, (node) => {
@@ -690,6 +711,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
             focusNode(n);
           }
         }
+        syncExplorerUrl(n);
       }
 
       function revealAndSelect(id: string) {
@@ -720,6 +742,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
         if (selectedLabelRef.current) selectedLabelRef.current.textContent = TREE?.name ?? copy.root;
         // a barra "você está aqui" continua de pé, só recua pra raiz da árvore atual
         renderBreadcrumb(TREE);
+        syncExplorerUrl(null);
       }
 
       /* "você está aqui" — sempre visível, igual o site do Fábio Gurgel */
@@ -825,7 +848,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
           interactionFeedback(n, opening);
           select(n, { expand: opening });
         }
-        else if (!story.on) clearSelection();
+        else if (!lineageCeremony.on) clearSelection();
       };
       cv.addEventListener("click", onClick);
       cleanups.push(() => cv.removeEventListener("click", onClick));
@@ -999,7 +1022,9 @@ export default function MotionForest({ locale }: { locale: Locale }) {
           if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           saveExplorerReturnState();
         });
-        detailBody.querySelector<HTMLButtonElement>(".mt-story-btn")?.addEventListener("click", () => startStory(n));
+        detailBody
+          .querySelector<HTMLButtonElement>(".mt-story-btn")
+          ?.addEventListener("click", () => startLineageCelebration(n));
       }
       const onDetailClose = () => {
         if (isCompactUI) hideDetail();
@@ -1052,44 +1077,98 @@ export default function MotionForest({ locale }: { locale: Locale }) {
         window.removeEventListener("pointercancel", onSheetUp);
       });
 
-      /* ============ modo história ============ */
-      const story: { on: boolean; steps: TreeNodeM[]; idx: number; timer: number } = { on: false, steps: [], idx: 0, timer: 0 };
-      function startStory(n: TreeNodeM) {
-        story.steps = lineageAncestors(n);
-        if (!story.steps.length) return;
-        story.idx = 0;
-        story.on = true;
-        rootEl.classList.add("mt-cinema");
-        select(story.steps[0], { noCam: true });
-        storyStep();
-      }
-      function storyStep() {
-        if (!story.on) return;
-        const s = story.steps[story.idx];
-        select(s, { noCam: true });
-        camFlyTo(s.x, s.y, 1.05);
-        if (capNameRef.current) capNameRef.current.textContent = s.name;
-        if (capSubRef.current)
-          capSubRef.current.textContent =
-            (s.nickname ? `"${s.nickname}" · ` : "") + (s.team || "") + `  ·  ${copy.generation(story.idx + 1, story.steps.length)}`;
-        story.idx += 1;
-        story.timer = window.setTimeout(story.idx < story.steps.length ? storyStep : stopStory, story.idx < story.steps.length ? 1900 : 2600);
-      }
-      function stopStory() {
-        story.on = false;
-        window.clearTimeout(story.timer);
-        rootEl.classList.remove("mt-cinema");
-        if (story.steps.length) {
-          const last = story.steps[story.steps.length - 1];
-          select(last);
+      /* ============ cerimônia fullscreen da linhagem ============ */
+      const lineageCeremony: { on: boolean; node: TreeNodeM | null } = {
+        on: false,
+        node: null
+      };
+      let lineageShareResetTimer = 0;
+      let lineageTrackResetTimer = 0;
+      function startLineageCelebration(n: TreeNodeM) {
+        const chain = lineageAncestors(n);
+        const stage = lineageStageRef.current;
+        const track = lineageTrackRef.current;
+        if (!chain.length || !stage || !track) return;
+
+        lineageCeremony.on = true;
+        lineageCeremony.node = n;
+        if (lineageNameRef.current) lineageNameRef.current.textContent = n.name;
+        if (lineageLeadRef.current) {
+          lineageLeadRef.current.textContent = copy.lineageCelebrationLead(chain.length);
         }
+        if (lineageClosingRef.current) {
+          lineageClosingRef.current.textContent = copy.lineageCelebrationClosing(n.name);
+        }
+        track.style.setProperty("--mt-lineage-count", String(chain.length));
+        track.innerHTML = chain
+          .map((member, index) => {
+            const [statusClass, statusLabel] = pillFor(member);
+            const context = member.team || member.relationLabel || copy.lineageLegacy;
+            return `
+              ${index ? `<span class="mt-lineage-connector" style="--mt-lineage-i:${index}" aria-hidden="true"><i></i><b>&rarr;</b></span>` : ""}
+              <article class="mt-lineage-card${index === chain.length - 1 ? " mt-lineage-card-final" : ""}" style="--mt-lineage-i:${index}">
+                <span class="mt-lineage-number">${String(index + 1).padStart(2, "0")}</span>
+                <div class="mt-lineage-avatar">${escapeHtml(initialsOf(member.name))}</div>
+                <small>${copy.generation(index + 1, chain.length)}</small>
+                <strong>${escapeHtml(member.name)}</strong>
+                <p>${escapeHtml(context)}</p>
+                <em class="${statusClass}">${escapeHtml(statusLabel)}</em>
+                ${index === chain.length - 1 ? `<mark>${copy.youAreHere}</mark>` : ""}
+              </article>
+            `;
+          })
+          .join("");
+
+        stage.setAttribute("aria-hidden", "false");
+        stage.classList.remove("mt-lineage-animate");
+        rootEl.classList.add("mt-lineage-open");
+        track.scrollLeft = 0;
+        window.clearTimeout(lineageTrackResetTimer);
+        lineageTrackResetTimer = window.setTimeout(() => {
+          if (lineageCeremony.on) track.scrollLeft = 0;
+        }, 320);
+        void stage.offsetWidth;
+        stage.classList.add("mt-lineage-animate");
+        navigator.vibrate?.([16, 45, 24]);
+        window.setTimeout(() => lineageExitRef.current?.focus({ preventScroll: true }), 180);
       }
-      const onStoryExit = () => stopStory();
-      storyExitRef.current?.addEventListener("click", onStoryExit);
+      function stopLineageCelebration() {
+        lineageCeremony.on = false;
+        lineageCeremony.node = null;
+        rootEl.classList.remove("mt-lineage-open");
+        lineageStageRef.current?.classList.remove("mt-lineage-animate");
+        lineageStageRef.current?.setAttribute("aria-hidden", "true");
+        window.clearTimeout(lineageTrackResetTimer);
+        detailBody.querySelector<HTMLButtonElement>(".mt-story-btn")?.focus({ preventScroll: true });
+      }
+      const onLineageExit = () => stopLineageCelebration();
+      const onLineageShare = async () => {
+        const node = lineageCeremony.node;
+        const button = lineageShareRef.current;
+        if (!node || !button) return;
+        const directUrl = new URL(explorerPersonPath(node.id), window.location.origin);
+        directUrl.searchParams.set("celebrate", "1");
+        const url = directUrl.toString();
+        try {
+          await navigator.clipboard.writeText(url);
+          const original = button.textContent;
+          button.textContent = copy.directLinkCopied;
+          button.classList.add("mt-copied");
+          window.clearTimeout(lineageShareResetTimer);
+          lineageShareResetTimer = window.setTimeout(() => {
+            button.textContent = original;
+            button.classList.remove("mt-copied");
+          }, 1800);
+        } catch {
+          // O link canônico continua visível na barra do navegador.
+        }
+      };
+      lineageExitRef.current?.addEventListener("click", onLineageExit);
+      lineageShareRef.current?.addEventListener("click", onLineageShare);
       const onKeyDown = (e: KeyboardEvent) => {
         const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement;
         if (e.key === "Escape") {
-          if (story.on) stopStory();
+          if (lineageCeremony.on) stopLineageCelebration();
           else if (document.activeElement === searchIn || searchRes.classList.contains("mt-show")) {
             searchRes.classList.remove("mt-show");
             searchIn.blur();
@@ -1122,9 +1201,11 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       };
       window.addEventListener("keydown", onKeyDown);
       cleanups.push(() => {
-        storyExitRef.current?.removeEventListener("click", onStoryExit);
+        lineageExitRef.current?.removeEventListener("click", onLineageExit);
+        lineageShareRef.current?.removeEventListener("click", onLineageShare);
         window.removeEventListener("keydown", onKeyDown);
-        window.clearTimeout(story.timer);
+        window.clearTimeout(lineageShareResetTimer);
+        window.clearTimeout(lineageTrackResetTimer);
       });
 
       /* ============ zoom / mini map / compartilhar ============ */
@@ -1168,9 +1249,10 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       let shareResetTimer = 0;
       const onShare = async () => {
         const btn = shareRef.current;
-        const shareUrl = new URL(window.location.href);
-        shareUrl.searchParams.set("tree", String(currentTreeIndex));
-        if (selected) shareUrl.searchParams.set("person", selected.id);
+        const shareUrl = new URL(
+          selected ? explorerPersonPath(selected.id) : "/explore",
+          window.location.origin
+        );
         try {
           await navigator.clipboard.writeText(shareUrl.toString());
         } catch {
@@ -1739,9 +1821,10 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       resize();
       const returnState = readExplorerReturnState();
       const urlParams = new URL(window.location.href).searchParams;
-      const requestedPerson = urlParams.get("person");
+      const requestedPerson = initialPersonId ?? urlParams.get("person");
       const requestedSearch = urlParams.get("search")?.trim() ?? "";
       const requestedDetail = urlParams.get("detail") === "1";
+      const requestedCelebration = urlParams.get("celebrate") === "1";
       const requestedTree = Number(urlParams.get("tree") ?? "0");
       const searchSlug = slugify(requestedSearch);
       const deepLink = requestedPerson
@@ -1813,6 +1896,11 @@ export default function MotionForest({ locale }: { locale: Locale }) {
         searchIn.value = requestedSearch;
         onSearchInput();
       }
+      if (requestedCelebration && selected) {
+        startLineageCelebration(selected);
+      }
+      urlSyncReady = true;
+      syncExplorerUrl(selected);
       raf = requestAnimationFrame(frame);
       const hintTimer = window.setTimeout(() => {
         if (hintRef.current) hintRef.current.style.opacity = "0";
@@ -1825,7 +1913,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       cancelAnimationFrame(raf);
       cleanups.forEach((fn) => fn());
     };
-  }, [copy, locale, numberLocale]);
+  }, [copy, initialPersonId, locale, numberLocale]);
 
   return (
     <div ref={rootRef} className="mt-root">
@@ -1975,16 +2063,47 @@ export default function MotionForest({ locale }: { locale: Locale }) {
         </button>
       </div>
 
-      <div className="mt-bar mt-bar-top" />
-      <div className="mt-bar mt-bar-bot" />
-      <div className="mt-caption">
-        <small>{copy.lineage}</small>
-        <b ref={capNameRef} />
-        <span ref={capSubRef} />
+      <div
+        ref={lineageStageRef}
+        className="mt-lineage-stage"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        aria-labelledby="mt-lineage-title"
+      >
+        <div className="mt-lineage-glow" aria-hidden="true" />
+        <div className="mt-lineage-particles" aria-hidden="true">
+          {Array.from({ length: 14 }, (_, index) => <i key={index} />)}
+        </div>
+        <button ref={lineageExitRef} type="button" className="mt-lineage-exit">
+          <span aria-hidden="true">×</span>
+          {copy.exitLineageCelebration}
+        </button>
+
+        <div className="mt-lineage-stage-inner">
+          <header className="mt-lineage-hero">
+            <small>{copy.lineageRecognition}</small>
+            <h2 id="mt-lineage-title">
+              <span>{copy.congratulations}</span>
+              <strong ref={lineageNameRef} />
+            </h2>
+            <p ref={lineageLeadRef} />
+          </header>
+
+          <div className="mt-lineage-ribbon">
+            <div ref={lineageTrackRef} className="mt-lineage-track" />
+          </div>
+          <p className="mt-lineage-swipe-hint">{copy.lineageSwipeHint}</p>
+
+          <footer className="mt-lineage-footer">
+            <p ref={lineageClosingRef} />
+            <button ref={lineageShareRef} type="button">
+              <span aria-hidden="true">↗</span>
+              {copy.copyDirectLineageLink}
+            </button>
+          </footer>
+        </div>
       </div>
-      <button ref={storyExitRef} type="button" className="mt-story-exit">
-        ← {copy.exitStory}
-      </button>
 
       {status === "loading" ? <div className="mt-loading">{copy.loading}</div> : null}
       {status === "error" ? (
