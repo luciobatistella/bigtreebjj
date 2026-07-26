@@ -23,7 +23,10 @@ function validPort(value, fallback) {
   return Number.isInteger(port) && port > 0 && port <= 65_535 ? String(port) : fallback;
 }
 
-const webPort = validPort(process.env.PORT, "3000");
+// Hostinger's managed Node.js reverse proxy forwards public traffic to port 3000.
+// WEB_PORT remains available for isolated local validation without letting a
+// platform-provided generic PORT value move the production listener.
+const webPort = validPort(process.env.WEB_PORT, "3000");
 const apiPort = validPort(process.env.API_PORT, webPort === "3001" ? "3101" : "3001");
 const internalApiUrl = process.env.API_INTERNAL_URL || `http://127.0.0.1:${apiPort}`;
 const runtimeEnvironment = {
