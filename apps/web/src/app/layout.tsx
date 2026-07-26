@@ -1,5 +1,9 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import {
+  GoogleTagManagerNoScript,
+  GoogleTagManagerScript
+} from './analytics/GoogleTagManager';
 import { LanguageSwitcher } from './i18n/LanguageSwitcher';
 import { getServerLocale } from './i18n/serverLocale';
 
@@ -22,7 +26,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const locale = getServerLocale();
   return (
     <html lang={locale === 'en' ? 'en' : 'pt-BR'}>
+      <head>
+        <GoogleTagManagerScript />
+      </head>
       <body>
+        <GoogleTagManagerNoScript />
         {children}
         <LanguageSwitcher locale={locale} />
       </body>
