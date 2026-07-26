@@ -728,9 +728,9 @@
   width: 100%;
   min-width: 0;
   height: 100dvh;
-  min-height: 650px;
+  min-height: 760px;
   display: grid;
-  grid-template-rows: auto minmax(260px, 1fr) auto auto;
+  grid-template-rows: auto minmax(118px, .48fr) minmax(240px, 1fr) auto auto;
   align-items: center;
   gap: clamp(12px, 2vh, 24px);
   box-sizing: border-box;
@@ -771,7 +771,8 @@
 }
 .mt-lineage-hero {
   min-width: 0;
-  max-width: 1040px;
+  width: 100%;
+  max-width: 1160px;
   margin-inline: auto;
   text-align: center;
 }
@@ -784,32 +785,260 @@
   letter-spacing: .34em;
   text-transform: uppercase;
 }
+.mt-lineage-identity {
+  display: inline-grid;
+  grid-template-columns: clamp(94px, 8vw, 126px) minmax(0, auto);
+  align-items: center;
+  gap: clamp(20px, 2.6vw, 42px);
+  max-width: 100%;
+  text-align: left;
+}
+.mt-lineage-crest {
+  position: relative;
+  width: clamp(94px, 8vw, 126px);
+  aspect-ratio: .84;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 21% 12% 20%;
+  color: #f6d895;
+  background: linear-gradient(145deg, #f3d48e, #8c571d 58%, #f5d99c);
+  clip-path: polygon(50% 0, 94% 15%, 90% 70%, 50% 100%, 10% 70%, 6% 15%);
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.5)) drop-shadow(0 0 24px rgba(201,151,76,.2));
+  isolation: isolate;
+}
+.mt-lineage-crest::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(232,192,120,.22), transparent 40%),
+    linear-gradient(160deg, #1b1107, #080503 70%);
+  clip-path: inherit;
+}
+.mt-lineage-crest::after {
+  content: "✦";
+  position: absolute;
+  top: 12%;
+  color: rgba(255,231,172,.82);
+  font-size: clamp(8px, .8vw, 12px);
+  text-shadow: 0 0 12px rgba(232,192,120,.7);
+  animation: mtLineageMedalTwinkle 3.2s ease-in-out infinite;
+}
+.mt-lineage-crest > i {
+  position: absolute;
+  inset: 15% 18% 22%;
+  z-index: -1;
+  border: 1px solid rgba(232,192,120,.22);
+  border-radius: 50%;
+  box-shadow: inset 0 0 20px rgba(201,151,76,.12);
+}
+.mt-lineage-crest > span {
+  align-self: end;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(34px, 3.8vw, 58px);
+  font-weight: 600;
+  line-height: .82;
+  letter-spacing: -.07em;
+}
+.mt-lineage-crest > small {
+  color: #d7b36d;
+  font-size: clamp(6px, .52vw, 8px);
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+.mt-lineage-crest > b {
+  align-self: end;
+  color: rgba(230,209,170,.52);
+  font-size: clamp(4.5px, .42vw, 6px);
+  letter-spacing: .13em;
+  white-space: nowrap;
+}
+.mt-lineage-nameplate {
+  min-width: 0;
+  max-width: 900px;
+}
 .mt-lineage-hero h2 {
   margin: 0;
   font-family: 'Fraunces', Georgia, serif;
-  line-height: .88;
-  letter-spacing: -.04em;
-}
-.mt-lineage-hero h2 span {
-  display: block;
-  color: var(--mt-text);
-  font-size: clamp(30px, 4vw, 62px);
-  font-weight: 400;
+  line-height: .84;
+  letter-spacing: -.055em;
 }
 .mt-lineage-hero h2 strong {
   display: block;
   color: var(--mt-gold-bright);
-  font-size: clamp(46px, 6.5vw, 112px);
+  font-size: clamp(52px, 6.3vw, 108px);
   font-weight: 600;
+  text-transform: uppercase;
   text-shadow: 0 0 60px rgba(201,151,76,.34);
 }
 .mt-lineage-hero p {
-  max-width: 700px;
-  margin: clamp(14px, 2vh, 24px) auto 0;
-  color: #c9bdab;
+  margin: clamp(12px, 1.6vh, 20px) 0 0;
+  color: #d4b775;
+  font-size: clamp(9px, .8vw, 12px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+}
+.mt-lineage-animate .mt-lineage-crest {
+  animation: mtLineageCrestIn 1.1s .12s cubic-bezier(.16,.9,.23,1) both;
+}
+.mt-lineage-animate .mt-lineage-nameplate h2 {
+  animation: mtLineageNameIn 1s .2s cubic-bezier(.16,.9,.23,1) both;
+}
+.mt-lineage-animate .mt-lineage-nameplate p {
+  animation: mtLineageNameIn .8s .42s cubic-bezier(.16,.9,.23,1) both;
+}
+.mt-lineage-story {
+  position: relative;
+  width: min(100%, 1080px);
+  min-width: 0;
+  height: 100%;
+  min-height: 118px;
+  max-height: 168px;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid rgba(232,192,120,.16);
+  border-radius: 24px;
+  background:
+    linear-gradient(100deg, rgba(201,151,76,.08), transparent 34%),
+    rgba(9,6,3,.68);
+  box-shadow: inset 0 1px rgba(255,255,255,.025), 0 26px 70px rgba(0,0,0,.2);
+  backdrop-filter: blur(14px);
+}
+.mt-lineage-story::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(232,192,120,.07) 48%, transparent 66%);
+  transform: translateX(-100%);
+  animation: mtLineageStorySheen 8s 1.4s ease-in-out infinite;
+}
+.mt-lineage-story-stage {
+  position: absolute;
+  inset: 0 0 31px;
+}
+.mt-lineage-story-beat {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: clamp(84px, 9vw, 132px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 36px);
+  padding: clamp(15px, 2vh, 25px) clamp(20px, 3vw, 44px);
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 24px, 0) scale(.985);
+  filter: blur(9px);
+  transition:
+    opacity .65s ease,
+    transform .8s cubic-bezier(.18,.82,.22,1),
+    filter .65s ease;
+}
+.mt-lineage-story-beat.mt-story-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+.mt-lineage-story-number {
+  color: rgba(232,192,120,.22);
   font-family: 'Fraunces', Georgia, serif;
-  font-size: clamp(16px, 1.5vw, 23px);
-  line-height: 1.45;
+  font-size: clamp(54px, 6.4vw, 94px);
+  font-weight: 500;
+  line-height: .8;
+  letter-spacing: -.08em;
+  text-align: center;
+  transition: color .7s ease, text-shadow .7s ease;
+}
+.mt-lineage-story-beat.mt-story-active .mt-lineage-story-number {
+  color: rgba(232,192,120,.58);
+  text-shadow: 0 0 36px rgba(201,151,76,.22);
+}
+.mt-lineage-story-copy {
+  min-width: 0;
+  text-align: left;
+}
+.mt-lineage-story-copy small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--mt-gold);
+  font-size: clamp(6.5px, .58vw, 8px);
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+.mt-lineage-story-copy strong {
+  display: block;
+  overflow: hidden;
+  color: #efe0c5;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(18px, 1.9vw, 29px);
+  font-weight: 500;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mt-lineage-story-copy p {
+  max-width: 92ch;
+  margin: 7px 0 0;
+  color: #a99d8b;
+  font-size: clamp(9px, .8vw, 12px);
+  line-height: 1.48;
+}
+.mt-lineage-story-steps {
+  position: absolute;
+  right: clamp(18px, 3vw, 42px);
+  bottom: 9px;
+  left: clamp(18px, 3vw, 42px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.mt-lineage-story-steps button {
+  position: relative;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  color: rgba(232,192,120,.38);
+  background: transparent;
+  cursor: pointer;
+}
+.mt-lineage-story-steps button i {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(232,192,120,.16);
+}
+.mt-lineage-story-steps button i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #9f6726, #f3d18b);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.mt-lineage-story-steps button.mt-story-active {
+  color: var(--mt-gold-bright);
+}
+.mt-lineage-story-steps button.mt-story-progressing i::after {
+  animation: mtLineageStoryProgress 4.8s linear both;
+}
+.mt-lineage-story-steps button span {
+  position: absolute;
+  top: 6px;
+  right: 0;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
 .mt-lineage-ribbon {
   position: relative;
@@ -1114,6 +1343,23 @@
 .mt-lineage-footer > button:hover { transform: translateY(-2px); filter: brightness(1.08); }
 .mt-lineage-footer > button.mt-copied { background: linear-gradient(135deg, #b9d9c3, #5f9c76); }
 
+@keyframes mtLineageCrestIn {
+  0% { opacity: 0; transform: translateY(26px) rotate(-7deg) scale(.72); filter: blur(9px) drop-shadow(0 0 0 rgba(0,0,0,0)); }
+  70% { opacity: 1; transform: translateY(-3px) rotate(1.5deg) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); filter: drop-shadow(0 18px 28px rgba(0,0,0,.5)) drop-shadow(0 0 24px rgba(201,151,76,.2)); }
+}
+@keyframes mtLineageNameIn {
+  from { opacity: 0; transform: translate3d(34px, 0, 0); filter: blur(12px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+@keyframes mtLineageStorySheen {
+  0%, 68% { transform: translateX(-100%); opacity: 0; }
+  75% { opacity: 1; }
+  94%, 100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes mtLineageStoryProgress {
+  to { transform: scaleX(1); }
+}
 @keyframes mtLineageOrbit {
   to { transform: translateX(-50%) rotate(360deg); }
 }
@@ -1295,7 +1541,7 @@
   .mt-lineage-stage-inner {
     height: auto;
     min-height: 100dvh;
-    grid-template-rows: auto minmax(280px, 1fr) auto auto;
+    grid-template-rows: auto 190px minmax(280px, 1fr) auto auto;
     gap: 14px;
     padding: calc(72px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
   }
@@ -1304,16 +1550,64 @@
     right: 12px;
   }
   .mt-lineage-hero > small { margin-bottom: 9px; font-size: 7px; }
-  .mt-lineage-hero h2 span { font-size: clamp(26px, 8vw, 38px); }
+  .mt-lineage-identity {
+    width: min(100%, 560px);
+    grid-template-columns: clamp(78px, 20vw, 94px) minmax(0, 1fr);
+    gap: clamp(12px, 4vw, 20px);
+  }
+  .mt-lineage-crest {
+    width: clamp(78px, 20vw, 94px);
+  }
   .mt-lineage-hero h2 strong {
-    margin-top: 3px;
-    font-size: clamp(42px, 13vw, 72px);
-    line-height: .94;
+    font-size: clamp(34px, 10.5vw, 58px);
+    line-height: .88;
   }
   .mt-lineage-hero p {
-    max-width: 34ch;
-    margin-top: 13px;
-    font-size: clamp(15px, 4.4vw, 18px);
+    margin-top: 10px;
+    font-size: clamp(7px, 2vw, 9px);
+    letter-spacing: .2em;
+  }
+  .mt-lineage-story {
+    width: 100%;
+    min-height: 190px;
+    max-height: 190px;
+    border-radius: 20px;
+  }
+  .mt-lineage-story-stage { bottom: 34px; }
+  .mt-lineage-story-beat {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 10px;
+    padding: 16px 14px;
+  }
+  .mt-lineage-story-number {
+    align-self: start;
+    padding-top: 17px;
+    font-size: 42px;
+  }
+  .mt-lineage-story-copy small { font-size: 6px; letter-spacing: .14em; }
+  .mt-lineage-story-copy strong {
+    display: -webkit-box;
+    margin-top: 5px;
+    overflow: hidden;
+    font-size: clamp(17px, 4.8vw, 22px);
+    line-height: 1.05;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .mt-lineage-story-copy p {
+    display: -webkit-box;
+    margin-top: 7px;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.42;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+  .mt-lineage-story-steps {
+    right: 14px;
+    bottom: 10px;
+    left: 14px;
   }
   .mt-lineage-ribbon {
     width: calc(100% + 28px);
@@ -1361,7 +1655,10 @@
   .mt-tip, .mt-detail, .mt-topbar, .mt-sidebar, .mt-bottombar, .mt-branch-action, .mt-location,
   .mt-lineage-stage, .mt-lineage-glow, .mt-lineage-card, .mt-lineage-card-final::before,
   .mt-lineage-connector, .mt-lineage-connector i, .mt-lineage-footer,
-  .mt-lineage-stars, .mt-lineage-stars i, .mt-lineage-stars b, .mt-lineage-card-star {
+  .mt-lineage-stars, .mt-lineage-stars i, .mt-lineage-stars b, .mt-lineage-card-star,
+  .mt-lineage-crest, .mt-lineage-crest::after, .mt-lineage-nameplate h2,
+  .mt-lineage-nameplate p, .mt-lineage-story::before, .mt-lineage-story-beat,
+  .mt-lineage-story-steps button i::after {
     transition: none;
     animation: none;
   }

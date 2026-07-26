@@ -158,6 +158,15 @@ function splitName(name: string): [string, string?] {
   return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
 }
 
+function humanList(values: string[], locale: Locale): string {
+  const clean = values.filter(Boolean);
+  if (!clean.length) return "";
+  if (clean.length === 1) return clean[0];
+  const conjunction = locale === "en" ? "and" : "e";
+  if (clean.length === 2) return `${clean[0]} ${conjunction} ${clean[1]}`;
+  return `${clean.slice(0, -1).join(", ")} ${conjunction} ${clean.at(-1)}`;
+}
+
 function slugify(value: string): string {
   return value
     .normalize("NFD")
@@ -206,6 +215,8 @@ export default function MotionForest({
   const shareRef = useRef<HTMLButtonElement>(null);
   const lineageStageRef = useRef<HTMLDivElement>(null);
   const lineageTrackRef = useRef<HTMLDivElement>(null);
+  const lineageStoryRef = useRef<HTMLElement>(null);
+  const lineageGenerationRef = useRef<HTMLSpanElement>(null);
   const lineageNameRef = useRef<HTMLElement>(null);
   const lineageLeadRef = useRef<HTMLParagraphElement>(null);
   const lineageClosingRef = useRef<HTMLParagraphElement>(null);
@@ -1085,21 +1096,109 @@ export default function MotionForest({
       };
       let lineageShareResetTimer = 0;
       let lineageTrackResetTimer = 0;
+      let lineageStoryTimer = 0;
+      let lineageStoryIndex = 0;
+      function showLineageStoryBeat(nextIndex: number) {
+        const story = lineageStoryRef.current;
+        if (!story) return;
+        const beats = Array.from(story.querySelectorAll<HTMLElement>("[data-story-beat]"));
+        const steps = Array.from(story.querySelectorAll<HTMLButtonElement>("[data-story-step]"));
+        if (!beats.length) return;
+
+        lineageStoryIndex = ((nextIndex % beats.length) + beats.length) % beats.length;
+        beats.forEach((beat, index) => {
+          const active = index === lineageStoryIndex;
+          beat.classList.toggle("mt-story-active", active);
+          beat.setAttribute("aria-hidden", String(!active));
+        });
+        steps.forEach((step, index) => {
+          const active = index === lineageStoryIndex;
+          step.classList.toggle("mt-story-active", active);
+          step.setAttribute("aria-selected", String(active));
+          step.classList.remove("mt-story-progressing");
+        });
+
+        const currentStep = steps[lineageStoryIndex];
+        if (currentStep && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          void currentStep.offsetWidth;
+          currentStep.classList.add("mt-story-progressing");
+        }
+      }
+      function restartLineageStoryPlayback() {
+        window.clearInterval(lineageStoryTimer);
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        lineageStoryTimer = window.setInterval(() => {
+          if (lineageCeremony.on) showLineageStoryBeat(lineageStoryIndex + 1);
+        }, 4800);
+      }
       function startLineageCelebration(n: TreeNodeM) {
         const chain = lineageAncestors(n);
         const stage = lineageStageRef.current;
         const track = lineageTrackRef.current;
-        if (!chain.length || !stage || !track) return;
+        const story = lineageStoryRef.current;
+        if (!chain.length || !stage || !track || !story) return;
 
         lineageCeremony.on = true;
         lineageCeremony.node = n;
         if (lineageNameRef.current) lineageNameRef.current.textContent = n.name;
+        if (lineageGenerationRef.current) {
+          lineageGenerationRef.current.textContent = copy.lineageGenerationBadge(chain.length);
+        }
         if (lineageLeadRef.current) {
-          lineageLeadRef.current.textContent = copy.lineageCelebrationLead(chain.length);
+          lineageLeadRef.current.textContent = copy.lineageCelebrationLead();
         }
         if (lineageClosingRef.current) {
           lineageClosingRef.current.textContent = copy.lineageCelebrationClosing(n.name);
         }
+        const storyBeats = copy.lineageStory({
+          origin: chain[0]?.name ?? copy.lineageLegacy,
+          institution: chain[1]?.name ?? copy.lineageLegacy,
+          traveler: chain[2]?.name ?? copy.lineageLegacy,
+          bridge: chain[3]?.name ?? copy.lineageLegacy,
+          brazilRoot: chain[4]?.name ?? copy.lineageLegacy,
+          guardians:
+            humanList(
+              chain.slice(5, -1).map((member) => member.name),
+              locale
+            ) || copy.lineageLegacy,
+          honoree: n.name,
+          generation: chain.length
+        });
+        story.innerHTML = `
+          <div class="mt-lineage-story-stage">
+            ${storyBeats
+              .map(
+                (beat, index) => `
+                  <article class="mt-lineage-story-beat" data-story-beat="${index}" aria-hidden="${index !== 0}">
+                    <span class="mt-lineage-story-number">${String(index + 1).padStart(2, "0")}</span>
+                    <div class="mt-lineage-story-copy">
+                      <small>${escapeHtml(beat.eyebrow)}</small>
+                      <strong>${escapeHtml(beat.title)}</strong>
+                      <p>${escapeHtml(beat.body)}</p>
+                    </div>
+                  </article>
+                `
+              )
+              .join("")}
+          </div>
+          <div class="mt-lineage-story-steps" role="tablist" aria-label="${escapeHtml(copy.lineageStoryLabel)}">
+            ${storyBeats
+              .map(
+                (beat, index) => `
+                  <button type="button" role="tab" data-story-step="${index}" aria-label="${escapeHtml(
+                    beat.eyebrow
+                  )}" aria-selected="${index === 0}">
+                    <i aria-hidden="true"></i>
+                    <span>${String(index + 1).padStart(2, "0")}</span>
+                  </button>
+                `
+              )
+              .join("")}
+          </div>
+        `;
+        lineageStoryIndex = 0;
+        showLineageStoryBeat(0);
+        restartLineageStoryPlayback();
         track.style.setProperty("--mt-lineage-count", String(chain.length));
         track.innerHTML = chain
           .map((member, index) => {
@@ -1159,6 +1258,7 @@ export default function MotionForest({
         lineageStageRef.current?.classList.remove("mt-lineage-animate");
         lineageStageRef.current?.setAttribute("aria-hidden", "true");
         window.clearTimeout(lineageTrackResetTimer);
+        window.clearInterval(lineageStoryTimer);
         detailBody.querySelector<HTMLButtonElement>(".mt-story-btn")?.focus({ preventScroll: true });
       }
       const onLineageExit = () => stopLineageCelebration();
@@ -1185,6 +1285,21 @@ export default function MotionForest({
       };
       lineageExitRef.current?.addEventListener("click", onLineageExit);
       lineageShareRef.current?.addEventListener("click", onLineageShare);
+      const onLineageStoryClick = (event: MouseEvent) => {
+        const step = (event.target as Element).closest<HTMLButtonElement>("[data-story-step]");
+        if (!step) return;
+        showLineageStoryBeat(Number(step.dataset.storyStep ?? "0"));
+        restartLineageStoryPlayback();
+      };
+      const onLineageStoryEnter = (event: PointerEvent) => {
+        if (event.pointerType === "mouse") window.clearInterval(lineageStoryTimer);
+      };
+      const onLineageStoryLeave = (event: PointerEvent) => {
+        if (event.pointerType === "mouse" && lineageCeremony.on) restartLineageStoryPlayback();
+      };
+      lineageStoryRef.current?.addEventListener("click", onLineageStoryClick);
+      lineageStoryRef.current?.addEventListener("pointerenter", onLineageStoryEnter);
+      lineageStoryRef.current?.addEventListener("pointerleave", onLineageStoryLeave);
       const onKeyDown = (e: KeyboardEvent) => {
         const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement || e.target instanceof HTMLTextAreaElement;
         if (e.key === "Escape") {
@@ -1223,9 +1338,13 @@ export default function MotionForest({
       cleanups.push(() => {
         lineageExitRef.current?.removeEventListener("click", onLineageExit);
         lineageShareRef.current?.removeEventListener("click", onLineageShare);
+        lineageStoryRef.current?.removeEventListener("click", onLineageStoryClick);
+        lineageStoryRef.current?.removeEventListener("pointerenter", onLineageStoryEnter);
+        lineageStoryRef.current?.removeEventListener("pointerleave", onLineageStoryLeave);
         window.removeEventListener("keydown", onKeyDown);
         window.clearTimeout(lineageShareResetTimer);
         window.clearTimeout(lineageTrackResetTimer);
+        window.clearInterval(lineageStoryTimer);
       });
 
       /* ============ zoom / mini map / compartilhar ============ */
@@ -2128,12 +2247,27 @@ export default function MotionForest({
         <div className="mt-lineage-stage-inner">
           <header className="mt-lineage-hero">
             <small>{copy.lineageRecognition}</small>
-            <h2 id="mt-lineage-title">
-              <span>{copy.congratulations}</span>
-              <strong ref={lineageNameRef} />
-            </h2>
-            <p ref={lineageLeadRef} />
+            <div className="mt-lineage-identity">
+              <div className="mt-lineage-crest" aria-hidden="true">
+                <i />
+                <span ref={lineageGenerationRef}>09</span>
+                <small>{copy.lineageGenerationLabel}</small>
+                <b>{copy.lineageCrestSeal}</b>
+              </div>
+              <div className="mt-lineage-nameplate">
+                <h2 id="mt-lineage-title">
+                  <strong ref={lineageNameRef} />
+                </h2>
+                <p ref={lineageLeadRef} />
+              </div>
+            </div>
           </header>
+
+          <section
+            ref={lineageStoryRef}
+            className="mt-lineage-story"
+            aria-label={copy.lineageStoryLabel}
+          />
 
           <div className="mt-lineage-ribbon">
             <div ref={lineageTrackRef} className="mt-lineage-track" />

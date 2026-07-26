@@ -1,5 +1,20 @@
 import type { Locale } from "./locale";
 
+function englishOrdinal(value: number) {
+  const mod100 = value % 100;
+  const suffix =
+    mod100 >= 11 && mod100 <= 13
+      ? "th"
+      : value % 10 === 1
+        ? "st"
+        : value % 10 === 2
+          ? "nd"
+          : value % 10 === 3
+            ? "rd"
+            : "th";
+  return `${value}${suffix}`;
+}
+
 export const explorerCopy = {
   pt: {
     apiStatusError: (status: number) => `Erro ${status} ao carregar linhagens.`,
@@ -40,9 +55,51 @@ export const explorerCopy = {
     playLineageStory: "Celebrar esta linhagem",
     generation: (current: number, total: number) => `geração ${current} de ${total}`,
     lineageRecognition: "Linhagem reconhecida",
-    congratulations: "Parabéns,",
-    lineageCelebrationLead: (count: number) =>
-      `Seu nome carrega ${count} ${count === 1 ? "geração" : "gerações"} de conhecimento, disciplina e legado.`,
+    lineageGenerationBadge: (count: number) => String(count).padStart(2, "0"),
+    lineageGenerationLabel: "Geração",
+    lineageCrestSeal: "Faixa preta",
+    lineageCelebrationLead: () => "Faixa preta de jiu-jitsu",
+    lineageStoryLabel: "A história desta linhagem",
+    lineageStory: ({
+      origin,
+      institution,
+      traveler,
+      bridge,
+      brazilRoot,
+      guardians,
+      honoree,
+      generation
+    }: {
+      origin: string;
+      institution: string;
+      traveler: string;
+      bridge: string;
+      brazilRoot: string;
+      guardians: string;
+      honoree: string;
+      generation: number;
+    }) => [
+      {
+        eyebrow: "Capítulo 01 · A origem",
+        title: "Antes da árvore, existiu uma decisão.",
+        body: `${origin} transformou conhecimento em método. No ${institution}, a técnica ganhou disciplina, memória e futuro.`
+      },
+      {
+        eyebrow: "Capítulo 02 · A travessia",
+        title: "O conhecimento atravessou o oceano.",
+        body: `${traveler} levou essa herança ao Brasil. Com ${bridge} e ${brazilRoot}, ela encontrou novas mãos — e uma nova história.`
+      },
+      {
+        eyebrow: "Capítulo 03 · Os guardiões",
+        title: "Nenhuma geração chegou aqui por acaso.",
+        body: `O elo permaneceu vivo com ${guardians}: conhecimento aprendido, provado e transmitido. Cada faixa preta tornou-se responsável pela próxima.`
+      },
+      {
+        eyebrow: "Capítulo 04 · O seu nome",
+        title: `Hoje, a história chega a ${honoree}.`,
+        body: `Você não é apenas um nome na árvore. É a ${generation}ª geração de faixa preta de jiu-jitsu — e um novo ponto de partida para quem vier depois.`
+      }
+    ],
     lineageCelebrationClosing: (name: string) =>
       `A história não termina em ${name}. Ela continua a partir daqui.`,
     lineageLegacy: "Legado preservado",
@@ -124,9 +181,51 @@ export const explorerCopy = {
     playLineageStory: "Celebrate this lineage",
     generation: (current: number, total: number) => `generation ${current} of ${total}`,
     lineageRecognition: "Lineage recognized",
-    congratulations: "Congratulations,",
-    lineageCelebrationLead: (count: number) =>
-      `Your name carries ${count} ${count === 1 ? "generation" : "generations"} of knowledge, discipline and legacy.`,
+    lineageGenerationBadge: (count: number) => String(count).padStart(2, "0"),
+    lineageGenerationLabel: "Generation",
+    lineageCrestSeal: "Black belt",
+    lineageCelebrationLead: () => "Brazilian jiu-jitsu black belt",
+    lineageStoryLabel: "The story of this lineage",
+    lineageStory: ({
+      origin,
+      institution,
+      traveler,
+      bridge,
+      brazilRoot,
+      guardians,
+      honoree,
+      generation
+    }: {
+      origin: string;
+      institution: string;
+      traveler: string;
+      bridge: string;
+      brazilRoot: string;
+      guardians: string;
+      honoree: string;
+      generation: number;
+    }) => [
+      {
+        eyebrow: "Chapter 01 · The origin",
+        title: "Before the tree, there was a decision.",
+        body: `${origin} turned knowledge into method. At ${institution}, technique acquired discipline, memory and a future.`
+      },
+      {
+        eyebrow: "Chapter 02 · The crossing",
+        title: "Knowledge crossed the ocean.",
+        body: `${traveler} carried this heritage to Brazil. In ${bridge} and ${brazilRoot}, it found new hands — and a new history.`
+      },
+      {
+        eyebrow: "Chapter 03 · The guardians",
+        title: "No generation arrived here by chance.",
+        body: `The link stayed alive through ${guardians}: knowledge learned, proven and passed on. Every black belt became responsible for the next.`
+      },
+      {
+        eyebrow: "Chapter 04 · Your name",
+        title: `Today, the story reaches ${honoree}.`,
+        body: `You are not merely a name on the tree. You are its ${englishOrdinal(generation)} generation Brazilian jiu-jitsu black belt — and a new starting point for everyone who follows.`
+      }
+    ],
     lineageCelebrationClosing: (name: string) =>
       `The story does not end with ${name}. It continues from here.`,
     lineageLegacy: "Preserved legacy",
