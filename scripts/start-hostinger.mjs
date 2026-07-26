@@ -30,7 +30,13 @@ function validPort(value, fallback) {
 // WEB_PORT remains available for isolated local validation without letting a
 // platform-provided generic PORT value move the production listener.
 const webPort = validPort(process.env.WEB_PORT, "3000");
-const apiPort = validPort(process.env.API_PORT, webPort === "3001" ? "3101" : "3001");
+const managedRuntime = Boolean(process.env.LSNODE_ROOT);
+const defaultApiPort = managedRuntime
+  ? String(20_000 + (process.pid % 20_000))
+  : webPort === "3001"
+    ? "3101"
+    : "3001";
+const apiPort = validPort(process.env.API_PORT, defaultApiPort);
 const internalApiUrl = process.env.API_INTERNAL_URL || `http://127.0.0.1:${apiPort}`;
 const runtimeEnvironment = {
   ...process.env,
@@ -86,7 +92,18 @@ function waitForExit(child, label) {
   });
 }
 
-if (hasDatabase) {
+async function applyPendingMigrations() {
+  if (!hasDatabase) {
+    console.warn(
+      "[startup] DATABASE_URL is not configured. Starting the website without lineage data."
+    );
+    return;
+  }
+  if (process.env.RUN_DATABASE_MIGRATIONS_ON_START !== "1") {
+    console.log("[startup] Database migrations are managed separately from runtime startup.");
+    return;
+  }
+
   await ensurePrismaEnginesExecutable();
   console.log("[startup] Applying pending database migrations...");
   const migrationEnvironment = {
@@ -99,25 +116,10 @@ if (hasDatabase) {
     { cwd: projectRoot, env: migrationEnvironment }
   );
 
-  try {
-    await waitForExit(migration, "Database migration");
-  } catch (error) {
-    console.error(`[startup] ${error instanceof Error ? error.message : error}`);
-    process.exit(1);
-  }
-} else {
-  console.warn(
-    "[startup] DATABASE_URL is not configured. Starting the website without lineage data."
-  );
+  await waitForExit(migration, "Database migration");
 }
 
 Object.assign(process.env, runtimeEnvironment);
-
-const requireFromWeb = createRequire(path.join(webRoot, "package.json"));
-const next = requireFromWeb("next");
-let nextApp;
-let webServer;
-let shuttingDown = false;
 
 const apiEnvironment = { ...runtimeEnvironment };
 // Hostinger injects its public-listener hook through NODE_OPTIONS. The API runs
@@ -126,10 +128,17 @@ const apiEnvironment = { ...runtimeEnvironment };
 delete apiEnvironment.NODE_OPTIONS;
 delete apiEnvironment.BIGTREE_PASSENGER;
 
-const api = new Worker(pathToFileURL(apiEntry), {
-  env: apiEnvironment,
-  execArgv: []
+let api;
+let nextApp;
+let handleNextRequest;
+let shuttingDown = false;
+let resolveReadiness;
+let rejectReadiness;
+const readiness = new Promise((resolve, reject) => {
+  resolveReadiness = resolve;
+  rejectReadiness = reject;
 });
+void readiness.catch(() => undefined);
 
 async function shutdown(signal, exitCode = 0) {
   if (shuttingDown) return;
@@ -141,7 +150,7 @@ async function shutdown(signal, exitCode = 0) {
   if (webServer) webServer.close();
   try {
     await Promise.allSettled([
-      api.terminate(),
+      api ? api.terminate() : Promise.resolve(),
       nextApp ? nextApp.close() : Promise.resolve()
     ]);
   } finally {
@@ -149,15 +158,34 @@ async function shutdown(signal, exitCode = 0) {
   }
 }
 
-api.once("error", (error) => {
-  console.error(`[startup] Could not start API: ${error.message}`);
-  void shutdown("API_ERROR", 1);
+const webServer = createServer((request, response) => {
+  void (async () => {
+    try {
+      if (!handleNextRequest) await readiness;
+      await handleNextRequest(request, response);
+    } catch (error) {
+      console.error("[web] Unhandled request error:", error);
+      if (!response.headersSent) {
+        response.statusCode = 503;
+        response.setHeader("Cache-Control", "private, no-store");
+        response.setHeader("Retry-After", "2");
+      }
+      if (!response.writableEnded) response.end("Service Unavailable");
+    }
+  })();
 });
-api.once("exit", (code) => {
-  if (shuttingDown) return;
-  console.error(`[startup] API stopped (code ${code ?? 1}).`);
-  void shutdown("API_EXIT", code || 1);
+
+process.on("SIGINT", () => void shutdown("SIGINT"));
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+
+// lsnode requires the managed entry file to call listen() within three seconds.
+// Establish the public socket before database, API, or Next.js initialization;
+// early requests wait asynchronously on `readiness` instead of failing startup.
+await new Promise((resolve, reject) => {
+  webServer.once("error", reject);
+  webServer.listen(Number(webPort), "0.0.0.0", resolve);
 });
+console.log("[startup] Public listener established; preparing application services.");
 
 async function waitForApi() {
   const healthUrl = `${internalApiUrl}/health`;
@@ -168,7 +196,7 @@ async function waitForApi() {
       });
       if (response.ok) return;
     } catch {
-      // The child is still binding its loopback port.
+      // The worker is still binding its loopback port.
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
@@ -176,42 +204,46 @@ async function waitForApi() {
 }
 
 try {
-  await waitForApi();
-} catch (error) {
-  console.error(`[startup] ${error instanceof Error ? error.message : error}`);
-  await shutdown("API_TIMEOUT", 1);
-}
+  api = new Worker(pathToFileURL(apiEntry), {
+    env: apiEnvironment,
+    execArgv: []
+  });
+  api.once("error", (error) => {
+    console.error(`[startup] Could not start API: ${error.message}`);
+    rejectReadiness(error);
+    void shutdown("API_ERROR", 1);
+  });
+  api.once("exit", (code) => {
+    if (shuttingDown) return;
+    const error = new Error(`API stopped with code ${code ?? 1}.`);
+    console.error(`[startup] ${error.message}`);
+    rejectReadiness(error);
+    void shutdown("API_EXIT", code || 1);
+  });
 
-try {
+  const requireFromWeb = createRequire(path.join(webRoot, "package.json"));
+  const next = requireFromWeb("next");
   nextApp = next({
     dev: false,
     dir: webRoot,
     hostname: "0.0.0.0",
     port: Number(webPort)
   });
-  await nextApp.prepare();
+  await Promise.all([
+    waitForApi(),
+    nextApp.prepare(),
+    applyPendingMigrations()
+  ]);
 
-  const handleNextRequest = nextApp.getRequestHandler();
-  webServer = createServer((request, response) => {
-    handleNextRequest(request, response).catch((error) => {
-      console.error("[web] Unhandled request error:", error);
-      if (!response.headersSent) response.statusCode = 500;
-      if (!response.writableEnded) response.end("Internal Server Error");
-    });
-  });
-
-  await new Promise((resolve, reject) => {
-    webServer.once("error", reject);
-    webServer.listen(Number(webPort), "0.0.0.0", resolve);
-  });
+  handleNextRequest = nextApp.getRequestHandler();
+  resolveReadiness();
 } catch (error) {
-  console.error(`[startup] Could not start Web: ${error instanceof Error ? error.message : error}`);
-  await shutdown("WEB_ERROR", 1);
+  const startupError = error instanceof Error ? error : new Error(String(error));
+  console.error(`[startup] Could not prepare application: ${startupError.message}`);
+  rejectReadiness(startupError);
+  await shutdown("STARTUP_ERROR", 1);
 }
 
-process.on("SIGINT", () => void shutdown("SIGINT"));
-process.on("SIGTERM", () => void shutdown("SIGTERM"));
-
 console.log(
-  `[startup] Web listening in the managed entry process; API available internally on port ${apiPort}.`
+  `[startup] Application ready; API available internally on port ${apiPort}.`
 );
