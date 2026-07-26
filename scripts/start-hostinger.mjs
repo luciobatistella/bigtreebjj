@@ -19,6 +19,16 @@ const prismaEntry = path.join(
   "index.js"
 );
 const prismaSchema = path.join(projectRoot, "packages", "database", "prisma", "schema.prisma");
+const passenger =
+  typeof PhusionPassenger !== "undefined" ? PhusionPassenger : undefined;
+const runsUnderPassenger = Boolean(passenger?.configure);
+
+// Passenger normally captures the first HTTP server that calls listen(). This
+// application has an internal Express server and a public Next.js server, so
+// select the public server explicitly and let Express keep its local TCP port.
+if (runsUnderPassenger) {
+  passenger.configure({ autoInstall: false });
+}
 
 function validPort(value, fallback) {
   const port = Number(value);
@@ -137,6 +147,10 @@ const webServer = createServer((request, response) => {
 
 await new Promise((resolve, reject) => {
   webServer.once("error", reject);
+  if (runsUnderPassenger) {
+    webServer.listen("passenger", resolve);
+    return;
+  }
   webServer.listen(Number(webPort), "0.0.0.0", resolve);
 });
 
@@ -159,5 +173,7 @@ process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
 console.log(
-  `[startup] Web listening in the entry process on port ${webPort}; API available internally on port ${apiPort}.`
+  runsUnderPassenger
+    ? `[startup] Web listening on Passenger; API available internally on port ${apiPort}.`
+    : `[startup] Web listening in the entry process on port ${webPort}; API available internally on port ${apiPort}.`
 );
