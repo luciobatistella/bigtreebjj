@@ -33,10 +33,7 @@ const runtimeEnvironment = {
   API_INTERNAL_URL: internalApiUrl
 };
 
-if (!process.env.DATABASE_URL) {
-  console.error("[startup] DATABASE_URL is required for the PostgreSQL lineage tree.");
-  process.exit(1);
-}
+const hasDatabase = Boolean(process.env.DATABASE_URL);
 
 function run(command, args, options) {
   return spawn(command, args, {
@@ -59,18 +56,24 @@ function waitForExit(child, label) {
   });
 }
 
-console.log("[startup] Applying pending database migrations...");
-const migration = run(
-  process.execPath,
-  [prismaEntry, "migrate", "deploy", "--schema", prismaSchema],
-  { cwd: projectRoot, env: runtimeEnvironment }
-);
+if (hasDatabase) {
+  console.log("[startup] Applying pending database migrations...");
+  const migration = run(
+    process.execPath,
+    [prismaEntry, "migrate", "deploy", "--schema", prismaSchema],
+    { cwd: projectRoot, env: runtimeEnvironment }
+  );
 
-try {
-  await waitForExit(migration, "Database migration");
-} catch (error) {
-  console.error(`[startup] ${error instanceof Error ? error.message : error}`);
-  process.exit(1);
+  try {
+    await waitForExit(migration, "Database migration");
+  } catch (error) {
+    console.error(`[startup] ${error instanceof Error ? error.message : error}`);
+    process.exit(1);
+  }
+} else {
+  console.warn(
+    "[startup] DATABASE_URL is not configured. Starting the website without lineage data."
+  );
 }
 
 const api = run(process.execPath, [apiEntry], {
