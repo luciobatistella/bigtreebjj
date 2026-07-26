@@ -1123,6 +1123,17 @@ export default function MotionForest({
           void currentStep.offsetWidth;
           currentStep.classList.add("mt-story-progressing");
         }
+
+        const track = lineageTrackRef.current;
+        if (track && lineageCeremony.on && beats.length > 1) {
+          const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+          track.scrollTo({
+            left: maxScroll * (lineageStoryIndex / (beats.length - 1)),
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth"
+          });
+        }
       }
       function restartLineageStoryPlayback() {
         window.clearInterval(lineageStoryTimer);
@@ -1222,9 +1233,12 @@ export default function MotionForest({
                   )}" aria-label="${escapeHtml(portraitLabel)}">i</a>
                 </div>`
               : `<div class="mt-lineage-avatar">${escapeHtml(initialsOf(member.name))}</div>`;
-            return `
-              ${index ? `<span class="mt-lineage-connector" style="--mt-lineage-connector-delay:${500 + index * 75}ms" aria-hidden="true"><i></i><b>&rarr;</b></span>` : ""}
-              <article class="mt-lineage-card${index === chain.length - 1 ? " mt-lineage-card-final" : ""}" style="--mt-lineage-delay:${280 + index * 75}ms;--mt-lineage-star-delay:${-index * 310}ms">
+            const isFinal = index === chain.length - 1;
+            const connector = index
+              ? `<span class="mt-lineage-connector${isFinal ? " mt-lineage-connector-final" : ""}" style="--mt-lineage-connector-delay:${500 + index * 75}ms" aria-hidden="true"><i></i><b>&rarr;</b></span>`
+              : "";
+            const card = `
+              <article class="mt-lineage-card${isFinal ? " mt-lineage-card-final" : ""}" style="--mt-lineage-delay:${280 + index * 75}ms;--mt-lineage-star-delay:${-index * 310}ms">
                 <span class="mt-lineage-number">${String(index + 1).padStart(2, "0")}</span>
                 <span class="mt-lineage-card-star" aria-hidden="true">✦</span>
                 ${avatar}
@@ -1232,8 +1246,28 @@ export default function MotionForest({
                 <strong>${escapeHtml(member.name)}</strong>
                 <p>${escapeHtml(context)}</p>
                 <em class="${statusClass}">${escapeHtml(statusLabel)}</em>
-                ${index === chain.length - 1 ? `<mark>${copy.youAreHere}</mark>` : ""}
+                ${isFinal ? `<mark>${copy.youAreHere}</mark>` : ""}
               </article>
+            `;
+            if (!isFinal) return `${connector}${card}`;
+
+            const joinHref = `/join?teacher=${encodeURIComponent(n.name)}`;
+            return `
+              ${connector}
+              <div class="mt-lineage-destination">
+                ${card}
+                <div class="mt-lineage-continuation" aria-hidden="true">
+                  <i></i>
+                  <span>${escapeHtml(copy.lineageContinues)}</span>
+                </div>
+                <a class="mt-lineage-join-card" href="${escapeHtml(joinHref)}">
+                  <span class="mt-lineage-join-plus" aria-hidden="true">+</span>
+                  <small>${escapeHtml(copy.lineageContinues)}</small>
+                  <strong>${escapeHtml(copy.lineageJoinQuestion(n.name))}</strong>
+                  <p>${escapeHtml(copy.lineageJoinBody)}</p>
+                  <b>${escapeHtml(copy.lineageJoinAction)} <i aria-hidden="true">→</i></b>
+                </a>
+              </div>
             `;
           })
           .join("");

@@ -101,7 +101,12 @@ export const explorerCopy = {
       }
     ],
     lineageCelebrationClosing: (name: string) =>
-      `A história não termina em ${name}. Ela continua a partir daqui.`,
+      `Esta linhagem chegou a ${name}. Agora, os próximos nomes podem continuar a árvore.`,
+    lineageContinues: "A árvore continua",
+    lineageJoinQuestion: (name: string) => `Você recebeu sua faixa preta de ${name}?`,
+    lineageJoinBody:
+      "Seu nome pode ser o próximo elo. Envie seus certificados e solicite sua inclusão nesta história.",
+    lineageJoinAction: "Adicionar meu nome à árvore",
     lineageLegacy: "Legado preservado",
     youAreHere: "Seu lugar na história",
     lineageSwipeHint: "Deslize para ver toda a linhagem →",
@@ -227,7 +232,12 @@ export const explorerCopy = {
       }
     ],
     lineageCelebrationClosing: (name: string) =>
-      `The story does not end with ${name}. It continues from here.`,
+      `This lineage has reached ${name}. Now its next black belts can continue the tree.`,
+    lineageContinues: "The tree continues",
+    lineageJoinQuestion: (name: string) => `Did ${name} award your black belt?`,
+    lineageJoinBody:
+      "Your name can be the next link. Submit your certificates and request your place in this history.",
+    lineageJoinAction: "Add my name to the tree",
     lineageLegacy: "Preserved legacy",
     youAreHere: "Your place in history",
     lineageSwipeHint: "Swipe to see the complete lineage →",

@@ -555,7 +555,7 @@
   inset: 0;
   z-index: 100;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-y: auto;
   overflow-x: clip;
   visibility: hidden;
   opacity: 0;
@@ -727,10 +727,10 @@
   z-index: 2;
   width: 100%;
   min-width: 0;
-  height: 100dvh;
-  min-height: 760px;
+  height: auto;
+  min-height: max(100dvh, 880px);
   display: grid;
-  grid-template-rows: auto minmax(118px, .48fr) minmax(240px, 1fr) auto auto;
+  grid-template-rows: auto minmax(118px, .48fr) minmax(390px, 1fr) auto auto;
   align-items: center;
   gap: clamp(12px, 2vh, 24px);
   box-sizing: border-box;
@@ -1054,7 +1054,7 @@
   position: absolute;
   left: 2%;
   right: 2%;
-  top: 50%;
+  top: 138px;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(232,192,120,.55) 8%, rgba(232,192,120,.55) 92%, transparent);
   box-shadow: 0 0 18px rgba(232,192,120,.32);
@@ -1072,9 +1072,9 @@
   max-width: 100%;
   box-sizing: border-box;
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: clamp(8px, .8vw, 14px);
-  padding: 24px 2% 30px;
+  padding: 24px 2% 38px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scrollbar-width: thin;
@@ -1110,11 +1110,17 @@
   animation: mtLineageCardIn .8s var(--mt-lineage-delay, .28s) cubic-bezier(.18,.85,.24,1) both;
 }
 .mt-lineage-card-final {
+  width: 100%;
+  min-height: 250px;
+  padding-top: 23px;
   border-color: rgba(232,192,120,.72);
   background:
     radial-gradient(circle at 50% 14%, rgba(232,192,120,.26), transparent 42%),
     linear-gradient(160deg, rgba(201,151,76,.2), rgba(25,16,8,.96));
-  box-shadow: 0 0 0 1px rgba(232,192,120,.12), 0 24px 70px rgba(201,151,76,.2);
+  box-shadow:
+    0 0 0 1px rgba(232,192,120,.16),
+    0 0 52px rgba(201,151,76,.2),
+    0 28px 80px rgba(0,0,0,.48);
 }
 .mt-lineage-card-final::before {
   content: "";
@@ -1200,9 +1206,15 @@
   font-size: 17px;
 }
 .mt-lineage-card-final .mt-lineage-avatar {
-  width: clamp(56px, 4.6vw, 74px);
-  height: clamp(56px, 4.6vw, 74px);
-  margin-bottom: 7px;
+  width: clamp(70px, 5.8vw, 90px);
+  height: clamp(70px, 5.8vw, 90px);
+  margin-bottom: 9px;
+}
+.mt-lineage-card-final > strong {
+  min-height: 46px;
+  color: #ffe0a0;
+  font-size: clamp(19px, 1.65vw, 27px);
+  text-shadow: 0 0 28px rgba(232,192,120,.24);
 }
 .mt-lineage-card > small {
   color: var(--mt-gold);
@@ -1261,7 +1273,8 @@
 .mt-lineage-connector {
   position: relative;
   min-width: clamp(12px, 1.5vw, 26px);
-  align-self: center;
+  align-self: flex-start;
+  margin-top: 103px;
   color: var(--mt-gold);
   text-align: center;
   opacity: 1;
@@ -1291,6 +1304,133 @@
 }
 .mt-lineage-animate .mt-lineage-connector i {
   animation: mtLineageConnectorRule .55s var(--mt-lineage-connector-delay, .5s) ease both;
+}
+.mt-lineage-destination {
+  position: relative;
+  flex: 1 0 190px;
+  min-width: 190px;
+  max-width: 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  scroll-snap-align: center;
+}
+.mt-lineage-continuation {
+  position: relative;
+  height: 48px;
+  display: flex;
+  flex: 0 0 48px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.mt-lineage-continuation i {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(232,192,120,.72), rgba(232,192,120,.16));
+  box-shadow: 0 0 12px rgba(232,192,120,.36);
+}
+.mt-lineage-continuation span {
+  position: absolute;
+  padding: 4px 8px;
+  color: #c8984e;
+  background: #0a0704;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.mt-lineage-join-card {
+  position: relative;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18px 18px 16px;
+  overflow: hidden;
+  border: 1px solid rgba(244,207,132,.48);
+  border-radius: 18px;
+  box-sizing: border-box;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(232,192,120,.22), transparent 30%),
+    linear-gradient(145deg, rgba(45,29,12,.97), rgba(15,10,6,.98));
+  box-shadow: 0 18px 50px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.04);
+  opacity: 1;
+  transform: translateY(0);
+  transition: border-color .25s ease, transform .3s ease, box-shadow .3s ease;
+}
+.mt-lineage-join-card::after {
+  content: "";
+  position: absolute;
+  top: -80%;
+  left: -35%;
+  width: 32%;
+  height: 240%;
+  background: linear-gradient(90deg, transparent, rgba(255,236,190,.14), transparent);
+  transform: rotate(18deg);
+  animation: mtLineageJoinSheen 5.8s 1.4s ease-in-out infinite;
+}
+.mt-lineage-join-card:hover {
+  border-color: rgba(255,224,155,.86);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 64px rgba(201,151,76,.18), inset 0 1px rgba(255,255,255,.06);
+}
+.mt-lineage-join-plus {
+  position: absolute;
+  top: 11px;
+  right: 12px;
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(244,207,132,.44);
+  border-radius: 50%;
+  color: #f1cb7d;
+  font: 300 18px/1 'Inter', sans-serif;
+  box-shadow: 0 0 22px rgba(232,192,120,.12);
+}
+.mt-lineage-join-card > small {
+  color: #b98439;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.mt-lineage-join-card > strong {
+  max-width: 85%;
+  margin-top: 6px;
+  color: #f5dfb7;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(15px, 1.25vw, 19px);
+  font-weight: 600;
+  line-height: 1.08;
+}
+.mt-lineage-join-card > p {
+  margin: 7px 0 10px;
+  color: #a99b86;
+  font-size: 7.5px;
+  line-height: 1.4;
+}
+.mt-lineage-join-card > b {
+  color: #e6b965;
+  font-size: 7px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.mt-lineage-join-card > b i {
+  display: inline-block;
+  margin-left: 4px;
+  font-style: normal;
+  transition: transform .2s ease;
+}
+.mt-lineage-join-card:hover > b i { transform: translateX(4px); }
+.mt-lineage-animate .mt-lineage-join-card {
+  animation: mtLineageJoinIn .8s 1.25s cubic-bezier(.18,.85,.24,1) both;
 }
 .mt-lineage-swipe-hint {
   display: none;
@@ -1359,6 +1499,15 @@
 }
 @keyframes mtLineageStoryProgress {
   to { transform: scaleX(1); }
+}
+@keyframes mtLineageJoinIn {
+  from { opacity: 0; transform: translateY(30px) scale(.94); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes mtLineageJoinSheen {
+  0%, 66% { left: -35%; opacity: 0; }
+  72% { opacity: 1; }
+  92%, 100% { left: 120%; opacity: 0; }
 }
 @keyframes mtLineageOrbit {
   to { transform: translateX(-50%) rotate(360deg); }
@@ -1541,7 +1690,7 @@
   .mt-lineage-stage-inner {
     height: auto;
     min-height: 100dvh;
-    grid-template-rows: auto 190px minmax(280px, 1fr) auto auto;
+    grid-template-rows: auto 190px minmax(470px, 1fr) auto auto;
     gap: 14px;
     padding: calc(72px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
   }
@@ -1615,7 +1764,8 @@
   }
   .mt-lineage-track {
     gap: 8px;
-    padding: 20px 18px 28px;
+    min-height: 440px;
+    padding: 20px 18px 34px;
     scroll-padding-inline: 18px;
   }
   .mt-lineage-card {
@@ -1624,7 +1774,31 @@
     max-width: min(44vw, 176px);
     min-height: 244px;
   }
-  .mt-lineage-connector { min-width: 18px; }
+  .mt-lineage-connector { min-width: 18px; margin-top: 111px; }
+  .mt-lineage-destination {
+    flex-basis: min(76vw, 300px);
+    min-width: min(76vw, 300px);
+    max-width: min(76vw, 300px);
+  }
+  .mt-lineage-card-final { min-height: 270px; }
+  .mt-lineage-card-final .mt-lineage-avatar {
+    width: 88px;
+    height: 88px;
+  }
+  .mt-lineage-continuation {
+    height: 52px;
+    flex-basis: 52px;
+  }
+  .mt-lineage-join-card {
+    min-height: 150px;
+    padding: 20px 18px 17px;
+  }
+  .mt-lineage-join-card > strong {
+    max-width: 86%;
+    font-size: clamp(18px, 5.2vw, 23px);
+  }
+  .mt-lineage-join-card > p { font-size: 9px; }
+  .mt-lineage-join-card > b { font-size: 8px; }
   .mt-lineage-swipe-hint { display: block; }
   .mt-lineage-footer {
     flex-direction: column;
@@ -1658,7 +1832,8 @@
   .mt-lineage-stars, .mt-lineage-stars i, .mt-lineage-stars b, .mt-lineage-card-star,
   .mt-lineage-crest, .mt-lineage-crest::after, .mt-lineage-nameplate h2,
   .mt-lineage-nameplate p, .mt-lineage-story::before, .mt-lineage-story-beat,
-  .mt-lineage-story-steps button i::after {
+  .mt-lineage-story-steps button i::after, .mt-lineage-join-card,
+  .mt-lineage-join-card::after {
     transition: none;
     animation: none;
   }
