@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { explorerCopy } from "../../i18n/explorerCopy";
 import type { Locale } from "../../i18n/locale";
+import { PUBLIC_LINEAGE_PORTRAITS } from "./publicLineagePortraits";
 import "./motion-forest.css";
 
 /**
@@ -166,8 +167,8 @@ function slugify(value: string): string {
     .replace(/^-|-$/g, "");
 }
 
-function explorerPersonPath(id: string) {
-  return `/explore/person/${encodeURIComponent(id)}`;
+function explorerPersonPath(person: Pick<TreeNodeM, "name">) {
+  return `/in/${encodeURIComponent(slugify(person.name))}`;
 }
 
 export default function MotionForest({
@@ -603,7 +604,7 @@ export default function MotionForest({
       let revealT0 = 0;
       function syncExplorerUrl(node: TreeNodeM | null) {
         if (!urlSyncReady) return;
-        const nextPath = node ? explorerPersonPath(node.id) : "/explore";
+        const nextPath = node ? explorerPersonPath(node) : "/explore";
         if (`${window.location.pathname}${window.location.search}` === nextPath) return;
         window.history.replaceState(window.history.state, "", nextPath);
       }
@@ -1104,11 +1105,30 @@ export default function MotionForest({
           .map((member, index) => {
             const [statusClass, statusLabel] = pillFor(member);
             const context = member.team || member.relationLabel || copy.lineageLegacy;
+            const portrait = PUBLIC_LINEAGE_PORTRAITS[member.id];
+            const portraitLabel = portrait
+              ? `${locale === "en" ? "Photo" : "Foto"}: ${portrait.attribution} · ${portrait.license}`
+              : "";
+            const avatar = portrait
+              ? `<div class="mt-lineage-avatar mt-lineage-avatar-photo">
+                  <img src="${escapeHtml(portrait.src)}" alt="${escapeHtml(
+                    locale === "en"
+                      ? `Public portrait of ${member.name}`
+                      : `Retrato público de ${member.name}`
+                  )}" style="object-position:${escapeHtml(portrait.objectPosition ?? "50% 50%")}" />
+                  <a class="mt-lineage-photo-credit" href="${escapeHtml(
+                    portrait.sourceUrl
+                  )}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(
+                    portraitLabel
+                  )}" aria-label="${escapeHtml(portraitLabel)}">i</a>
+                </div>`
+              : `<div class="mt-lineage-avatar">${escapeHtml(initialsOf(member.name))}</div>`;
             return `
-              ${index ? `<span class="mt-lineage-connector" style="--mt-lineage-i:${index}" aria-hidden="true"><i></i><b>&rarr;</b></span>` : ""}
-              <article class="mt-lineage-card${index === chain.length - 1 ? " mt-lineage-card-final" : ""}" style="--mt-lineage-i:${index}">
+              ${index ? `<span class="mt-lineage-connector" style="--mt-lineage-connector-delay:${500 + index * 75}ms" aria-hidden="true"><i></i><b>&rarr;</b></span>` : ""}
+              <article class="mt-lineage-card${index === chain.length - 1 ? " mt-lineage-card-final" : ""}" style="--mt-lineage-delay:${280 + index * 75}ms;--mt-lineage-star-delay:${-index * 310}ms">
                 <span class="mt-lineage-number">${String(index + 1).padStart(2, "0")}</span>
-                <div class="mt-lineage-avatar">${escapeHtml(initialsOf(member.name))}</div>
+                <span class="mt-lineage-card-star" aria-hidden="true">✦</span>
+                ${avatar}
                 <small>${copy.generation(index + 1, chain.length)}</small>
                 <strong>${escapeHtml(member.name)}</strong>
                 <p>${escapeHtml(context)}</p>
@@ -1146,7 +1166,7 @@ export default function MotionForest({
         const node = lineageCeremony.node;
         const button = lineageShareRef.current;
         if (!node || !button) return;
-        const directUrl = new URL(explorerPersonPath(node.id), window.location.origin);
+        const directUrl = new URL(explorerPersonPath(node), window.location.origin);
         directUrl.searchParams.set("celebrate", "1");
         const url = directUrl.toString();
         try {
@@ -1250,7 +1270,7 @@ export default function MotionForest({
       const onShare = async () => {
         const btn = shareRef.current;
         const shareUrl = new URL(
-          selected ? explorerPersonPath(selected.id) : "/explore",
+          selected ? explorerPersonPath(selected) : "/explore",
           window.location.origin
         );
         try {
@@ -1827,8 +1847,12 @@ export default function MotionForest({
       const requestedCelebration = urlParams.get("celebrate") === "1";
       const requestedTree = Number(urlParams.get("tree") ?? "0");
       const searchSlug = slugify(requestedSearch);
+      const requestedPersonSlug = requestedPerson
+        ? slugify(requestedPerson.replace(/^(?:name|canonical):/, ""))
+        : "";
       const deepLink = requestedPerson
         ? INDEX.find((entry) => String(entry.n.id) === requestedPerson)
+          ?? INDEX.find((entry) => slugify(entry.n.name) === requestedPersonSlug)
         : searchSlug
           ? INDEX.find((entry) => slugify(entry.n.name) === searchSlug)
             ?? INDEX.find((entry) => slugify(entry.n.name).includes(searchSlug))
@@ -2072,6 +2096,27 @@ export default function MotionForest({
         aria-labelledby="mt-lineage-title"
       >
         <div className="mt-lineage-glow" aria-hidden="true" />
+        <div className="mt-lineage-stars" aria-hidden="true">
+          {Array.from({ length: 64 }, (_, index) => {
+            const size = 1 + ((index * 13) % 4) * 0.55;
+            return (
+              <i
+                key={index}
+                style={{
+                  left: `${(index * 47 + 7) % 101}%`,
+                  top: `${(index * 71 + 11) % 97}%`,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  animationDelay: `${-((index * 0.37) % 7)}s`,
+                  animationDuration: `${3.4 + ((index * 17) % 42) / 10}s`
+                }}
+              />
+            );
+          })}
+          <b />
+          <b />
+          <b />
+        </div>
         <div className="mt-lineage-particles" aria-hidden="true">
           {Array.from({ length: 14 }, (_, index) => <i key={index} />)}
         </div>
