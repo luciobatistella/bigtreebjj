@@ -3,6 +3,7 @@ import { chmod, readdir, realpath, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { Worker } from "node:worker_threads";
 import path from "node:path";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -19,10 +20,6 @@ const prismaEntry = path.join(
   "index.js"
 );
 const prismaSchema = path.join(projectRoot, "packages", "database", "prisma", "schema.prisma");
-// app.js disables Passenger's automatic first-listener capture before this ES
-// module is imported. The marker lets us bind only the public Next.js server to
-// Passenger while Express keeps its local TCP port.
-const runsUnderPassenger = process.env.BIGTREE_PASSENGER === "1";
 
 function validPort(value, fallback) {
   const port = Number(value);
@@ -114,60 +111,107 @@ if (hasDatabase) {
   );
 }
 
-// Keep the public HTTP listener in this entry process. Hostinger monitors and
-// exposes the process it launches; a detached `next start` child can remain
-// invisible to the managed reverse proxy even while the parent appears healthy.
 Object.assign(process.env, runtimeEnvironment);
-await import(pathToFileURL(apiEntry).href);
 
 const requireFromWeb = createRequire(path.join(webRoot, "package.json"));
 const next = requireFromWeb("next");
-const nextApp = next({
-  dev: false,
-  dir: webRoot,
-  hostname: "0.0.0.0",
-  port: Number(webPort)
-});
-await nextApp.prepare();
-
-const handleNextRequest = nextApp.getRequestHandler();
-const webServer = createServer((request, response) => {
-  handleNextRequest(request, response).catch((error) => {
-    console.error("[web] Unhandled request error:", error);
-    if (!response.headersSent) response.statusCode = 500;
-    if (!response.writableEnded) response.end("Internal Server Error");
-  });
-});
-
-await new Promise((resolve, reject) => {
-  webServer.once("error", reject);
-  if (runsUnderPassenger) {
-    webServer.listen("passenger", resolve);
-    return;
-  }
-  webServer.listen(Number(webPort), "0.0.0.0", resolve);
-});
-
+let nextApp;
+let webServer;
 let shuttingDown = false;
-async function shutdown(signal) {
+
+const apiEnvironment = { ...runtimeEnvironment };
+// Hostinger injects its public-listener hook through NODE_OPTIONS. The API runs
+// in an isolated worker thread without that preload, binds a real loopback TCP
+// port, and is guaranteed to stop with the parent process.
+delete apiEnvironment.NODE_OPTIONS;
+delete apiEnvironment.BIGTREE_PASSENGER;
+
+const api = new Worker(pathToFileURL(apiEntry), {
+  env: apiEnvironment,
+  execArgv: []
+});
+
+async function shutdown(signal, exitCode = 0) {
   if (shuttingDown) return;
   shuttingDown = true;
-  console.log(`[startup] Received ${signal}; stopping the web server.`);
-  const forcedExit = setTimeout(() => process.exit(0), 5_000);
+  console.log(`[startup] Received ${signal}; stopping the application.`);
+  const forcedExit = setTimeout(() => process.exit(exitCode), 5_000);
   forcedExit.unref();
-  webServer.close();
+
+  if (webServer) webServer.close();
   try {
-    await nextApp.close();
+    await Promise.allSettled([
+      api.terminate(),
+      nextApp ? nextApp.close() : Promise.resolve()
+    ]);
   } finally {
-    process.exit(0);
+    process.exit(exitCode);
   }
+}
+
+api.once("error", (error) => {
+  console.error(`[startup] Could not start API: ${error.message}`);
+  void shutdown("API_ERROR", 1);
+});
+api.once("exit", (code) => {
+  if (shuttingDown) return;
+  console.error(`[startup] API stopped (code ${code ?? 1}).`);
+  void shutdown("API_EXIT", code || 1);
+});
+
+async function waitForApi() {
+  const healthUrl = `${internalApiUrl}/health`;
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    try {
+      const response = await fetch(healthUrl, {
+        signal: AbortSignal.timeout(500)
+      });
+      if (response.ok) return;
+    } catch {
+      // The child is still binding its loopback port.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error(`API did not become ready at ${healthUrl}.`);
+}
+
+try {
+  await waitForApi();
+} catch (error) {
+  console.error(`[startup] ${error instanceof Error ? error.message : error}`);
+  await shutdown("API_TIMEOUT", 1);
+}
+
+try {
+  nextApp = next({
+    dev: false,
+    dir: webRoot,
+    hostname: "0.0.0.0",
+    port: Number(webPort)
+  });
+  await nextApp.prepare();
+
+  const handleNextRequest = nextApp.getRequestHandler();
+  webServer = createServer((request, response) => {
+    handleNextRequest(request, response).catch((error) => {
+      console.error("[web] Unhandled request error:", error);
+      if (!response.headersSent) response.statusCode = 500;
+      if (!response.writableEnded) response.end("Internal Server Error");
+    });
+  });
+
+  await new Promise((resolve, reject) => {
+    webServer.once("error", reject);
+    webServer.listen(Number(webPort), "0.0.0.0", resolve);
+  });
+} catch (error) {
+  console.error(`[startup] Could not start Web: ${error instanceof Error ? error.message : error}`);
+  await shutdown("WEB_ERROR", 1);
 }
 
 process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
 console.log(
-  runsUnderPassenger
-    ? `[startup] Web listening on Passenger; API available internally on port ${apiPort}.`
-    : `[startup] Web listening in the entry process on port ${webPort}; API available internally on port ${apiPort}.`
+  `[startup] Web listening in the managed entry process; API available internally on port ${apiPort}.`
 );
