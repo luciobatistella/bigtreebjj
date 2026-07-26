@@ -12,8 +12,8 @@
   "scripts": {
     "build": "node scripts/build-hostinger.mjs",
     "build:hostinger": "node scripts/build-hostinger.mjs",
-    "start": "node scripts/start-hostinger.mjs",
-    "start:hostinger": "node scripts/start-hostinger.mjs",
+    "start": "node app.js",
+    "start:hostinger": "node app.js",
     "dev": "pnpm run dev:local",
     "dev:local": "pnpm -r --parallel --filter @thebigtreebjj/api --filter @thebigtreebjj/web run dev",
     "dev:docker": "docker compose up --build",
