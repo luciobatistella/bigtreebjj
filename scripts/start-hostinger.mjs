@@ -1,12 +1,13 @@
 import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { createServer } from "node:http";
+import { createRequire } from "node:module";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const apiRoot = path.join(projectRoot, "apps", "api");
 const webRoot = path.join(projectRoot, "apps", "web");
 const apiEntry = path.join(apiRoot, "dist", "index.js");
-const nextEntry = path.join(webRoot, "node_modules", "next", "dist", "bin", "next");
 const prismaEntry = path.join(
   projectRoot,
   "packages",
@@ -83,50 +84,54 @@ if (hasDatabase) {
   );
 }
 
-const api = run(process.execPath, [apiEntry], {
-  cwd: apiRoot,
-  env: runtimeEnvironment
-});
-const web = run(process.execPath, [nextEntry, "start", "-p", webPort], {
-  cwd: webRoot,
-  env: runtimeEnvironment
-});
-const services = [
-  { child: api, label: "API" },
-  { child: web, label: "Web" }
-];
-let shuttingDown = false;
-let exitCode = 0;
+// Keep the public HTTP listener in this entry process. Hostinger monitors and
+// exposes the process it launches; a detached `next start` child can remain
+// invisible to the managed reverse proxy even while the parent appears healthy.
+Object.assign(process.env, runtimeEnvironment);
+await import(pathToFileURL(apiEntry).href);
 
-function shutdown(signal = "SIGTERM", code = exitCode) {
+const requireFromWeb = createRequire(path.join(webRoot, "package.json"));
+const next = requireFromWeb("next");
+const nextApp = next({
+  dev: false,
+  dir: webRoot,
+  hostname: "0.0.0.0",
+  port: Number(webPort)
+});
+await nextApp.prepare();
+
+const handleNextRequest = nextApp.getRequestHandler();
+const webServer = createServer((request, response) => {
+  handleNextRequest(request, response).catch((error) => {
+    console.error("[web] Unhandled request error:", error);
+    if (!response.headersSent) response.statusCode = 500;
+    if (!response.writableEnded) response.end("Internal Server Error");
+  });
+});
+
+await new Promise((resolve, reject) => {
+  webServer.once("error", reject);
+  webServer.listen(Number(webPort), "0.0.0.0", resolve);
+});
+
+let shuttingDown = false;
+async function shutdown(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
-  exitCode = code;
-  process.exitCode = exitCode;
-  for (const { child } of services) {
-    if (child.exitCode === null && child.signalCode === null) child.kill(signal);
+  console.log(`[startup] Received ${signal}; stopping the web server.`);
+  const forcedExit = setTimeout(() => process.exit(0), 5_000);
+  forcedExit.unref();
+  webServer.close();
+  try {
+    await nextApp.close();
+  } finally {
+    process.exit(0);
   }
-  setTimeout(() => {
-    for (const { child } of services) {
-      if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
-    }
-    process.exit(exitCode);
-  }, 5_000).unref();
 }
 
-for (const { child, label } of services) {
-  child.once("error", (error) => {
-    console.error(`[startup] Could not start ${label}: ${error.message}`);
-    shutdown("SIGTERM", 1);
-  });
-  child.once("exit", (code, signal) => {
-    if (shuttingDown) return;
-    console.error(`[startup] ${label} stopped (${signal || `code ${code ?? 1}`}).`);
-    shutdown("SIGTERM", code || 1);
-  });
-}
+process.on("SIGINT", () => void shutdown("SIGINT"));
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
 
-process.on("SIGINT", () => shutdown("SIGINT", 0));
-process.on("SIGTERM", () => shutdown("SIGTERM", 0));
-
-console.log(`[startup] Web listening on port ${webPort}; API available internally on port ${apiPort}.`);
+console.log(
+  `[startup] Web listening in the entry process on port ${webPort}; API available internally on port ${apiPort}.`
+);
