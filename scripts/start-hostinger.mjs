@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { chmod, readdir, realpath, stat } from "node:fs/promises";
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -39,6 +40,30 @@ const runtimeEnvironment = {
 
 const hasDatabase = Boolean(process.env.DATABASE_URL);
 
+async function ensurePrismaEnginesExecutable() {
+  if (process.platform === "win32") return;
+
+  const realPrismaEntry = await realpath(prismaEntry);
+  const requireFromPrisma = createRequire(realPrismaEntry);
+  const enginesPackage = requireFromPrisma.resolve("@prisma/engines/package.json");
+  const enginesRoot = path.dirname(enginesPackage);
+  const engineNames = (await readdir(enginesRoot)).filter(
+    (name) => name.startsWith("schema-engine-") || name.startsWith("migration-engine-")
+  );
+
+  await Promise.all(
+    engineNames.map(async (name) => {
+      const enginePath = path.join(enginesRoot, name);
+      const engineStat = await stat(enginePath);
+      await chmod(enginePath, engineStat.mode | 0o100);
+    })
+  );
+
+  if (engineNames.length > 0) {
+    console.log(`[startup] Verified execute permission for ${engineNames.length} Prisma engine.`);
+  }
+}
+
 function run(command, args, options) {
   return spawn(command, args, {
     stdio: "inherit",
@@ -61,6 +86,7 @@ function waitForExit(child, label) {
 }
 
 if (hasDatabase) {
+  await ensurePrismaEnginesExecutable();
   console.log("[startup] Applying pending database migrations...");
   const migrationEnvironment = {
     ...runtimeEnvironment,
