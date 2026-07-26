@@ -20,6 +20,9 @@ export const joinCopy = {
       fileSize: "Cada certificado deve ter no máximo 10 MB.",
       missing: (belts: string) => `Faltam os certificados obrigatórios: ${belts}.`,
       completeness: "Confirme que você anexou todos os certificados que recebeu.",
+      teacherRequired: "Selecione ao menos um professor que já esteja na árvore.",
+      teacherSelection:
+        "Escolha o professor nos resultados da busca; nomes digitados livremente não são enviados.",
       submit: "Não foi possível enviar."
     },
     success: {
@@ -47,6 +50,13 @@ export const joinCopy = {
       teacher: "Quem concedeu sua faixa-preta? *",
       teacherPlaceholder: "Ex.: Demian Maia",
       teacherFound: "✓ Pessoa localizada na árvore",
+      teacherAnotherPlaceholder: "Buscar e adicionar outro professor",
+      teacherRule:
+        "Digite ao menos 2 letras e selecione um resultado da árvore. Você pode adicionar até 4 professores.",
+      teacherSearching: "Buscando na árvore…",
+      teacherEmpty: "Nenhuma pessoa da árvore encontrada com esse nome.",
+      teacherLimit: "Limite de 4 professores selecionados.",
+      removeTeacher: (name: string) => `Remover ${name}`,
       inTree: "Na árvore",
       type: "Tipo de conexão *",
       claims: {
@@ -147,6 +157,9 @@ export const joinCopy = {
       fileSize: "Each certificate must be no larger than 10 MB.",
       missing: (belts: string) => `Required certificates are missing: ${belts}.`,
       completeness: "Confirm that you attached every certificate you received.",
+      teacherRequired: "Select at least one instructor who is already in the tree.",
+      teacherSelection:
+        "Choose the instructor from the search results; free-typed names are not submitted.",
       submit: "We could not submit your request."
     },
     success: {
@@ -174,6 +187,13 @@ export const joinCopy = {
       teacher: "Who awarded your black belt? *",
       teacherPlaceholder: "E.g. Demian Maia",
       teacherFound: "✓ Person found in the tree",
+      teacherAnotherPlaceholder: "Search and add another instructor",
+      teacherRule:
+        "Type at least 2 letters and select a result from the tree. You may add up to 4 instructors.",
+      teacherSearching: "Searching the tree…",
+      teacherEmpty: "No person in the tree was found with that name.",
+      teacherLimit: "The 4-instructor limit has been reached.",
+      removeTeacher: (name: string) => `Remove ${name}`,
       inTree: "In the tree",
       type: "Connection type *",
       claims: {

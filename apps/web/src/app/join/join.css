@@ -73,14 +73,14 @@
 }
 .join-form-heading > p:last-child { color: var(--join-muted); font-size: 17px; line-height: 1.45; }
 
-.join-form { display: grid; gap: 34px; }
+.join-form { min-width: 0; display: grid; gap: 34px; }
 .join-form fieldset { min-width: 0; margin: 0; padding: 28px; border: 1px solid var(--join-rule); background: rgba(18,20,15,.78); }
 .join-form legend { padding: 0 12px 0 0; font: 800 25px/1 "Big Shoulders Display", sans-serif; text-transform: uppercase; }
 .join-form legend span { margin-right: 10px; color: var(--join-gold); }
 .join-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 .join-form label { position: relative; display: grid; align-content: start; gap: 8px; color: var(--join-muted); font: 500 10px/1.3 "IBM Plex Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
 .join-form input, .join-form select, .join-form textarea {
-  width: 100%; min-height: 48px; padding: 12px 13px;
+  width: 100%; min-width: 0; max-width: 100%; min-height: 48px; padding: 12px 13px;
   color: var(--join-bone); background: #090a08; border: 1px solid rgba(200,162,74,.25); border-radius: 0;
   outline: none; font: 400 15px/1.35 "Newsreader", Georgia, serif;
 }
@@ -90,6 +90,99 @@
 .join-form label > small { color: #767568; font: 400 10px/1.35 "IBM Plex Mono", monospace; letter-spacing: 0; text-transform: none; }
 .join-error { color: #e88974 !important; }
 .join-confirmed { color: #83b792 !important; }
+.join-field-label {
+  color: var(--join-muted);
+  font: 500 10px/1.3 "IBM Plex Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.join-teacher-field {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+.join-teacher-field > small {
+  color: #767568;
+  font: 400 10px/1.4 "IBM Plex Mono", monospace;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.join-selected-teachers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.join-selected-teacher {
+  min-width: 0;
+  min-height: 62px;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  color: var(--join-bone);
+  border: 1px solid rgba(131,183,146,.42);
+  background: linear-gradient(120deg, rgba(95,156,118,.13), rgba(9,10,8,.92));
+}
+.join-selected-teacher > span:nth-child(2) { min-width: 0; display: grid; gap: 4px; }
+.join-selected-teacher strong {
+  overflow: hidden;
+  color: var(--join-bone);
+  font: 600 16px/1.1 "Newsreader", Georgia, serif;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+.join-selected-teacher small {
+  overflow: hidden;
+  color: #8c9187;
+  font: 400 8px/1.2 "IBM Plex Mono", monospace;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+.join-teacher-order {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  color: #b8d9c0;
+  border: 1px solid rgba(131,183,146,.38);
+  border-radius: 50%;
+  font: 600 8px/1 "IBM Plex Mono", monospace;
+}
+.join-selected-teacher button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #d7a596;
+  cursor: pointer;
+  border: 1px solid rgba(217,152,134,.24);
+  background: transparent;
+  font: 400 20px/1 "IBM Plex Mono", monospace;
+}
+.join-selected-teacher button:hover {
+  color: #f0c0b3;
+  border-color: rgba(217,152,134,.58);
+  background: rgba(217,152,134,.08);
+}
+.join-teacher-field input:disabled { opacity: .45; cursor: not-allowed; }
+.join-teacher-searching { color: var(--join-gold) !important; }
+.join-teacher-empty { color: #b9a878 !important; }
+.join-country-select { position: relative; min-width: 0; display: block; }
+.join-country-select > span {
+  position: absolute;
+  z-index: 1;
+  left: 13px;
+  top: 50%;
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.join-form .join-country-select select { padding-left: 47px; }
 
 .join-certificate {
   display: grid; gap: 20px; margin-top: 8px; padding: 26px;
@@ -360,9 +453,12 @@
   .join-lede { margin-top: 25px; font-size: 18px; }
   .join-steps li { min-height: 88px; }
   .join-form-section { padding: 0 14px 80px; gap: 30px; }
+  .join-form-heading { min-width: 0; }
+  .join-form-heading h2 { font-size: clamp(44px, 14vw, 58px); overflow-wrap: anywhere; }
   .join-form fieldset { padding: 22px 14px; }
   .join-grid { grid-template-columns: 1fr; }
   .join-wide { grid-column: auto; }
+  .join-selected-teachers { grid-template-columns: 1fr; }
   .join-certificate { margin-inline: -5px; padding: 18px 12px; gap: 16px; }
   .join-certificate-heading { grid-template-columns: 1fr; gap: 12px; }
   .join-certificate-heading > span { text-align: left; }

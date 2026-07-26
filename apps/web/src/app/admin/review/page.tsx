@@ -10,6 +10,7 @@ type Submission = {
   protocol: string;
   fullName: string;
   teacherName: string;
+  teacherNames?: string[];
   academyTeam?: string | null;
   city?: string | null;
   country?: string | null;
@@ -149,7 +150,12 @@ export default function ReviewAdminPage() {
                   <small className="mt-1 block font-mono text-xs text-slate-500">{submission.protocol}</small>
                 </div>
                 <div>
-                  <span className="block text-sm text-slate-200">{submission.teacherName}</span>
+                  <span className="block text-sm text-slate-200">
+                    {(submission.teacherNames?.length
+                      ? submission.teacherNames
+                      : [submission.teacherName]
+                    ).join(" + ")}
+                  </span>
                   <small className="mt-1 block text-xs text-slate-500">
                     {[submission.academyTeam, submission.city, submission.country].filter(Boolean).join(" · ") ||
                       `${submission.evidenceUrls.length} link(s)${submission.hasCertificate ? ` · ${submission.certificateCount ?? 1} certificado(s)` : ""}`}

@@ -13,6 +13,8 @@ type Submission = {
   instagram?: string | null;
   teacherPersonId?: string | null;
   teacherName: string;
+  teacherPersonIds?: string[];
+  teacherNames?: string[];
   academyTeam?: string | null;
   city?: string | null;
   country?: string | null;
@@ -101,7 +103,7 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
     if (
       action === "approve" &&
       !window.confirm(
-        `Aprovar ${submission.fullName} como conexão de ${submission.teacherName}? Isso publicará um vínculo confirmado na árvore.`
+        `Aprovar ${submission.fullName} como conexão de ${teachersLabel}? Isso publicará ${teacherNames.length} vínculo(s) confirmado(s) na árvore.`
       )
     ) {
       return;
@@ -186,6 +188,18 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
   }
 
   const isPending = submission.status === "pending_review" || submission.status === "needs_evidence";
+  const teacherNames = submission.teacherNames?.length
+    ? submission.teacherNames
+    : [submission.teacherName];
+  const teacherIds = submission.teacherPersonIds?.length
+    ? submission.teacherPersonIds
+    : submission.teacherPersonId
+      ? [submission.teacherPersonId]
+      : [];
+  const teachersLabel = new Intl.ListFormat("pt-BR", {
+    style: "long",
+    type: "conjunction"
+  }).format(teacherNames);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-10">
@@ -195,7 +209,7 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-slate-500">{submission.protocol}</p>
             <h1 className="mt-2 text-3xl font-semibold">
-              {submission.fullName} <span className="text-slate-500">→</span> {submission.teacherName}
+              {submission.fullName} <span className="text-slate-500">→</span> {teachersLabel}
             </h1>
             <p className="mt-2 text-slate-300">{claimLabels[submission.claimType] ?? submission.claimType}</p>
           </div>
@@ -210,8 +224,8 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
           <h2 className="text-xl font-semibold">Conexão declarada</h2>
           <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
             <div><dt className="text-slate-500">Solicitante</dt><dd>{submission.fullName}</dd></div>
-            <div><dt className="text-slate-500">Professor</dt><dd>{submission.teacherName}</dd></div>
-            <div><dt className="text-slate-500">ID do professor</dt><dd className="font-mono text-xs">{submission.teacherPersonId ?? "não resolvido"}</dd></div>
+            <div><dt className="text-slate-500">Professor(es)</dt><dd>{teachersLabel}</dd></div>
+            <div><dt className="text-slate-500">IDs dos professores</dt><dd className="font-mono text-xs">{teacherIds.join(", ") || "não resolvido"}</dd></div>
             <div><dt className="text-slate-500">Graduação</dt><dd>{submission.promotionDate ? new Date(submission.promotionDate).toLocaleDateString("pt-BR") : "não informada"}</dd></div>
             <div><dt className="text-slate-500">Percurso</dt><dd>{submission.graduationTrack === "youth" ? "Início juvenil" : "Início adulto"}</dd></div>
             <div><dt className="text-slate-500">Declaração documental</dt><dd>{submission.certificateCompletenessConfirmed ? "Todos os certificados declarados" : "Não confirmada"}</dd></div>

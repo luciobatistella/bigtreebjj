@@ -215,9 +215,12 @@ model LineageSubmission {
   instagram          String?
   teacherPersonId    String?
   teacherName        String
+  teacherPersonIds   String[]  @default([])
+  teacherNames       String[]  @default([])
   academyTeam        String?
   city               String?
   country            String?
+  countryCode        String?
   promotionDate      DateTime?
   claimType          String    @default("black_belt_awarded_by")
   graduationTrack    String?

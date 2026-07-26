@@ -5,6 +5,7 @@ import {
   storeCommunityCertificate,
   type CommunityCertificateFile
 } from './storage.js';
+import { resolvePublicTreePeople } from './publicLineage.js';
 
 const optionalShortText = z.string().trim().max(160).optional().or(z.literal(''));
 const optionalLongText = z.string().trim().max(2500).optional().or(z.literal(''));
@@ -31,6 +32,10 @@ const certificateManifestItemSchema = z.object({
     .or(z.literal(''))
     .refine((value) => !value || !Number.isNaN(Date.parse(value)), 'Informe uma data válida.')
 });
+const selectedTeacherSchema = z.object({
+  personId: z.string().trim().min(1).max(160),
+  name: z.string().trim().min(2).max(140)
+});
 
 export const lineageSubmissionSchema = z
   .object({
@@ -38,10 +43,17 @@ export const lineageSubmissionSchema = z
     email: z.string().trim().email('Informe um e-mail válido.').max(180),
     instagram: optionalShortText,
     teacherPersonId: optionalShortText,
-    teacherName: z.string().trim().min(2, 'Informe quem concedeu sua faixa-preta.').max(140),
+    teacherName: optionalShortText,
+    teachers: z.array(selectedTeacherSchema).max(4).default([]),
     academyTeam: optionalShortText,
     city: optionalShortText,
     country: optionalShortText,
+    countryCode: z
+      .string()
+      .trim()
+      .regex(/^[A-Z]{2}$/, 'Selecione um país válido.')
+      .optional()
+      .or(z.literal('')),
     promotionDate: z
       .string()
       .trim()
@@ -62,6 +74,39 @@ export const lineageSubmissionSchema = z
     website: z.string().max(0).optional()
   })
   .superRefine((value, context) => {
+    const teacherIds = value.teachers.length
+      ? value.teachers.map((teacher) => teacher.personId)
+      : value.teacherPersonId
+        ? [value.teacherPersonId]
+        : [];
+    if (!teacherIds.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['teachers'],
+        message: 'Selecione um professor que já esteja na árvore.'
+      });
+    }
+    if (new Set(teacherIds).size !== teacherIds.length) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['teachers'],
+        message: 'O mesmo professor não pode ser selecionado duas vezes.'
+      });
+    }
+    if (teacherIds.length > 1 && value.claimType !== 'co_awarded_black_belt') {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['claimType'],
+        message: 'Use a conexão conjunta quando houver mais de um professor.'
+      });
+    }
+    if (value.claimType === 'co_awarded_black_belt' && teacherIds.length < 2) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['teachers'],
+        message: 'Selecione ao menos dois professores para uma graduação conjunta.'
+      });
+    }
     const fieldNames = value.certificateManifest.map((certificate) => certificate.fieldName);
     const beltRanks = value.certificateManifest.map((certificate) => certificate.beltRank);
     const sequences = value.certificateManifest.map((certificate) => certificate.sequence);
@@ -166,13 +211,33 @@ async function resolveTeacher(db: any, teacherPersonId?: string | null, teacherN
   });
 }
 
+async function resolveSelectedTeachers(db: any, input: LineageSubmissionInput) {
+  const requestedTeachers = input.teachers.length
+    ? input.teachers
+    : input.teacherPersonId
+      ? [{ personId: input.teacherPersonId, name: input.teacherName ?? '' }]
+      : [];
+  const requestedIds = requestedTeachers.map((teacher) => teacher.personId);
+  const people = await resolvePublicTreePeople(db, requestedIds);
+  const peopleById = new Map(people.map((person: any) => [person.id, person]));
+  const resolved = requestedIds.map((personId) => peopleById.get(personId)).filter(Boolean);
+
+  if (resolved.length !== requestedIds.length) {
+    throw new Error(
+      'Um dos professores selecionados não existe ou ainda não faz parte da árvore pública.'
+    );
+  }
+  return resolved;
+}
+
 export async function createLineageSubmission(
   db: any,
   rawInput: unknown,
   certificateFiles: NamedCommunityCertificateFile[] = []
 ) {
   const input = lineageSubmissionSchema.parse(rawInput);
-  const teacher = await resolveTeacher(db, input.teacherPersonId, input.teacherName);
+  const teachers: any[] = await resolveSelectedTeachers(db, input);
+  const teacher = teachers[0];
   const filesByField = new Map(certificateFiles.map((file) => [file.fieldName, file]));
   if (
     filesByField.size !== certificateFiles.length ||
@@ -203,14 +268,16 @@ export async function createLineageSubmission(
           fullName: input.fullName,
           email: input.email.toLowerCase(),
           instagram: cleanOptional(input.instagram),
-          // Só persistimos um ID canônico encontrado no PostgreSQL. IDs vindos da
-          // interface nunca são confiados cegamente; o nome declarado permanece
-          // disponível para resolução editorial.
-          teacherPersonId: teacher?.id ?? null,
-          teacherName: teacher?.fullName ?? input.teacherName,
+          // Todos os IDs são resolvidos novamente na árvore pública. O primeiro
+          // professor permanece nos campos legados para compatibilidade editorial.
+          teacherPersonId: teacher.id,
+          teacherName: teacher.fullName,
+          teacherPersonIds: teachers.map((person: any) => person.id),
+          teacherNames: teachers.map((person: any) => person.fullName),
           academyTeam: cleanOptional(input.academyTeam),
           city: cleanOptional(input.city),
           country: cleanOptional(input.country),
+          countryCode: cleanOptional(input.countryCode),
           promotionDate: input.promotionDate ? new Date(input.promotionDate) : null,
           claimType: input.claimType,
           graduationTrack: input.graduationTrack,
@@ -247,6 +314,7 @@ export async function createLineageSubmission(
           details: JSON.stringify({
             protocol: submission.protocol,
             teacherName: submission.teacherName,
+            teacherNames: submission.teacherNames,
             evidenceCount: submission.evidenceUrls.length,
             certificateCount: storedCertificates.length,
             graduationTrack: input.graduationTrack
@@ -259,6 +327,7 @@ export async function createLineageSubmission(
       protocol: created.protocol,
       status: created.status,
       teacherName: created.teacherName,
+      teacherNames: created.teacherNames,
       submittedAt: created.createdAt,
       certificateAttached: Boolean(storedCertificates.length),
       certificateCount: storedCertificates.length
@@ -295,6 +364,7 @@ export async function getLineageSubmissionStatus(db: any, submissionProtocol: st
     status: submission.status,
     fullName: submission.fullName,
     teacherName: submission.teacherName,
+    teacherNames: submission.teacherNames,
     submittedAt: submission.createdAt,
     reviewedAt: submission.reviewedAt,
     reviewerMessage: submission.reviewerNotes
@@ -342,13 +412,26 @@ export async function decideLineageSubmission(
   if (submission.status === 'approved' && submission.lineageClaimId) return submission;
 
   return db.$transaction(async (transaction: any) => {
-    const teacher = await resolveTeacher(
-      transaction,
-      input.teacherPersonId ?? submission.teacherPersonId,
-      submission.teacherName
-    );
-    if (!teacher) {
-      throw new Error('O professor ainda não existe na base. Vincule um professor antes de aprovar.');
+    const storedTeacherIds =
+      submission.teacherPersonIds?.length
+        ? [...submission.teacherPersonIds]
+        : submission.teacherPersonId
+          ? [submission.teacherPersonId]
+          : [];
+    if (input.teacherPersonId) storedTeacherIds[0] = input.teacherPersonId;
+    const storedTeacherNames =
+      submission.teacherNames?.length ? submission.teacherNames : [submission.teacherName];
+    const teachers = (
+      await Promise.all(
+        storedTeacherIds.map((teacherPersonId: string, index: number) =>
+          resolveTeacher(transaction, teacherPersonId, storedTeacherNames[index])
+        )
+      )
+    ).filter(Boolean);
+    if (!teachers.length || teachers.length !== storedTeacherIds.length) {
+      throw new Error(
+        'Um dos professores ainda não existe na base. Vincule todos os professores antes de aprovar.'
+      );
     }
 
     let person = input.personId
@@ -368,66 +451,74 @@ export async function decideLineageSubmission(
       });
     }
 
-    let claim = await transaction.lineageClaim.findFirst({
-      where: {
-        studentPersonId: person.id,
-        teacherPersonId: teacher.id,
-        claimType: submission.claimType,
-        status: { in: ['confirmed', 'corroborated', 'verified'] }
-      }
-    });
-    if (!claim) {
-      const label =
-        submission.claimType === 'trained_under'
-          ? 'Treinou sob'
-          : submission.claimType === 'co_awarded_black_belt'
-            ? 'Faixa-preta concedida em conjunto por'
-            : 'Faixa-preta concedida por';
-      claim = await transaction.lineageClaim.create({
-        data: {
+    const label =
+      submission.claimType === 'trained_under'
+        ? 'Treinou sob'
+        : submission.claimType === 'co_awarded_black_belt'
+          ? 'Faixa-preta concedida em conjunto por'
+          : 'Faixa-preta concedida por';
+    const claims = [];
+    for (const teacher of teachers) {
+      let claim = await transaction.lineageClaim.findFirst({
+        where: {
           studentPersonId: person.id,
           teacherPersonId: teacher.id,
           claimType: submission.claimType,
-          relationshipLabel: label,
-          dateStart: submission.promotionDate,
-          location: [submission.city, submission.country].filter(Boolean).join(', ') || null,
-          status: 'confirmed',
-          evidenceLevel: 'community_submission',
-          confidenceScore:
-            submission.evidenceUrls.length ||
-            submission.certificateStoragePath ||
-            submission.certificates.length
-              ? 0.78
-              : 0.62,
-          notes: [
-            `Solicitação comunitária ${submission.protocol}.`,
-            submission.certificateStoragePath || submission.certificates.length
-              ? `${submission.certificates.length || 1} certificado(s) privado(s) conferido(s) pela curadoria.`
-              : null,
-            submission.evidenceNotes,
-            input.reviewerNotes
-          ]
-            .filter(Boolean)
-            .join(' '),
-          evidences: {
-            create: submission.evidenceUrls.map((url: string) => ({
-              url,
-              sourceType: 'community_submission',
-              curatorNotes: `Enviado em ${submission.protocol}`
-            }))
-          }
+          status: { in: ['confirmed', 'corroborated', 'verified'] }
         }
       });
+      if (!claim) {
+        claim = await transaction.lineageClaim.create({
+          data: {
+            studentPersonId: person.id,
+            teacherPersonId: teacher.id,
+            claimType: submission.claimType,
+            relationshipLabel: label,
+            dateStart: submission.promotionDate,
+            location: [submission.city, submission.country].filter(Boolean).join(', ') || null,
+            status: 'confirmed',
+            evidenceLevel: 'community_submission',
+            confidenceScore:
+              submission.evidenceUrls.length ||
+              submission.certificateStoragePath ||
+              submission.certificates.length
+                ? 0.78
+                : 0.62,
+            notes: [
+              `Solicitação comunitária ${submission.protocol}.`,
+              submission.certificateStoragePath || submission.certificates.length
+                ? `${submission.certificates.length || 1} certificado(s) privado(s) conferido(s) pela curadoria.`
+                : null,
+              submission.evidenceNotes,
+              input.reviewerNotes
+            ]
+              .filter(Boolean)
+              .join(' '),
+            evidences: {
+              create: submission.evidenceUrls.map((url: string) => ({
+                url,
+                sourceType: 'community_submission',
+                curatorNotes: `Enviado em ${submission.protocol}`
+              }))
+            }
+          }
+        });
+      }
+      claims.push(claim);
     }
+    const primaryTeacher = teachers[0];
+    const primaryClaim = claims[0];
 
     const updated = await transaction.lineageSubmission.update({
       where: { id },
       data: {
         status: 'approved',
-        teacherPersonId: teacher.id,
-        teacherName: teacher.fullName,
+        teacherPersonId: primaryTeacher.id,
+        teacherName: primaryTeacher.fullName,
+        teacherPersonIds: teachers.map((teacher: any) => teacher.id),
+        teacherNames: teachers.map((teacher: any) => teacher.fullName),
         personId: person.id,
-        lineageClaimId: claim.id,
+        lineageClaimId: primaryClaim.id,
         reviewerNotes: cleanOptional(input.reviewerNotes),
         reviewedAt: new Date()
       }
@@ -442,7 +533,11 @@ export async function decideLineageSubmission(
         entityId: id,
         action: 'approve',
         changedBy: 'reviewer',
-        details: JSON.stringify({ personId: person.id, lineageClaimId: claim.id, teacherPersonId: teacher.id })
+        details: JSON.stringify({
+          personId: person.id,
+          lineageClaimIds: claims.map((claim: any) => claim.id),
+          teacherPersonIds: teachers.map((teacher: any) => teacher.id)
+        })
       }
     });
     return updated;

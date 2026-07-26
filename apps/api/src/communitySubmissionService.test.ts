@@ -40,6 +40,8 @@ function submission(overrides: Record<string, unknown> = {}) {
   return {
     fullName: 'Pessoa da Comunidade',
     email: 'pessoa@example.test',
+    teachers: [{ personId: 'teacher-1', name: 'Professor Responsável' }],
+    teacherPersonId: 'teacher-1',
     teacherName: 'Professor Responsável',
     claimType: 'black_belt_awarded_by',
     graduationTrack: 'adult',
@@ -160,5 +162,30 @@ describe('community certificate journey', () => {
     );
 
     expect(result.success).toBe(false);
+  });
+
+  it('accepts multiple canonical instructors for a joint promotion', () => {
+    const result = lineageSubmissionSchema.safeParse(
+      submission({
+        claimType: 'co_awarded_black_belt',
+        teachers: [
+          { personId: 'teacher-1', name: 'Professor Um' },
+          { personId: 'teacher-2', name: 'Professor Dois' }
+        ]
+      })
+    );
+
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects a free-typed instructor without a canonical tree id', () => {
+    const result = lineageSubmissionSchema.safeParse(
+      submission({ teachers: [], teacherPersonId: '', teacherName: 'Nome livre' })
+    );
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.teachers).toBeDefined();
+    }
   });
 });

@@ -18,6 +18,17 @@ const englishMessages: Record<string, string> = {
   "Informe seu nome completo.": "Enter your full name.",
   "Informe um e-mail válido.": "Enter a valid email address.",
   "Informe quem concedeu sua faixa-preta.": "Enter the person who awarded your black belt.",
+  "Selecione um professor que já esteja na árvore.":
+    "Select an instructor who is already in the tree.",
+  "O mesmo professor não pode ser selecionado duas vezes.":
+    "The same instructor cannot be selected twice.",
+  "Use a conexão conjunta quando houver mais de um professor.":
+    "Use a joint connection when there is more than one instructor.",
+  "Selecione ao menos dois professores para uma graduação conjunta.":
+    "Select at least two instructors for a joint promotion.",
+  "Um dos professores selecionados não existe ou ainda não faz parte da árvore pública.":
+    "One of the selected instructors does not exist or is not yet part of the public tree.",
+  "Selecione um país válido.": "Select a valid country.",
   "Informe uma data válida.": "Enter a valid date.",
   "Cada evidência deve ser um link válido.": "Each item of evidence must be a valid link.",
   "É necessário autorizar a análise editorial dos dados enviados.":

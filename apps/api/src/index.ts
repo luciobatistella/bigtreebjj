@@ -68,6 +68,7 @@ import {
   getLineageSubmissionStatus,
   listLineageSubmissions
 } from './communitySubmissionService.js';
+import { publicTreeMembershipWhere } from './publicLineage.js';
 
 dotenv.config({ path: '../../.env' });
 
@@ -85,6 +86,7 @@ const certificateUpload = multer({
 });
 let prisma: any = null;
 const submissionAttempts = new Map<string, number[]>();
+const publicReadAttempts = new Map<string, number[]>();
 
 async function getDb() {
   if (process.env.VITEST) return null;
@@ -109,9 +111,66 @@ function slugify(value: string) {
     .replace(/^-|-$/g, '');
 }
 
-app.use(cors());
+const allowedOrigins = new Set(
+  [
+    'https://bigtreebjj.com',
+    'https://www.bigtreebjj.com',
+    process.env.SITE_ORIGIN,
+    ...(process.env.CORS_ALLOWED_ORIGINS ?? '').split(',')
+  ]
+    .map((origin) => origin?.trim())
+    .filter((origin): origin is string => Boolean(origin))
+);
+
+app.set('trust proxy', 'loopback');
+app.use(
+  cors({
+    origin(origin, callback) {
+      const localDevelopmentOrigin = Boolean(
+        origin && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)
+      );
+      callback(null, !origin || allowedOrigins.has(origin) || localDevelopmentOrigin);
+    }
+  })
+);
 app.use(helmet());
 app.use(express.json({ limit: '25mb' }));
+
+function publicReadLimit(bucket: string, limit: number, windowMs: number): express.RequestHandler {
+  return (req, res, next) => {
+    const now = Date.now();
+    const key = `${bucket}:${req.ip || req.socket.remoteAddress || 'unknown'}`;
+    const recent = (publicReadAttempts.get(key) ?? []).filter(
+      (attempt) => attempt > now - windowMs
+    );
+    const remaining = Math.max(0, limit - recent.length - 1);
+    res.setHeader('RateLimit-Limit', String(limit));
+    res.setHeader('RateLimit-Remaining', String(remaining));
+    res.setHeader('RateLimit-Reset', String(Math.ceil(windowMs / 1000)));
+    if (recent.length >= limit) {
+      res.setHeader('Retry-After', String(Math.ceil(windowMs / 1000)));
+      res.status(429).json({ error: 'Muitas consultas em sequência. Tente novamente mais tarde.' });
+      return;
+    }
+    recent.push(now);
+    publicReadAttempts.set(key, recent);
+    if (publicReadAttempts.size > 10_000) {
+      for (const [candidateKey, attempts] of publicReadAttempts) {
+        if (!attempts.some((attempt) => attempt > now - windowMs)) {
+          publicReadAttempts.delete(candidateKey);
+        }
+      }
+    }
+    next();
+  };
+}
+
+const protectPublicData: express.RequestHandler = (_req, res, next) => {
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, noarchive, nosnippet');
+  res.setHeader('X-The-Big-Tree-BJJ-Use', 'No automated bulk extraction');
+  next();
+};
 
 const requireAdmin: express.RequestHandler = (req, res, next) => {
   try {
@@ -225,7 +284,7 @@ app.post('/auth/login', (req, res) => {
   }
 });
 
-app.get('/people', async (_req, res) => {
+app.get('/people', protectPublicData, async (_req, res) => {
   const db = await getDb();
   if (!db) {
     res.json(listPeople());
@@ -238,19 +297,27 @@ app.get('/people', async (_req, res) => {
   res.json(people);
 });
 
-app.get('/community/teachers', async (req, res) => {
+app.get(
+  '/community/teachers',
+  protectPublicData,
+  publicReadLimit('teacher-search', 90, 10 * 60 * 1000),
+  async (req, res) => {
   const db = await getDb();
   if (!db) return res.status(503).json({ error: 'Database is not available' });
-  const query = String(req.query.q ?? '').trim();
+  const query = String(req.query.q ?? '').trim().slice(0, 80);
   if (query.length < 2) return res.json([]);
   const teachers = await db.person.findMany({
-    where: { fullName: { contains: query, mode: 'insensitive' } },
+    where: {
+      fullName: { contains: query, mode: 'insensitive' },
+      ...publicTreeMembershipWhere()
+    },
     orderBy: { fullName: 'asc' },
     take: 12,
     select: { id: true, fullName: true, team: true, city: true, country: true }
   });
   return res.json(teachers);
-});
+  }
+);
 
 app.post('/community/lineage-submissions', receiveCertificate, async (req, res) => {
   const db = await getDb();
@@ -511,7 +578,11 @@ app.get('/explore/tree', async (req, res) => {
 // in one shot from the whole Person + LineageClaim table — unlike /explore/tree (which
 // lazily returns just the immediate neighbors of one root), this is meant to be fetched
 // once and walked/collapsed entirely client-side, matching the motion-prototype UI.
-app.get('/explore/forest', async (_req, res) => {
+app.get(
+  '/explore/forest',
+  protectPublicData,
+  publicReadLimit('explore-forest', 24, 10 * 60 * 1000),
+  async (_req, res) => {
   const db = await getDb();
   if (!db) {
     res.status(503).json({ error: 'Database is not available' });
@@ -574,7 +645,8 @@ app.get('/explore/forest', async (_req, res) => {
     .sort((a: any, b: any) => countAll(b) - countAll(a));
 
   res.json(forest);
-});
+  }
+);
 
 app.post('/external-profiles/:id/approve-person', async (req, res) => {
   const db = await getDb();
@@ -667,10 +739,14 @@ app.get('/public/lineage-graph', (_req, res) => {
   res.json(listPublicLineageGraph());
 });
 
-app.get('/public/people/:id', async (req, res) => {
+app.get(
+  '/public/people/:id',
+  protectPublicData,
+  publicReadLimit('public-person', 120, 10 * 60 * 1000),
+  async (req, res) => {
   const db = await getDb();
   if (!db) {
-    res.json(getPublicPersonProfile(req.params.id));
+    res.json(getPublicPersonProfile(String(req.params.id)));
     return;
   }
   const person = await db.person.findUnique({
@@ -774,7 +850,8 @@ app.get('/public/people/:id', async (req, res) => {
     publicRelationships,
     promotionGroups: []
   });
-});
+  }
+);
 
 app.get('/organizations/review', (_req, res) => {
   res.json({ organizations: listOrganizations(), relationships: listOrganizationRelationships() });

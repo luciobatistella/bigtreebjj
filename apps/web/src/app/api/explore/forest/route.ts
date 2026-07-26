@@ -1,6 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { buildUnifiedForest } from "./unifiedForest";
 import { normalizeLocale } from "../../../i18n/locale";
+import {
+  checkPublicRateLimit,
+  forwardedClientHeaders,
+  protectedPublicHeaders
+} from "../../publicAccess";
 
 const internalApiBase =
   process.env.API_INTERNAL_URL ??
@@ -11,8 +16,28 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const locale = normalizeLocale(request.nextUrl.searchParams.get("locale"));
+  const rate = checkPublicRateLimit(request, "explore-forest", 24, 10 * 60 * 1000);
+  if (!rate.allowed) {
+    return NextResponse.json(
+      {
+        error:
+          locale === "en"
+            ? "Too many tree reloads. Please try again in a few minutes."
+            : "Muitos recarregamentos da árvore. Tente novamente em alguns minutos."
+      },
+      {
+        status: 429,
+        headers: {
+          ...protectedPublicHeaders,
+          ...rate.headers,
+          "Retry-After": "600"
+        }
+      }
+    );
+  }
   try {
     const response = await fetch(`${internalApiBase}/explore/forest`, {
+      headers: forwardedClientHeaders(request),
       cache: "no-store",
       signal: AbortSignal.timeout(15_000)
     });
@@ -44,7 +69,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json([buildUnifiedForest(postgresForest, locale)], {
       headers: {
-        "Cache-Control": "no-store"
+        ...protectedPublicHeaders,
+        ...rate.headers
       }
     });
   } catch (error) {

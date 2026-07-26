@@ -4,6 +4,7 @@ import {
   translateJoinApiMessage,
   translateJoinApiPayload
 } from "../../i18n/joinApiErrors";
+import { forwardedClientHeaders } from "../publicAccess";
 
 const apiBase =
   process.env.API_INTERNAL_URL ??
@@ -35,7 +36,12 @@ export async function POST(request: NextRequest) {
     }
     const response = await fetch(`${apiBase}/community/lineage-submissions`, {
       method: "POST",
-      headers: isMultipart ? undefined : { "Content-Type": "application/json" },
+      headers: isMultipart
+        ? forwardedClientHeaders(request)
+        : {
+            ...forwardedClientHeaders(request),
+            "Content-Type": "application/json"
+          },
       body,
       cache: "no-store",
       signal: AbortSignal.timeout(30_000)

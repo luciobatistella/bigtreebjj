@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { joinCopy } from "../i18n/joinCopy";
 import type { Locale } from "../i18n/locale";
+import { countryOptions, defaultCountryCode } from "./countries";
 
 type TeacherSuggestion = {
   id: string;
@@ -17,6 +18,7 @@ type SubmissionResult = {
   protocol: string;
   status: string;
   teacherName: string;
+  teacherNames?: string[];
   submittedAt: string;
   certificateAttached?: boolean;
   certificateCount?: number;
@@ -39,7 +41,7 @@ const emptyFields = {
   instagram: "",
   academyTeam: "",
   city: "",
-  country: "",
+  countryCode: defaultCountryCode,
   promotionDate: "",
   claimType: "black_belt_awarded_by",
   evidenceText: "",
@@ -58,14 +60,16 @@ export function JoinForm({
   locale: Locale;
 }) {
   const copy = joinCopy[locale];
-  const [fields, setFields] = useState({
-    ...emptyFields,
-    country: copy.countryDefault
-  });
-  const [teacherName, setTeacherName] = useState(initialTeacherName);
-  const [teacherPersonId, setTeacherPersonId] = useState(initialTeacherId);
+  const [fields, setFields] = useState(emptyFields);
+  const [teacherQuery, setTeacherQuery] = useState(initialTeacherId ? "" : initialTeacherName);
+  const [selectedTeachers, setSelectedTeachers] = useState<TeacherSuggestion[]>(
+    initialTeacherId && initialTeacherName
+      ? [{ id: initialTeacherId, fullName: initialTeacherName }]
+      : []
+  );
   const [suggestions, setSuggestions] = useState<TeacherSuggestion[]>([]);
   const [teacherOpen, setTeacherOpen] = useState(false);
+  const [teacherLoading, setTeacherLoading] = useState(false);
   const [state, setState] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [message, setMessage] = useState("");
@@ -76,6 +80,18 @@ export function JoinForm({
   const [certificateDates, setCertificateDates] = useState<Partial<Record<BeltRank, string>>>({});
   const [certificateCompletenessConfirmed, setCertificateCompletenessConfirmed] = useState(false);
   const [certificateError, setCertificateError] = useState("");
+  const countries = useMemo(() => countryOptions(locale), [locale]);
+  const selectedCountry =
+    countries.find((country) => country.code === fields.countryCode) ??
+    countries.find((country) => country.code === defaultCountryCode);
+  const teacherList = useMemo(
+    () =>
+      new Intl.ListFormat(locale === "pt" ? "pt-BR" : "en", {
+        style: "long",
+        type: "conjunction"
+      }),
+    [locale]
+  );
 
   const beltSteps = useMemo<BeltStep[]>(() => {
     const step = (
@@ -137,23 +153,35 @@ export function JoinForm({
   }, [activeBeltIndex, isBeltUnlocked, nextRequiredRank]);
 
   useEffect(() => {
-    if (teacherName.trim().length < 2 || (teacherPersonId && teacherName === initialTeacherName)) {
+    const query = teacherQuery.trim();
+    if (query.length < 2) {
       setSuggestions([]);
+      setTeacherOpen(false);
+      setTeacherLoading(false);
       return;
     }
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
+      setTeacherLoading(true);
       try {
-        const response = await fetch(`/api/join/teachers?q=${encodeURIComponent(teacherName)}`, {
+        const response = await fetch(`/api/join/teachers?q=${encodeURIComponent(query)}`, {
           signal: controller.signal
         });
         const payload = (await response.json()) as TeacherSuggestion[];
-        const teacherResults = Array.isArray(payload) ? payload : [];
-        const exactTeacher = teacherResults.find(
-          (teacher) => teacher.fullName.localeCompare(teacherName, undefined, { sensitivity: "base" }) === 0
+        const teacherResults = (Array.isArray(payload) ? payload : []).filter(
+          (teacher) => !selectedTeachers.some((selected) => selected.id === teacher.id)
         );
-        if (exactTeacher && teacherName === initialTeacherName) {
-          setTeacherPersonId(exactTeacher.id);
+        const exactTeacher = teacherResults.find(
+          (teacher) =>
+            teacher.fullName.localeCompare(query, undefined, { sensitivity: "base" }) === 0
+        );
+        if (
+          exactTeacher &&
+          query.localeCompare(initialTeacherName, undefined, { sensitivity: "base" }) === 0 &&
+          selectedTeachers.length === 0
+        ) {
+          setSelectedTeachers([exactTeacher]);
+          setTeacherQuery("");
           setSuggestions([]);
           setTeacherOpen(false);
           return;
@@ -162,13 +190,15 @@ export function JoinForm({
         setTeacherOpen(true);
       } catch {
         setSuggestions([]);
+      } finally {
+        setTeacherLoading(false);
       }
     }, 240);
     return () => {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [teacherName, teacherPersonId, initialTeacherName]);
+  }, [teacherQuery, initialTeacherName, selectedTeachers]);
 
   const evidenceUrls = useMemo(
     () =>
@@ -190,10 +220,30 @@ export function JoinForm({
   };
 
   const chooseTeacher = (teacher: TeacherSuggestion) => {
-    setTeacherName(teacher.fullName);
-    setTeacherPersonId(teacher.id);
+    if (selectedTeachers.some((selected) => selected.id === teacher.id)) return;
+    const nextTeachers = [...selectedTeachers, teacher].slice(0, 4);
+    setSelectedTeachers(nextTeachers);
+    setTeacherQuery("");
     setTeacherOpen(false);
     setSuggestions([]);
+    if (nextTeachers.length > 1 && fields.claimType !== "co_awarded_black_belt") {
+      update("claimType", "co_awarded_black_belt");
+    }
+    setErrors((current) => {
+      if (!current.teachers && !current.teacherName) return current;
+      const next = { ...current };
+      delete next.teachers;
+      delete next.teacherName;
+      return next;
+    });
+  };
+
+  const removeTeacher = (teacherId: string) => {
+    const nextTeachers = selectedTeachers.filter((teacher) => teacher.id !== teacherId);
+    setSelectedTeachers(nextTeachers);
+    if (nextTeachers.length < 2 && fields.claimType === "co_awarded_black_belt") {
+      update("claimType", "black_belt_awarded_by");
+    }
   };
 
   const chooseCertificate = (step: BeltStep, file: File | null) => {
@@ -238,6 +288,14 @@ export function JoinForm({
     setMessage("");
     setErrors({});
     try {
+      if (!selectedTeachers.length) {
+        setErrors({ teachers: [copy.errors.teacherRequired] });
+        throw new Error(copy.errors.teacherRequired);
+      }
+      if (teacherQuery.trim()) {
+        setErrors({ teachers: [copy.errors.teacherSelection] });
+        throw new Error(copy.errors.teacherSelection);
+      }
       if (certificateError) throw new Error(certificateError);
       const missingCertificates = blackBeltRequest
         ? beltSteps.filter((step) => step.required && !certificateFiles[step.rank])
@@ -278,11 +336,16 @@ export function JoinForm({
         fullName: fields.fullName,
         email: fields.email,
         instagram: fields.instagram,
-        teacherPersonId: teacherPersonId || undefined,
-        teacherName,
+        teachers: selectedTeachers.map((teacher) => ({
+          personId: teacher.id,
+          name: teacher.fullName
+        })),
+        teacherPersonId: selectedTeachers[0].id,
+        teacherName: selectedTeachers[0].fullName,
         academyTeam: fields.academyTeam,
         city: fields.city,
-        country: fields.country,
+        country: selectedCountry?.canonicalName ?? fields.countryCode,
+        countryCode: fields.countryCode,
         promotionDate: fields.promotionDate,
         claimType: fields.claimType,
         graduationTrack,
@@ -318,13 +381,16 @@ export function JoinForm({
   };
 
   if (state === "success" && result) {
+    const submittedTeacherNames =
+      result.teacherNames?.length ? result.teacherNames : [result.teacherName];
     return (
       <section className="join-success" aria-live="polite">
         <span className="join-success-mark">✓</span>
         <p className="join-eyebrow">{copy.success.eyebrow}</p>
         <h2>{copy.success.title}</h2>
         <p>
-          {copy.success.beforeTeacher} <strong>{result.teacherName}</strong>{" "}
+          {copy.success.beforeTeacher}{" "}
+          <strong>{teacherList.format(submittedTeacherNames)}</strong>{" "}
           {copy.success.afterTeacher}
         </p>
         {result.certificateAttached ? (
@@ -372,26 +438,78 @@ export function JoinForm({
               {errorFor("fullName")}
             </label>
 
-            <label className="join-teacher-field">
-              {copy.connection.teacher}
-              <input
-                value={teacherName}
-                onChange={(event) => {
-                  setTeacherName(event.target.value);
-                  setTeacherPersonId("");
-                }}
-                onFocus={() => setTeacherOpen(Boolean(suggestions.length))}
-                autoComplete="off"
-                placeholder={copy.connection.teacherPlaceholder}
-              />
-              {teacherPersonId ? (
-                <small className="join-confirmed">{copy.connection.teacherFound}</small>
+            <div className="join-teacher-field join-wide">
+              <span className="join-field-label">{copy.connection.teacher}</span>
+              {selectedTeachers.length ? (
+                <div className="join-selected-teachers" aria-live="polite">
+                  {selectedTeachers.map((teacher, index) => (
+                    <div className="join-selected-teacher" key={teacher.id}>
+                      <span className="join-teacher-order">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span>
+                        <strong>{teacher.fullName}</strong>
+                        <small>
+                          {[teacher.team, teacher.city, teacher.country]
+                            .filter(Boolean)
+                            .join(" · ") || copy.connection.inTree}
+                        </small>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeTeacher(teacher.id)}
+                        aria-label={copy.connection.removeTeacher(teacher.fullName)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
               ) : null}
-              {errorFor("teacherName")}
+              <input
+                id="join-teacher-search"
+                value={teacherQuery}
+                onChange={(event) => setTeacherQuery(event.target.value)}
+                onFocus={() => setTeacherOpen(Boolean(suggestions.length))}
+                onBlur={() => window.setTimeout(() => setTeacherOpen(false), 140)}
+                autoComplete="off"
+                placeholder={
+                  selectedTeachers.length
+                    ? copy.connection.teacherAnotherPlaceholder
+                    : copy.connection.teacherPlaceholder
+                }
+                disabled={selectedTeachers.length >= 4}
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded={teacherOpen}
+                aria-controls="join-teacher-suggestions"
+              />
+              <small className="join-teacher-rule">
+                {selectedTeachers.length >= 4
+                  ? copy.connection.teacherLimit
+                  : copy.connection.teacherRule}
+              </small>
+              {teacherLoading ? (
+                <small className="join-teacher-searching">
+                  {copy.connection.teacherSearching}
+                </small>
+              ) : null}
+              {errorFor("teachers") ?? errorFor("teacherName")}
               {teacherOpen && suggestions.length ? (
-                <div className="join-suggestions">
+                <div
+                  className="join-suggestions"
+                  id="join-teacher-suggestions"
+                  role="listbox"
+                >
                   {suggestions.map((teacher) => (
-                    <button type="button" key={teacher.id} onClick={() => chooseTeacher(teacher)}>
+                    <button
+                      type="button"
+                      key={teacher.id}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => chooseTeacher(teacher)}
+                      role="option"
+                      aria-selected="false"
+                    >
                       <strong>{teacher.fullName}</strong>
                       <small>
                         {[teacher.team, teacher.city, teacher.country].filter(Boolean).join(" · ") ||
@@ -401,18 +519,31 @@ export function JoinForm({
                   ))}
                 </div>
               ) : null}
-            </label>
+              {!teacherLoading &&
+              teacherOpen &&
+              teacherQuery.trim().length >= 2 &&
+              !suggestions.length ? (
+                <small className="join-teacher-empty">
+                  {copy.connection.teacherEmpty}
+                </small>
+              ) : null}
+            </div>
 
             <label>
               {copy.connection.type}
               <select value={fields.claimType} onChange={(event) => update("claimType", event.target.value)}>
-                <option value="black_belt_awarded_by">
+                <option
+                  value="black_belt_awarded_by"
+                  disabled={selectedTeachers.length > 1}
+                >
                   {copy.connection.claims.black_belt_awarded_by}
                 </option>
                 <option value="co_awarded_black_belt">
                   {copy.connection.claims.co_awarded_black_belt}
                 </option>
-                <option value="trained_under">{copy.connection.claims.trained_under}</option>
+                <option value="trained_under" disabled={selectedTeachers.length > 1}>
+                  {copy.connection.claims.trained_under}
+                </option>
               </select>
             </label>
 
@@ -441,7 +572,20 @@ export function JoinForm({
 
             <label>
               {copy.connection.country}
-              <input value={fields.country} onChange={(event) => update("country", event.target.value)} />
+              <span className="join-country-select">
+                <span aria-hidden="true">{selectedCountry?.flag}</span>
+                <select
+                  value={fields.countryCode}
+                  onChange={(event) => update("countryCode", event.target.value)}
+                  autoComplete="country"
+                >
+                  {countries.map((country) => (
+                    <option value={country.code} key={country.code}>
+                      {country.flag} {country.label}
+                    </option>
+                  ))}
+                </select>
+              </span>
             </label>
           </div>
         </fieldset>
