@@ -76,6 +76,58 @@ const LEVEL_H = 204;
 const SLOT_W = 170;
 // abaixo deste zoom os cards viram órbes compactas (texto ilegível não ajuda ninguém)
 const CARD_MIN_K = 0.4;
+const EXPLORER_RETURN_STATE_KEY = "thebigtreebjj:explorer:return-state:v1";
+const EXPLORER_RETURN_STATE_MAX_AGE = 60 * 60 * 1000;
+
+type ExplorerReturnState = {
+  version: 1;
+  savedAt: number;
+  treeIndex: number;
+  selectedId: string | null;
+  detailOpen: boolean;
+  openNodeIds: string[];
+  camera: {
+    x: number;
+    y: number;
+    k: number;
+  };
+};
+
+function readExplorerReturnState(): ExplorerReturnState | null {
+  try {
+    const raw = window.sessionStorage.getItem(EXPLORER_RETURN_STATE_KEY);
+    window.sessionStorage.removeItem(EXPLORER_RETURN_STATE_KEY);
+    if (!raw) return null;
+
+    const state = JSON.parse(raw) as Partial<ExplorerReturnState>;
+    const camera = state.camera;
+    const isCurrent =
+      typeof state.savedAt === "number" &&
+      Date.now() - state.savedAt <= EXPLORER_RETURN_STATE_MAX_AGE;
+    const hasValidCamera =
+      camera &&
+      Number.isFinite(camera.x) &&
+      Number.isFinite(camera.y) &&
+      Number.isFinite(camera.k);
+
+    if (
+      state.version !== 1 ||
+      !isCurrent ||
+      !Number.isInteger(state.treeIndex) ||
+      (state.selectedId !== null && typeof state.selectedId !== "string") ||
+      typeof state.detailOpen !== "boolean" ||
+      !Array.isArray(state.openNodeIds) ||
+      !state.openNodeIds.every((id) => typeof id === "string") ||
+      !hasValidCamera
+    ) {
+      return null;
+    }
+
+    return state as ExplorerReturnState;
+  } catch {
+    return null;
+  }
+}
 
 function treeSizeRaw(src: ForestNode): number {
   return 1 + (src.children ?? []).reduce((acc, child) => acc + treeSizeRaw(child), 0);
@@ -153,6 +205,15 @@ export default function MotionForest({ locale }: { locale: Locale }) {
     let disposed = false;
     let raf = 0;
     const cleanups: Array<() => void> = [];
+    const onPageShow = (event: PageTransitionEvent) => {
+      // Quando o navegador preserva a página inteira no BFCache, o canvas já
+      // volta intacto. O snapshot só é necessário quando o Explorer remonta.
+      if (event.persisted) {
+        window.sessionStorage.removeItem(EXPLORER_RETURN_STATE_KEY);
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+    cleanups.push(() => window.removeEventListener("pageshow", onPageShow));
 
     (async () => {
       let forest: ForestNode[] = [];
@@ -525,6 +586,31 @@ export default function MotionForest({ locale }: { locale: Locale }) {
       let path: TreeNodeM[] = [];
       let pathSet = new Set<string>();
       let revealT0 = 0;
+      function saveExplorerReturnState() {
+        const openNodeIds: string[] = [];
+        visitAll(TREE, (node) => {
+          if (node.children?.length) openNodeIds.push(node.id);
+        });
+        const state: ExplorerReturnState = {
+          version: 1,
+          savedAt: Date.now(),
+          treeIndex: currentTreeIndex,
+          selectedId: selected?.id ?? null,
+          detailOpen: detailEl.classList.contains("mt-show"),
+          openNodeIds,
+          camera: {
+            x: cam.x,
+            y: cam.y,
+            k: cam.k
+          }
+        };
+        try {
+          window.sessionStorage.setItem(EXPLORER_RETURN_STATE_KEY, JSON.stringify(state));
+        } catch {
+          // O link continua funcionando mesmo quando o armazenamento está
+          // indisponível (modo privado restritivo, política corporativa etc.).
+        }
+      }
       const ancestors = (n: TreeNodeM): TreeNodeM[] => {
         const a: TreeNodeM[] = [];
         let c: TreeNodeM | null = n;
@@ -908,6 +994,10 @@ export default function MotionForest({ locale }: { locale: Locale }) {
         });
         detailBody.querySelectorAll<HTMLButtonElement>(".mt-connections button[data-id]").forEach((button) => {
           button.addEventListener("click", () => revealAndSelect(button.dataset.id ?? ""));
+        });
+        detailBody.querySelector<HTMLAnchorElement>(".mt-profile-btn")?.addEventListener("click", (event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          saveExplorerReturnState();
         });
         detailBody.querySelector<HTMLButtonElement>(".mt-story-btn")?.addEventListener("click", () => startStory(n));
       }
@@ -1647,6 +1737,7 @@ export default function MotionForest({ locale }: { locale: Locale }) {
 
       /* ============ init ============ */
       resize();
+      const returnState = readExplorerReturnState();
       const urlParams = new URL(window.location.href).searchParams;
       const requestedPerson = urlParams.get("person");
       const requestedSearch = urlParams.get("search")?.trim() ?? "";
@@ -1659,10 +1750,50 @@ export default function MotionForest({ locale }: { locale: Locale }) {
           ? INDEX.find((entry) => slugify(entry.n.name) === searchSlug)
             ?? INDEX.find((entry) => slugify(entry.n.name).includes(searchSlug))
           : undefined;
-      const initialTree = deepLink?.ti ?? (Number.isInteger(requestedTree) && forest[requestedTree] ? requestedTree : 0);
+      const initialTree =
+        returnState && forest[returnState.treeIndex]
+          ? returnState.treeIndex
+          : deepLink?.ti ?? (Number.isInteger(requestedTree) && forest[requestedTree] ? requestedTree : 0);
       treeSel.value = String(initialTree);
       loadForest(initialTree);
-      if (deepLink) {
+      if (returnState && initialTree === returnState.treeIndex) {
+        const openNodeIds = new Set(returnState.openNodeIds);
+        visitAll(TREE, (node) => {
+          const children = node.children ?? node._children;
+          if (!children?.length) return;
+          if (openNodeIds.has(node.id)) {
+            node.children = children;
+            node._children = null;
+          } else {
+            node.children = null;
+            node._children = children;
+          }
+        });
+        layoutDirty = true;
+        layout();
+        visit(TREE, (node) => {
+          node.sx = node.x;
+          node.sy = node.y;
+        });
+        seedPulses();
+        const restoredSelection = returnState.selectedId
+          ? findNodeById(TREE, returnState.selectedId)
+          : null;
+        if (restoredSelection) {
+          select(restoredSelection, {
+            noCam: true,
+            showDetail: returnState.detailOpen
+          });
+        } else {
+          clearSelection();
+        }
+        cam.x = returnState.camera.x;
+        cam.y = returnState.camera.y;
+        cam.k = Math.min(2.4, Math.max(0.16, returnState.camera.k));
+        cam.tx = cam.x;
+        cam.ty = cam.y;
+        cam.tk = cam.k;
+      } else if (deepLink) {
         const target = findNodeById(TREE, String(deepLink.n.id));
         if (target) {
           let ancestor = target.parent;
