@@ -58,10 +58,14 @@ function waitForExit(child, label) {
 
 if (hasDatabase) {
   console.log("[startup] Applying pending database migrations...");
+  const migrationEnvironment = {
+    ...runtimeEnvironment,
+    DATABASE_URL: process.env.DIRECT_URL || process.env.DATABASE_URL
+  };
   const migration = run(
     process.execPath,
     [prismaEntry, "migrate", "deploy", "--schema", prismaSchema],
-    { cwd: projectRoot, env: runtimeEnvironment }
+    { cwd: projectRoot, env: migrationEnvironment }
   );
 
   try {
