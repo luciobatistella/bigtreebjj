@@ -182,6 +182,19 @@ export async function decideClaimReview(
     request_evidence: 'needs_evidence'
   };
   if (db) {
+    const currentClaim = await db.lineageClaim.findUnique({
+      where: { id: claimId },
+      include: { evidences: true }
+    });
+    if (!currentClaim) {
+      throw new Error('Relação de linhagem não encontrada.');
+    }
+    if (action === 'approve' && !currentClaim.teacherPersonId) {
+      throw new Error('A relação não possui um professor resolvido.');
+    }
+    if (action === 'approve' && currentClaim.evidences.length === 0) {
+      throw new Error('Vincule ao menos uma evidência antes de aprovar esta relação.');
+    }
     const updated = await db.lineageClaim.update({
       where: { id: claimId },
       data: {
@@ -198,6 +211,22 @@ export async function decideClaimReview(
       }
     });
     await db.changeHistory.create({ data: { entityType: 'lineage_claim', entityId: claimId, action, changedBy: options.reviewerId ?? 'reviewer', details: JSON.stringify({ notes, evidenceLevel }) } }).catch(() => undefined);
+    const reviewedEntityIds = [
+      claimId,
+      ...currentClaim.evidences.map((evidence: any) => evidence.id)
+    ];
+    const reviewedRows = await db.importRow.findMany({
+      where: { createdEntityId: { in: reviewedEntityIds } },
+      select: { id: true }
+    });
+    if (reviewedRows.length) {
+      await db.reviewQueue.updateMany({
+        where: { entityId: { in: reviewedRows.map((row: any) => row.id) } },
+        data: {
+          status: action === 'request_evidence' ? 'needs_evidence' : 'closed'
+        }
+      });
+    }
     return { id: updated.id, status: updated.status, action };
   }
 

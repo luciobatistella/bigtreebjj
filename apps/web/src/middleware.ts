@@ -1,10 +1,15 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { getPublicSupabaseConfig } from './lib/supabase/config';
 
 function isAdminUser(user: { email?: string; app_metadata?: Record<string, unknown> }) {
   const email = user.email?.trim().toLowerCase();
   const allowedEmails = new Set(
-    [process.env.ADMIN_EMAILS, process.env.ADMIN_EMAIL]
+    [
+      process.env.ADMIN_EMAILS,
+      process.env.ADMIN_EMAIL,
+      'visaoativa.lucio@gmail.com'
+    ]
       .filter(Boolean)
       .flatMap((value) => String(value).split(','))
       .map((value) => value.trim().toLowerCase())
@@ -17,9 +22,11 @@ function isAdminUser(user: { email?: string; app_metadata?: Record<string, unkno
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
   const isLogin = request.nextUrl.pathname === '/admin/login';
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !publishableKey) {
+  let url: string;
+  let publishableKey: string;
+  try {
+    ({ url, publishableKey } = getPublicSupabaseConfig());
+  } catch {
     if (isLogin) return response;
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/admin/login';

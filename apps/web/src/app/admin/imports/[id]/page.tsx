@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { adminApiFetch, goToAdminLogin } from "../../../../lib/adminApi";
 
 const tabs = [
@@ -40,34 +40,36 @@ export default function ImportJobDetailPage({ params }: { params: { id: string }
   const [report, setReport] = useState<any>(null);
   const [audit, setAudit] = useState<any[]>([]);
   const [message, setMessage] = useState("");
+  const [operation, setOperation] = useState<"preview" | "validate" | "execute" | null>(null);
+
+  const load = useCallback(async () => {
+    const responses = await Promise.all([
+      adminApiFetch(`/imports/${params.id}/detail`),
+      adminApiFetch(`/imports/${params.id}/rows`),
+      adminApiFetch(`/imports/${params.id}/duplicates`),
+      adminApiFetch(`/imports/${params.id}/review-queue`),
+      adminApiFetch(`/imports/${params.id}/imported-records`),
+      adminApiFetch(`/imports/${params.id}/report`),
+      adminApiFetch(`/imports/${params.id}/audit-history`)
+    ]);
+    if (!responses[0].ok) throw new Error("Lote de importação não encontrado.");
+    const [detailData, rowsData, duplicateData, queueData, recordsData, reportData, auditData] =
+      await Promise.all(responses.map((response) => response.ok ? response.json() : null));
+    setDetail(detailData);
+    setRows(rowsData ?? []);
+    setDuplicates(duplicateData ?? []);
+    setQueue(queueData ?? []);
+    setRecords(recordsData ?? {});
+    setReport(reportData);
+    setAudit(auditData ?? []);
+  }, [params.id]);
 
   useEffect(() => {
-    const load = async () => {
-      const responses = await Promise.all([
-        adminApiFetch(`/imports/${params.id}/detail`),
-        adminApiFetch(`/imports/${params.id}/rows`),
-        adminApiFetch(`/imports/${params.id}/duplicates`),
-        adminApiFetch(`/imports/${params.id}/review-queue`),
-        adminApiFetch(`/imports/${params.id}/imported-records`),
-        adminApiFetch(`/imports/${params.id}/report`),
-        adminApiFetch(`/imports/${params.id}/audit-history`)
-      ]);
-      if (!responses[0].ok) throw new Error("Lote de importação não encontrado.");
-      const [detailData, rowsData, duplicateData, queueData, recordsData, reportData, auditData] =
-        await Promise.all(responses.map((response) => response.ok ? response.json() : null));
-      setDetail(detailData);
-      setRows(rowsData ?? []);
-      setDuplicates(duplicateData ?? []);
-      setQueue(queueData ?? []);
-      setRecords(recordsData ?? {});
-      setReport(reportData);
-      setAudit(auditData ?? []);
-    };
-    load().catch((error) => {
+    void load().catch((error) => {
       if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
       setMessage(error instanceof Error ? error.message : "Não foi possível carregar o lote.");
     });
-  }, [params.id]);
+  }, [load]);
 
   const warnings = useMemo(
     () =>
@@ -112,6 +114,53 @@ export default function ImportJobDetailPage({ params }: { params: { id: string }
     }
   };
 
+  const runImportAction = async (action: "preview" | "validate" | "execute") => {
+    if (
+      action === "execute" &&
+      !window.confirm(
+        "Executar este lote no banco real? Os registros serão criados como pendentes quando exigirem curadoria."
+      )
+    ) return;
+
+    setOperation(action);
+    setMessage("");
+    try {
+      const response = await adminApiFetch(`/imports/${params.id}/${action}`, {
+        method: "POST",
+        body:
+          action === "execute"
+            ? JSON.stringify({ importCategory: detail?.importCategory })
+            : undefined
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error ?? `Não foi possível executar a etapa ${action}.`);
+      }
+      if (action === "preview") {
+        const totalRows =
+          payload?.summary?.totalRows ??
+          payload?.summary?.total_rows ??
+          payload?.rows?.length ??
+          0;
+        setMessage(`Pré-visualização concluída: ${totalRows} linha(s) encontradas.`);
+      } else if (action === "validate") {
+        setMessage("Validação registrada. O lote está pronto para execução.");
+      } else {
+        setMessage(
+          `Lote executado: ${payload?.createdEntities?.length ?? 0} registro(s) criado(s) e ${
+            payload?.reviewQueueEntries?.length ?? 0
+          } decisão(ões) enviada(s) à curadoria.`
+        );
+      }
+      await load();
+    } catch (error) {
+      if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(error instanceof Error ? error.message : "A operação falhou.");
+    } finally {
+      setOperation(null);
+    }
+  };
+
   return (
     <main className="admin-page">
       <header className="admin-page-head">
@@ -125,6 +174,50 @@ export default function ImportJobDetailPage({ params }: { params: { id: string }
       </header>
 
       {message ? <div className="admin-alert" role="status">{message}</div> : null}
+
+      <section className="admin-panel">
+        <header className="admin-panel-head">
+          <h2>Fluxo de entrada no acervo</h2>
+          <small>Pré-visualizar → validar → executar → revisar</small>
+        </header>
+        <div className="admin-panel-body">
+          <p className="admin-evidence-note">
+            Executar grava os dados no PostgreSQL. Relações de linhagem e suas evidências
+            permanecem fora do Explorer até uma decisão humana na fila de curadoria.
+          </p>
+          <div className="admin-inline-actions admin-section-gap">
+            <button
+              className="admin-button-secondary"
+              type="button"
+              disabled={operation !== null || detail?.status === "rolled_back"}
+              onClick={() => void runImportAction("preview")}
+            >
+              {operation === "preview" ? "Lendo arquivo…" : "1. Pré-visualizar"}
+            </button>
+            <button
+              className="admin-button-secondary"
+              type="button"
+              disabled={operation !== null || detail?.status !== "uploaded"}
+              onClick={() => void runImportAction("validate")}
+            >
+              {operation === "validate" ? "Validando…" : "2. Validar lote"}
+            </button>
+            <button
+              className="admin-button"
+              type="button"
+              disabled={operation !== null || detail?.status !== "validated"}
+              onClick={() => void runImportAction("execute")}
+            >
+              {operation === "execute" ? "Gravando no banco…" : "3. Executar no banco"}
+            </button>
+            {detail?.status === "completed" ? (
+              <Link className="admin-button-secondary" href="/admin/review">
+                4. Abrir fila de curadoria
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </section>
 
       <section className="admin-metrics">
         {[

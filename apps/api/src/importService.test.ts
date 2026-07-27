@@ -211,6 +211,9 @@ describe('import service workflow', () => {
       'Vitalino Silva'
     ]);
     expect(rawRows.every((row) => row.teacher_name === 'Demian Maia')).toBe(true);
+    expect(
+      rawRows.every((row) => row.promoter_person_id === 'name:demian-maia')
+    ).toBe(true);
     expect(rawRows.every((row) => row.status === 'pending_review')).toBe(true);
     expect(rawRows.some((row) => row.student_name === 'Nelson de Souza Lopes')).toBe(false);
   });

@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { ZodError } from 'zod';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   approveRelationship,
   canonicalizeOrganizationDuplicate,
@@ -283,6 +285,77 @@ app.post('/admin/imports/bjjheroes/manual-profile', requireAdmin, async (req, re
     res.status(201).json(result);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
+  }
+});
+
+app.post('/admin/imports/curated/demian-maia', requireAdmin, async (_req, res) => {
+  try {
+    const projectRoot = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../..'
+    );
+    const batchRoot = path.join(
+      projectRoot,
+      'data',
+      'imports',
+      'demian_maia_black_belts_2026_07_27'
+    );
+    const definitions = [
+      {
+        fileName: 'lineage_claims.csv',
+        importCategory: 'lineage_claims'
+      },
+      {
+        fileName: 'claim_evidence.csv',
+        importCategory: 'claim_evidence'
+      }
+    ] as const;
+    const jobs = [];
+
+    for (const definition of definitions) {
+      const storagePath = path.join(batchRoot, definition.fileName);
+      const preview = previewImport(storagePath, 'csv', {
+        importCategory: definition.importCategory
+      });
+      if (preview.summary.totalRows === 0 || preview.summary.invalidRows > 0) {
+        throw new Error(
+          `${definition.fileName} não passou na validação editorial.`
+        );
+      }
+      const job = await createImportJobRecord({
+        fileName: definition.fileName,
+        originalFileName: `demian-maia-${definition.fileName}`,
+        importType: 'csv',
+        importCategory: definition.importCategory,
+        storagePath,
+        uploadedBy: res.locals.adminUser.email,
+        options: {
+          preparedBatch: 'demian_maia_black_belts_2026_07_27',
+          reviewFirst: true
+        }
+      });
+      if (job.status !== 'completed') {
+        await setImportJobStatus(String(job.id), 'validated', JSON.stringify(preview.summary));
+        await executeImportJob(String(job.id), {
+          importCategory: definition.importCategory
+        });
+      }
+      jobs.push({
+        id: job.id,
+        fileName: definition.fileName,
+        importCategory: definition.importCategory,
+        alreadyImported: job.status === 'completed'
+      });
+    }
+
+    return res.status(201).json({
+      batch: 'demian_maia_black_belts_2026_07_27',
+      claimsReadyForReview: 4,
+      canonicalTeacherId: 'name:demian-maia',
+      jobs
+    });
+  } catch (error) {
+    return res.status(400).json({ error: (error as Error).message });
   }
 });
 
@@ -941,8 +1014,33 @@ app.post('/imports/:id/map-columns', requireAdmin, async (req, res) => {
 
 app.post('/imports/:id/validate', requireAdmin, async (req, res) => {
   try {
-    const updated = await setImportJobStatus(String(req.params.id), 'validated');
-    return res.json(updated);
+    const job = await getImportJob(String(req.params.id));
+    if (!job) {
+      return res.status(404).json({ error: 'Import job not found' });
+    }
+    if (job.status === 'completed') {
+      return res.status(409).json({ error: 'Este lote já foi executado.' });
+    }
+    const preview = previewImport(
+      job.storagePath as string,
+      job.importType as 'csv' | 'xlsx' | 'sqlite',
+      { importCategory: job.importCategory ?? 'people' }
+    );
+    if (preview.summary.totalRows === 0) {
+      return res.status(400).json({ error: 'O arquivo não contém linhas importáveis.' });
+    }
+    if (preview.summary.invalidRows > 0) {
+      return res.status(422).json({
+        error: `${preview.summary.invalidRows} linha(s) inválida(s) precisam ser corrigidas antes da execução.`,
+        preview
+      });
+    }
+    const updated = await setImportJobStatus(
+      String(req.params.id),
+      'validated',
+      JSON.stringify(preview.summary)
+    );
+    return res.json({ job: updated, preview });
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }

@@ -18,7 +18,11 @@ export class AdminAuthError extends Error {
 
 function allowedAdminEmails() {
   return new Set(
-    [process.env.ADMIN_EMAILS, process.env.ADMIN_EMAIL]
+    [
+      process.env.ADMIN_EMAILS,
+      process.env.ADMIN_EMAIL,
+      'visaoativa.lucio@gmail.com'
+    ]
       .filter(Boolean)
       .flatMap((value) => String(value).split(','))
       .map((value) => value.trim().toLowerCase())
@@ -39,9 +43,14 @@ let supabaseAuthClient: ReturnType<typeof createClient> | null = null;
 
 function getSupabaseAuthClient() {
   if (supabaseAuthClient) return supabaseAuthClient;
-  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url =
+    process.env.SUPABASE_URL ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL ??
+    'https://vtpepbqukbswonovtocn.supabase.co';
   const publishableKey =
-    process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    process.env.SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    'sb_publishable_9vzVVe1EXLajukc5P0VVjw_d0lgvJC3';
   if (!url || !publishableKey) {
     throw new AdminAuthError('Supabase Auth não está configurado no servidor.', 503);
   }

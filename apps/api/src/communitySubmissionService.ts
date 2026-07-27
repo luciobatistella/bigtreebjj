@@ -395,7 +395,7 @@ export async function decideLineageSubmission(
     });
     await db.reviewQueue.updateMany({
       where: { entityType: 'lineage_submission', entityId: id },
-      data: { status }
+      data: { status: action === 'reject' ? 'closed' : status }
     });
     await db.changeHistory.create({
       data: {
@@ -525,7 +525,7 @@ export async function decideLineageSubmission(
     });
     await transaction.reviewQueue.updateMany({
       where: { entityType: 'lineage_submission', entityId: id },
-      data: { status: 'approved' }
+      data: { status: 'closed' }
     });
     await transaction.changeHistory.create({
       data: {

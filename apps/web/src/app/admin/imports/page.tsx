@@ -23,6 +23,10 @@ export default function ImportAdminPage() {
   const [table, setTable] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPreparingDemianBatch, setIsPreparingDemianBatch] = useState(false);
+  const [preparedDemianJobs, setPreparedDemianJobs] = useState<
+    Array<{ id: string; fileName: string }>
+  >([]);
   const [presets, setPresets] = useState<any>(null);
 
   const handleError = (error: unknown) => {
@@ -84,6 +88,35 @@ export default function ImportAdminPage() {
     }
   };
 
+  const prepareDemianBatch = async () => {
+    if (
+      !window.confirm(
+        "Adicionar quatro relações documentadas de Demian Maia à fila privada de curadoria? Nada será publicado automaticamente."
+      )
+    ) return;
+    setIsPreparingDemianBatch(true);
+    setMessage("");
+    try {
+      const response = await adminApiFetch("/admin/imports/curated/demian-maia", {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Não foi possível preparar o lote editorial.");
+      }
+      setPreparedDemianJobs(payload.jobs ?? []);
+      setMessage(
+        `${payload.claimsReadyForReview ?? 4} relações foram colocadas na fila privada. Revise cada fonte antes de publicar.`
+      );
+      await refreshJobs();
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsPreparingDemianBatch(false);
+    }
+  };
+
   return (
     <main className="admin-page">
       <header className="admin-page-head">
@@ -98,6 +131,41 @@ export default function ImportAdminPage() {
       </header>
 
       {message ? <div className="admin-alert" role="status">{message}</div> : null}
+
+      <section className="admin-panel">
+        <header className="admin-panel-head">
+          <h2>Lote editorial preparado · Demian Maia</h2>
+          <small>4 relações · fontes oficiais · publicação manual</small>
+        </header>
+        <div className="admin-panel-body">
+          <p className="admin-evidence-note">
+            Mark Turner, Daniel Amado Perez, Nathan Drona e Vitalino Silva possuem
+            evidência direta no site oficial de Demian Maia. O lote usa o registro
+            canônico <code>name:demian-maia</code> e exclui Nelson de Souza Lopes.
+          </p>
+          <div className="admin-inline-actions admin-section-gap">
+            <button
+              className="admin-button"
+              type="button"
+              disabled={isPreparingDemianBatch}
+              onClick={() => void prepareDemianBatch()}
+            >
+              {isPreparingDemianBatch
+                ? "Preparando fila…"
+                : "Adicionar à fila de curadoria"}
+            </button>
+            {preparedDemianJobs.map((job) => (
+              <Link
+                className="admin-button-secondary"
+                href={`/admin/imports/${job.id}`}
+                key={job.id}
+              >
+                Abrir {job.fileName}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <div className="admin-grid-two">
         <form className="admin-panel" onSubmit={handleSubmit}>
@@ -133,7 +201,7 @@ export default function ImportAdminPage() {
                   <option value="organizations">Organizações</option>
                   <option value="sources">Fontes</option>
                   <option value="lineage_claims">Relações de linhagem</option>
-                  <option value="evidence">Evidências</option>
+                  <option value="claim_evidence">Evidências de linhagem</option>
                 </select>
               </label>
             </div>

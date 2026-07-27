@@ -190,6 +190,10 @@ export async function createImportJobRecord(input: { fileName: string; originalF
 
   const db = await getPrismaClient();
   if (db) {
+    const existing = await db.importJob.findUnique({ where: { id: jobPayload.id } });
+    if (existing) {
+      return { ...jobPayload, ...existing, prisma: existing };
+    }
     const saved = await db.importJob.create({
       data: {
         id: jobPayload.id,
@@ -348,7 +352,7 @@ async function findOrCreateImportedPerson(db: any, input: { id?: string | null; 
         fullName: input.name,
         country: input.country || undefined,
         city: input.city || undefined,
-        nicknames
+        nicknames: input.nickname ? nicknames : undefined
       },
       create: {
         id: input.id,
@@ -394,6 +398,12 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
   const job = db ? await db.importJob.findUnique({ where: { id: jobId } }) : getImportJobStore().find((entry) => entry.id === jobId);
   if (!job) {
     throw new Error('Import job not found');
+  }
+  if (job.status === 'completed') {
+    throw new Error('Este lote já foi executado. Reverta-o antes de tentar novamente.');
+  }
+  if (job.status === 'rolled_back') {
+    throw new Error('Este lote foi revertido e não pode ser executado novamente.');
   }
 
   const preview = previewImport(job.storagePath as string, (job.importType as string) as 'csv' | 'xlsx' | 'sqlite', getPreviewOptionsFromJob(job as Record<string, unknown>));
@@ -1215,7 +1225,13 @@ export async function getDashboardMetrics() {
       db.lineageClaim.count(),
       db.lineageClaim.count({ where: { status: 'confirmed' } }),
       db.lineageClaim.count({ where: { status: 'pending_review' } }),
-      db.reviewQueue.count({ where: { status: { not: 'closed' } } }),
+      db.reviewQueue.count({
+        where: {
+          status: {
+            notIn: ['closed', 'approved', 'rejected', 'confirmed', 'corroborated', 'merged', 'keep_separate']
+          }
+        }
+      }),
       db.duplicateCandidate.count({ where: { status: 'open' } }),
       db.importJob.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
       db.importJob.findFirst({ orderBy: { createdAt: 'desc' } }),

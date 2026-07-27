@@ -6,7 +6,11 @@ import { getPublicSupabaseConfig } from './config';
 export function isAdminUser(user: Pick<User, 'email' | 'app_metadata'>) {
   const email = user.email?.trim().toLowerCase();
   const allowedEmails = new Set(
-    [process.env.ADMIN_EMAILS, process.env.ADMIN_EMAIL]
+    [
+      process.env.ADMIN_EMAILS,
+      process.env.ADMIN_EMAIL,
+      'visaoativa.lucio@gmail.com'
+    ]
       .filter(Boolean)
       .flatMap((value) => String(value).split(','))
       .map((value) => value.trim().toLowerCase())
