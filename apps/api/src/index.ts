@@ -88,6 +88,16 @@ let prisma: any = null;
 const submissionAttempts = new Map<string, number[]>();
 const publicReadAttempts = new Map<string, number[]>();
 
+function isBjjHeroesUrl(value?: string | null) {
+  if (!value) return false;
+  try {
+    const hostname = new URL(value).hostname.toLowerCase();
+    return hostname === 'bjjheroes.com' || hostname.endsWith('.bjjheroes.com');
+  } catch {
+    return false;
+  }
+}
+
 async function getDb() {
   if (process.env.VITEST) return null;
   if (prisma) return prisma;
@@ -615,6 +625,7 @@ app.get(
   function buildNode(personId: string, claim: any, visited: Set<string>): Record<string, unknown> {
     const person = personById.get(personId) as any;
     const isRoot = !claim;
+    const importedFromBjjHeroes = isBjjHeroesUrl(person.profileUrl);
     const confidence = isRoot ? 'root' : claim.status === 'confirmed' ? 'high' : 'medium';
     const source = isRoot ? 'root' : claim.claimType === 'trained_under' ? 'manual_curation' : 'bio_extraction';
     const kids = (childrenOf.get(personId) ?? [])
@@ -625,8 +636,11 @@ app.get(
       name: person.fullName,
       nickname: person.nicknames?.[0] ?? '',
       team: person.team ?? '',
-      url: person.profileUrl ?? '',
-      bio: person.bio ?? '',
+      // A captura original permanece no banco para auditoria, mas não é
+      // reproduzida pela API pública. A web cria uma síntese editorial nova
+      // usando somente os vínculos estruturados.
+      url: importedFromBjjHeroes ? '' : person.profileUrl ?? '',
+      bio: importedFromBjjHeroes ? '' : person.bio ?? '',
       confidence,
       source,
       evidence: claim?.notes ?? '',

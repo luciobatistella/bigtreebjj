@@ -8,6 +8,12 @@ const webRoot = path.join(projectRoot, "apps", "web");
 
 const tasks = [
   {
+    label: "Public media policy",
+    cwd: projectRoot,
+    entry: path.join(projectRoot, "scripts", "audit-public-media.mjs"),
+    args: []
+  },
+  {
     label: "Prisma Client",
     cwd: projectRoot,
     entry: path.join(

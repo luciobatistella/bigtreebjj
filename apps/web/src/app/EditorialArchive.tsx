@@ -57,8 +57,7 @@ const archiveCopy = {
     placeholder: "Person, team, city or period...",
     gaps: "Open gaps",
     result: (visible: number, total: number) => `${visible} of ${total} entries`,
-    fallback:
-      "The historical entries below remain in canonical Portuguese while the reviewed English edition is prepared.",
+    fallback: "",
     editorialEntry: "Editorial entry",
     links: "links",
     sources: "sources",

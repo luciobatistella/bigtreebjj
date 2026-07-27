@@ -7,6 +7,7 @@ import type { Locale } from "./i18n/locale";
 import { getServerLocale } from "./i18n/serverLocale";
 import coreData from "./big-tree-bjj/conteudo/nucleo.json";
 import ptData from "./big-tree-bjj/conteudo/pt.json";
+import enData from "./big-tree-bjj/conteudo/en.json";
 
 type Seal = "DOC" | "ATE" | "TRA" | "ESP";
 
@@ -32,6 +33,14 @@ type Biography = {
   nota?: string | null;
   lacuna?: string | null;
   apuracao?: string | null;
+};
+
+type EnglishBiography = {
+  nome?: string | null;
+  epiteto?: string | null;
+  corpo?: string | null;
+  nota?: string | null;
+  lacuna?: string | null;
 };
 
 type LinkRecord = {
@@ -92,7 +101,8 @@ type ExternalReference = {
 };
 
 const people = coreData.pessoas as Record<string, CorePerson>;
-const biographies = ptData.verbetes as Record<string, Biography>;
+const biographiesPt = ptData.verbetes as Record<string, Biography>;
+const biographiesEn = enData.verbetes as Record<string, EnglishBiography>;
 const links = coreData.vinculos as LinkRecord[];
 const conflicts = coreData.conflitos as ConflictRecord[];
 const conflictCopy = ptData.conflitos as Record<string, ConflictCopy>;
@@ -173,7 +183,7 @@ const timelinePt = [
 
 function displayName(id: string) {
   return (
-    biographies[id]?.nome ??
+    biographiesPt[id]?.nome ??
     people[id]?.variantes?.[0] ??
     externalReferences[id]?.nome ??
     id.replaceAll("_", " ")
@@ -237,34 +247,90 @@ function translateFightResult(value: string, locale: Locale) {
   return labels[value] ?? value;
 }
 
-function formatLife(person?: CorePerson) {
+function formatLife(person: CorePerson | undefined, locale: Locale) {
   if (!person?.nasc && !person?.morte) return undefined;
-  return [person.nasc || "?", person.morte || "presente"].join(" — ");
+  return [person.nasc || "?", person.morte || (locale === "en" ? "present" : "presente")].join(" — ");
 }
 
-const editorialEntries: EditorialEntry[] = Object.entries(biographies).map(([id, entry]) => {
-  const person = people[id];
-  const relationCount = links.filter((link) => link.de === id || link.para === id).length;
-  return {
-    id,
-    name: entry.nome,
-    epithet: entry.epiteto || undefined,
-    opening: entry.abertura || entry.nota || "Verbete em desenvolvimento editorial.",
-    formation: entry.formacao || undefined,
-    activity: entry.atuacao || undefined,
-    descendants: entry.descendencia || undefined,
-    note: entry.nota || undefined,
-    gap: entry.lacuna || undefined,
-    research: entry.apuracao || undefined,
-    life: formatLife(person),
-    location: person?.atuacao_local || person?.local_nasc || undefined,
-    priority: person?.prioridade,
-    relationCount,
-    sourceCount: person?.registro?.length ?? 0,
-    conflictCount: person?.conflitos?.length ?? 0,
-    exploreHref: person ? `/explore?search=${encodeURIComponent(entry.nome)}` : undefined
-  };
-});
+function buildEditorialEntries(locale: Locale): EditorialEntry[] {
+  return Object.entries(biographiesPt).map(([id, entry]) => {
+    const person = people[id];
+    const relationCount = links.filter((link) => link.de === id || link.para === id).length;
+    const sourceCount = person?.registro?.length ?? 0;
+
+    if (locale === "en") {
+      const translated = biographiesEn[id];
+      const name = translated?.nome || entry.nome;
+      const teachers = links
+        .filter((link) => link.para === id)
+        .sort((a, b) => (b.selo === "DOC" ? 4 : b.selo === "ATE" ? 3 : b.selo === "TRA" ? 2 : 1) - (a.selo === "DOC" ? 4 : a.selo === "ATE" ? 3 : a.selo === "TRA" ? 2 : 1));
+      const students = links.filter((link) => link.de === id);
+      const strongestTeacher = teachers[0];
+      const teacherName = strongestTeacher ? displayName(strongestTeacher.de) : "";
+      const studentNames = students.slice(0, 5).map((link) => displayName(link.para));
+      const structuredOpening = strongestTeacher
+        ? `${name} is represented in the historical archive through a recorded connection to ${teacherName}, classified as “${translateRelationshipType(strongestTeacher.tipo, "en")}” with ${strongestTeacher.selo} evidence.`
+        : `${name} is preserved as an independent entry in The Big Tree BJJ historical archive while an incoming teacher connection is reviewed.`;
+
+      return {
+        id,
+        name,
+        epithet: translated?.epiteto || entry.epiteto || undefined,
+        opening: translated?.corpo || structuredOpening,
+        formation: translated?.corpo
+          ? undefined
+          : strongestTeacher
+            ? `The current structured record links this entry to ${teacherName}. It does not reproduce an external biography.`
+            : "No teacher is asserted by this concise English edition.",
+        activity:
+          !translated?.corpo && (person?.atuacao_local || person?.atuacao_periodo)
+            ? `Recorded activity: ${[person.atuacao_periodo, person.atuacao_local].filter(Boolean).join(" · ")}.`
+            : undefined,
+        descendants:
+          !translated?.corpo && studentNames.length
+            ? `Directly recorded connections include ${new Intl.ListFormat("en", { style: "long", type: "conjunction" }).format(studentNames)}${students.length > studentNames.length ? ` and ${students.length - studentNames.length} more` : ""}.`
+            : undefined,
+        note:
+          translated?.nota ||
+          "This original English summary was produced solely from the project’s structured lineage records; no external biographical prose is reproduced.",
+        gap:
+          translated?.lacuna ||
+          "A full independently sourced biography remains under editorial review.",
+        research:
+          sourceCount
+            ? `Review the ${sourceCount} source ${sourceCount === 1 ? "record" : "records"} attached to this entry and replace the concise summary only after independent verification.`
+            : "Locate an independent primary or institutional source before expanding this biography.",
+        life: formatLife(person, locale),
+        location: person?.atuacao_local || person?.local_nasc || undefined,
+        priority: person?.prioridade,
+        relationCount,
+        sourceCount,
+        conflictCount: person?.conflitos?.length ?? 0,
+        exploreHref: person ? `/explore?search=${encodeURIComponent(name)}` : undefined
+      };
+    }
+
+    return {
+      id,
+      name: entry.nome,
+      epithet: entry.epiteto || undefined,
+      opening: entry.abertura || entry.nota || "Verbete em desenvolvimento editorial.",
+      formation: entry.formacao || undefined,
+      activity: entry.atuacao || undefined,
+      descendants: entry.descendencia || undefined,
+      note: entry.nota || undefined,
+      gap: entry.lacuna || undefined,
+      research: entry.apuracao || undefined,
+      life: formatLife(person, locale),
+      location: person?.atuacao_local || person?.local_nasc || undefined,
+      priority: person?.prioridade,
+      relationCount,
+      sourceCount,
+      conflictCount: person?.conflitos?.length ?? 0,
+      exploreHref: person ? `/explore?search=${encodeURIComponent(entry.nome)}` : undefined
+    };
+  });
+}
 
 const lineageLinks = [...links].sort((a, b) => (a.ano ?? 9999) - (b.ano ?? 9999));
 
@@ -273,6 +339,7 @@ export default function HomePage() {
   const copy = homeCopy[locale];
   const sealCopy = copy.method.seals;
   const timeline = locale === "en" ? timelineEn : timelinePt;
+  const editorialEntries = buildEditorialEntries(locale);
 
   return (
     <main className="ed-home">

@@ -1,5 +1,6 @@
 import coreData from "../../../big-tree-bjj/conteudo/nucleo.json";
 import ptData from "../../../big-tree-bjj/conteudo/pt.json";
+import enData from "../../../big-tree-bjj/conteudo/en.json";
 import type { Locale } from "../../../i18n/locale";
 
 type Seal = "DOC" | "ATE" | "TRA" | "ESP";
@@ -14,6 +15,14 @@ type Biography = {
   nota?: string | null;
   lacuna?: string | null;
   apuracao?: string | null;
+};
+
+type EnglishBiography = {
+  nome?: string | null;
+  epiteto?: string | null;
+  corpo?: string | null;
+  nota?: string | null;
+  lacuna?: string | null;
 };
 
 type CanonicalEntity = {
@@ -43,7 +52,8 @@ export type EditorialForestNode = {
   children?: EditorialForestNode[];
 };
 
-const biographies = ptData.verbetes as unknown as Record<string, Biography>;
+const biographiesPt = ptData.verbetes as unknown as Record<string, Biography>;
+const biographiesEn = enData.verbetes as unknown as Record<string, EnglishBiography>;
 const people = coreData.pessoas as unknown as Record<string, CanonicalEntity>;
 const entities = coreData.entidades as unknown as Record<string, CanonicalEntity>;
 const links = coreData.vinculos as unknown as CanonicalLink[];
@@ -102,7 +112,8 @@ const relationLabels: Record<Locale, Record<string, string>> = {
 
 function displayName(id: string, locale: Locale) {
   return (
-    biographies[id]?.nome ??
+    (locale === "en" ? biographiesEn[id]?.nome : undefined) ??
+    biographiesPt[id]?.nome ??
     people[id]?.variantes?.[0] ??
     entities[id]?.variantes?.[0] ??
     collectiveNames[locale][id] ??
@@ -110,8 +121,21 @@ function displayName(id: string, locale: Locale) {
   );
 }
 
-function biographyText(id: string) {
-  const entry = biographies[id];
+function biographyText(id: string, locale: Locale) {
+  if (locale === "en") {
+    const entry = biographiesEn[id];
+    if (!entry) return undefined;
+    const translated = [
+      entry.corpo,
+      entry.nota,
+      entry.lacuna ? `Open gap: ${entry.lacuna}` : null
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return translated || undefined;
+  }
+
+  const entry = biographiesPt[id];
   if (!entry) return undefined;
 
   return [
@@ -140,7 +164,7 @@ function evidenceText(link: CanonicalLink) {
 export function buildEditorialForest(locale: Locale = "pt"): EditorialForestNode {
   const linksByOrigin = new Map<string, CanonicalLink[]>();
   const allIds = new Set<string>([
-    ...Object.keys(biographies),
+    ...Object.keys(biographiesPt),
     ...links.flatMap((link) => [link.de, link.para])
   ]);
   const idsWithParent = new Set(links.map((link) => link.para));
@@ -161,7 +185,8 @@ export function buildEditorialForest(locale: Locale = "pt"): EditorialForestNode
     relation?: CanonicalLink,
     siblingIndex = 0
   ): EditorialForestNode {
-    const entry = biographies[id];
+    const entry = biographiesPt[id];
+    const translatedEntry = locale === "en" ? biographiesEn[id] : undefined;
     const nodeId = `archive:${[...path, `${id}-${siblingIndex}`].join(":")}`;
     const nextPath = [...path, id];
     const childLinks = (linksByOrigin.get(id) ?? []).filter(
@@ -171,13 +196,13 @@ export function buildEditorialForest(locale: Locale = "pt"): EditorialForestNode
     return {
       id: nodeId,
       name: displayName(id, locale),
-      nickname: entry?.epiteto ?? undefined,
+      nickname: translatedEntry?.epiteto ?? entry?.epiteto ?? undefined,
       team: relation
         ? `${locale === "en" ? "Historical archive" : "Acervo histórico"} · ${relation.selo}`
         : locale === "en"
           ? "Independent archive root"
           : "Núcleo independente do acervo",
-      bio: biographyText(id),
+      bio: biographyText(id, locale),
       confidence: relation?.selo ?? "root",
       source: "editorial_archive",
       evidence: relation
@@ -202,8 +227,8 @@ export function buildEditorialForest(locale: Locale = "pt"): EditorialForestNode
     name: locale === "en" ? "Historical archive · edition 0.2" : "Arquivo histórico · edição 0.2",
     team:
       locale === "en"
-        ? `${Object.keys(biographies).length} entries · ${links.length} evidence-graded links`
-        : `${Object.keys(biographies).length} verbetes · ${links.length} vínculos graduados`,
+        ? `${Object.keys(biographiesPt).length} entries · ${links.length} evidence-graded links`
+        : `${Object.keys(biographiesPt).length} verbetes · ${links.length} vínculos graduados`,
     bio:
       locale === "en"
         ? "An editorial projection of the historical archive in the Explorer. It complements, without replacing, the trees supplied by PostgreSQL."

@@ -31,8 +31,8 @@ export const explorerCopy = {
     editorialArchive: "Acervo editorial",
     historicalCuration: "Curadoria histórica",
     manualAudit: "Auditoria manual",
-    bioHigh: "Extraída da bio · alta",
-    bioMedium: "Extraída da bio · média",
+    bioHigh: "Fonte especializada · alta",
+    bioMedium: "Fonte especializada · média",
     lineageRoot: "Raiz da linhagem",
     directConnections: (count: number) =>
       `${count === 1 ? "conexão direta registrada" : "conexões diretas registradas"}`,
@@ -123,7 +123,7 @@ export const explorerCopy = {
     close: "Fechar",
     overview: "Visão geral",
     legend: "Legenda",
-    bioExtracted: "Extraída da bio",
+    bioExtracted: "Fonte especializada",
     partialName: "Nome parcial",
     desktopHint:
       "Arraste para navegar · clique no nó para abrir o ramo · use a roda para zoom · pressione / para buscar",
@@ -161,8 +161,8 @@ export const explorerCopy = {
     editorialArchive: "Editorial archive",
     historicalCuration: "Historical curation",
     manualAudit: "Manual audit",
-    bioHigh: "Extracted from bio · high",
-    bioMedium: "Extracted from bio · medium",
+    bioHigh: "Specialized source · high",
+    bioMedium: "Specialized source · medium",
     lineageRoot: "Lineage root",
     directConnections: (count: number) =>
       `${count === 1 ? "direct connection recorded" : "direct connections recorded"}`,
@@ -254,7 +254,7 @@ export const explorerCopy = {
     close: "Close",
     overview: "Overview",
     legend: "Legend",
-    bioExtracted: "Extracted from bio",
+    bioExtracted: "Specialized source",
     partialName: "Partial name",
     desktopHint:
       "Drag to navigate · click a node to open its branch · use the wheel to zoom · press / to search",

@@ -102,6 +102,20 @@ function mergeText(current: string, incoming?: string) {
   return current ? `${current} ${next}` : next;
 }
 
+function safePublicUrl(value?: string) {
+  const url = value?.trim() ?? "";
+  if (!url) return "";
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    if (hostname === "bjjheroes.com" || hostname.endsWith(".bjjheroes.com")) {
+      return "";
+    }
+    return url;
+  } catch {
+    return "";
+  }
+}
+
 const relationTranslations: Record<string, string> = {
   "Faixa-preta concedida por": "Black belt awarded by",
   "Graduado por": "Promoted by",
@@ -136,8 +150,11 @@ export function buildUnifiedForest(postgresForest: RawForestNode[], locale: Loca
         name: node.name,
         nickname: node.nickname ?? "",
         team: node.team ?? "",
-        url: node.url ?? "",
-        bio: node.bio ?? "",
+        url: safePublicUrl(node.url),
+        // Textos do PostgreSQL são material interno de descoberta. Somente a
+        // prosa canônica entra aqui; os outros perfis recebem uma síntese
+        // editorial original e localizada em toTree().
+        bio: canonical ? node.bio ?? "" : "",
         profileHref: node.profileHref ?? "",
         canonical
       });
@@ -149,9 +166,9 @@ export function buildUnifiedForest(postgresForest: RawForestNode[], locale: Loca
     if (!current.team || current.team.startsWith("Acervo histórico")) {
       current.team = node.team ?? current.team;
     }
-    current.url ||= node.url ?? "";
+    current.url ||= safePublicUrl(node.url);
     current.profileHref ||= node.profileHref ?? "";
-    current.bio = mergeText(current.bio, node.bio);
+    if (canonical) current.bio = mergeText(current.bio, node.bio);
     return key;
   }
 
@@ -250,6 +267,41 @@ export function buildUnifiedForest(postgresForest: RawForestNode[], locale: Loca
   const sortByName = (a: GraphEdge, b: GraphEdge) =>
     (nodes.get(a.to)?.name ?? "").localeCompare(nodes.get(b.to)?.name ?? "", "pt-BR");
 
+  function originalBiography(node: GraphNode, incoming?: GraphEdge) {
+    if (node.canonical && node.bio.trim()) return node.bio.trim();
+
+    const parent = incoming ? nodes.get(incoming.from) : undefined;
+    const relation = incoming
+      ? translatedRelation(incoming.relationLabel, locale)
+      : locale === "en"
+        ? "entry root"
+        : "núcleo de entrada";
+    const team =
+      node.team &&
+      !node.team.startsWith("Acervo histórico") &&
+      !node.team.startsWith("Historical archive")
+        ? node.team
+        : "";
+
+    if (locale === "en") {
+      const connection = parent
+        ? `The primary connection currently recorded links ${node.name} to ${parent.name} under the classification “${relation}”.`
+        : `${node.name} is preserved as an entry root while a primary teacher connection is reviewed.`;
+      const affiliation = team
+        ? `The structured record associates this profile with ${team}.`
+        : "No team affiliation is asserted in this public summary.";
+      return `${connection} ${affiliation} This original editorial summary uses only structured lineage data held by The Big Tree BJJ; competitive history and personal details remain under independent review.`;
+    }
+
+    const connection = parent
+      ? `O vínculo principal atualmente registrado conecta ${node.name} a ${parent.name} sob a classificação “${relation}”.`
+      : `${node.name} permanece como núcleo de entrada enquanto a conexão com um professor principal é revisada.`;
+    const affiliation = team
+      ? `O registro estruturado associa este perfil à equipe ${team}.`
+      : "Esta síntese pública não afirma vínculo com uma equipe.";
+    return `${connection} ${affiliation} Esta síntese editorial original usa apenas os dados estruturados de linhagem mantidos pelo The Big Tree BJJ; trajetória competitiva e dados pessoais permanecem em apuração independente.`;
+  }
+
   function toTree(key: string, incoming?: GraphEdge): UnifiedForestNode {
     const node = nodes.get(key);
     if (!node) throw new Error(`Nó ausente na árvore unificada: ${key}`);
@@ -274,7 +326,7 @@ export function buildUnifiedForest(postgresForest: RawForestNode[], locale: Loca
       nickname: node.nickname,
       team: node.team,
       url: node.url,
-      bio: node.bio,
+      bio: originalBiography(node, incoming),
       profileHref: node.profileHref,
       confidence: incoming?.confidence ?? "root",
       source: node.canonical ? "editorial_archive" : incoming?.source ?? "root",

@@ -10,6 +10,7 @@
     "packages/*"
   ],
   "scripts": {
+    "audit:public-media": "node scripts/audit-public-media.mjs",
     "build": "node scripts/build-hostinger.mjs",
     "build:hostinger": "node scripts/build-hostinger.mjs",
     "start": "node app.js",
