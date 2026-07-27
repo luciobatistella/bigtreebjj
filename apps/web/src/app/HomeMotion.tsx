@@ -90,24 +90,6 @@ export function HomeMotion() {
               "-=0.18"
             )
             .from(
-              ".ed-hero-belt > span",
-              { scaleX: 0, transformOrigin: "0 50%", duration: 0.85, immediateRender: false, ease: "power2.inOut" },
-              "-=0.42"
-            )
-            .from(".ed-hero-belt > b", { x: -40, opacity: 0, duration: 0.4, immediateRender: false }, "-=0.2")
-            .from(
-              ".ed-hero-belt i",
-              {
-                scaleY: 0,
-                transformOrigin: "50% 50%",
-                stagger: 0.06,
-                duration: 0.28,
-                immediateRender: false,
-                ease: "back.out(2)"
-              },
-              "-=0.08"
-            )
-            .from(
               ".ed-hero-lede, .ed-hero-actions > *",
               { y: 18, opacity: 0, stagger: 0.08, duration: 0.5, immediateRender: false },
               "-=0.1"
@@ -117,6 +99,39 @@ export function HomeMotion() {
               { y: 34, opacity: 0, stagger: 0.12, duration: 0.7, immediateRender: false },
               "-=0.22"
             );
+
+          const methodBelt = gsap.timeline({
+            defaults: { ease: "power3.out" },
+            scrollTrigger: {
+              trigger: ".ed-method-belt-stage",
+              start: "top 78%",
+              once: true
+            }
+          });
+          methodBelt
+            .from(".ed-method-belt > span", {
+              scaleX: 0,
+              transformOrigin: "0 50%",
+              duration: 1.05,
+              immediateRender: false,
+              ease: "power2.inOut"
+            })
+            .from(".ed-method-belt > b", { x: -90, opacity: 0, duration: 0.5, immediateRender: false }, "-=0.28")
+            .from(".ed-method-belt i", {
+              scaleY: 0,
+              transformOrigin: "50% 50%",
+              stagger: 0.07,
+              duration: 0.32,
+              immediateRender: false,
+              ease: "back.out(2)"
+            }, "-=0.12")
+            .from(".ed-method-belt-copy > *", {
+              y: 24,
+              opacity: 0,
+              stagger: 0.1,
+              duration: 0.5,
+              immediateRender: false
+            }, "-=0.34");
 
           document.querySelectorAll<HTMLElement>(".ed-stats strong").forEach((element) => {
             const target = Number(element.textContent);

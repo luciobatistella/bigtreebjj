@@ -435,15 +435,6 @@ export default function HomePage() {
             <span>{copy.intro.title}</span>
             <em>{copy.intro.titleEmphasis}</em>
           </h1>
-          <div className="ed-hero-belt" aria-hidden="true">
-            <span />
-            <b>
-              <i />
-              <i />
-              <i />
-              <i />
-            </b>
-          </div>
           <p className="ed-hero-lede">{copy.intro.lede}</p>
           <div className="ed-hero-actions">
             <Link className="ed-button ed-button-primary" href="/explore">
@@ -491,6 +482,26 @@ export default function HomePage() {
           <p className="ed-eyebrow">{copy.method.eyebrow}</p>
           <h2>{copy.method.title}</h2>
           <p>{copy.method.lede}</p>
+        </div>
+        <div className="ed-method-belt-stage" aria-label={copy.method.title}>
+          <div className="ed-method-belt" aria-hidden="true">
+            <span />
+            <b>
+              <i />
+              <i />
+              <i />
+              <i />
+            </b>
+          </div>
+          <div className="ed-method-belt-copy">
+            <strong>{Object.keys(sealCopy).length}</strong>
+            <span>{locale === "pt" ? "graus de prova" : "grades of proof"}</span>
+            <small>
+              {locale === "pt"
+                ? "Nenhuma afirmação entra sem selo. A obra classifica; você arbitra."
+                : "No claim enters without a grade. The work classifies; you decide."}
+            </small>
+          </div>
         </div>
         <div className="ed-seal-grid">
           {(Object.entries(sealCopy) as Array<[Seal, (typeof sealCopy)[Seal]]>).map(
@@ -578,6 +589,17 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+        <aside className="ed-timeline-research">
+          <p>{locale === "pt" ? "Fila de apuração" : "Research queue"}</p>
+          <h3>
+            {locale === "pt" ? "O que ainda precisamos ir buscar." : "What still needs to be found."}
+          </h3>
+          <span>
+            {locale === "pt"
+              ? "A cronologia publicada não esconde sua fronteira: a peça de 1921 sobre Ferro, Donato e Carlos; o registro de promoção de 1920; e a série da Gazeta de Notícias sobre Miyako e Kakihara permanecem prioridades abertas."
+              : "The published timeline does not hide its frontier: the 1921 item on Ferro, Donato and Carlos; the 1920 promotion record; and the Gazeta de Notícias series on Miyako and Kakihara remain open priorities."}
+          </span>
+        </aside>
       </section>
 
       <section className="ed-section ed-section-dark" id="acervo">
@@ -702,6 +724,14 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+        <aside className="ed-editorial-note">
+          <span>{locale === "pt" ? "Declaração editorial" : "Editorial statement"}</span>
+          <p>
+            {locale === "pt"
+              ? "A aparência de rigor não substitui a verificação. Onde o acervo ainda não foi consultado, a limitação permanece publicada — junto da pergunta e do lugar onde ela pode ser resolvida."
+              : "The appearance of rigor does not replace verification. Where an archive has not yet been consulted, that limit remains published — alongside the question and the place where it can be resolved."}
+          </p>
+        </aside>
       </section>
 
       <section className="ed-join-invitation" aria-labelledby="join-invitation-title">
