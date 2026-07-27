@@ -1,8 +1,10 @@
 import Link from "next/link";
 import "./home.css";
 import { EditorialArchive, type EditorialEntry } from "./EditorialArchive";
+import { EditorialMethod } from "./EditorialMethod";
+import { EditorialTimeline } from "./EditorialTimeline";
 import { HomeMotion } from "./HomeMotion";
-import { homeCopy, timelineEn } from "./i18n/homeCopy";
+import { homeCopy } from "./i18n/homeCopy";
 import type { Locale } from "./i18n/locale";
 import { getServerLocale } from "./i18n/serverLocale";
 import coreData from "./big-tree-bjj/conteudo/nucleo.json";
@@ -112,74 +114,6 @@ const externalReferences = coreData.referencias_externas as Record<
   ExternalReference
 >;
 const fights = coreData.combates as FightRecord[];
-
-const timelinePt = [
-  {
-    date: "1333–1573",
-    title: "Antes do jūjutsu",
-    text: "Sistemas de campo de batalha hoje agrupados como koryū jūjutsu operavam com armas, armaduras e agarramento — não como uma arte desarmada única."
-  },
-  {
-    date: "c. 1640",
-    title: "Sekiguchi-ryū",
-    text: "A escola reúne jūjutsu, kenjutsu e iaijutsu; a primeira atestação datada do termo continua sendo uma lacuna central."
-  },
-  {
-    date: "1882",
-    title: "Fundação do Kodokan",
-    text: "Jigoro Kano reorganiza um corpo técnico anterior como projeto pedagógico e institucional."
-  },
-  {
-    date: "1908",
-    title: "Miyako e Kakihara chegam ao Rio",
-    text: "A Gazeta de Notícias registra os dois professores contratados para instruir marinheiros brasileiros — seis anos antes de Maeda."
-  },
-  {
-    date: "1909",
-    title: "Brasileiros ensinam brasileiros",
-    text: "Marinheiros já formados seguem para a Bahia. A primeira transmissão nacional conhecida é militar e pública."
-  },
-  {
-    date: "1913",
-    title: "O clube de Mário Aleixo",
-    text: "Surge o que fontes descrevem como o primeiro clube de jiu-jitsu do Brasil, ainda antes da chegada de Maeda."
-  },
-  {
-    date: "1914",
-    title: "Maeda desembarca no Pará",
-    text: "Conde Koma se vincula ao projeto de colônia japonesa e se fixa em Belém; a data exata ainda é objeto de conflito."
-  },
-  {
-    date: "1920",
-    title: "Os cinco primeiros galões",
-    text: "Maeda promove Jacyntho Ferro, Waldemar Lopes, Raphael Gomes, Guilherme DelaRocque e Matheus Pereira."
-  },
-  {
-    date: "1921",
-    title: "A peça que muda a linhagem",
-    text: "A imprensa identifica Donato Pires e Carlos Gracie como alunos de Jacyntho Ferro, não diretamente de Maeda."
-  },
-  {
-    date: "1930",
-    title: "Academia da Marques de Abrantes",
-    text: "Donato dirige a primeira academia documentada; Carlos e George Gracie integram o corpo docente."
-  },
-  {
-    date: "1942–1951",
-    title: "França, Fadda e a linhagem suburbana",
-    text: "Fadda recebe o grau de instrutor, abre academia e sua equipe desafia a Academia Gracie com forte uso de chaves de pé."
-  },
-  {
-    date: "1967",
-    title: "A federação da Guanabara",
-    text: "A institucionalização reúne escolas e transforma regras, cargos e faixas em registro administrativo."
-  },
-  {
-    date: "1993",
-    title: "O UFC e a diáspora global",
-    text: "A vitória de Royce Gracie projeta o jiu-jitsu brasileiro para um público mundial e altera a história das lutas."
-  }
-];
 
 function displayName(id: string) {
   return (
@@ -337,8 +271,6 @@ const lineageLinks = [...links].sort((a, b) => (a.ano ?? 9999) - (b.ano ?? 9999)
 export default function HomePage() {
   const locale = getServerLocale();
   const copy = homeCopy[locale];
-  const sealCopy = copy.method.seals;
-  const timeline = locale === "en" ? timelineEn : timelinePt;
   const editorialEntries = buildEditorialEntries(locale);
 
   return (
@@ -477,51 +409,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="ed-section ed-method" id="metodo">
-        <div className="ed-section-heading">
-          <p className="ed-eyebrow">{copy.method.eyebrow}</p>
-          <h2>{copy.method.title}</h2>
-          <p>{copy.method.lede}</p>
-        </div>
-        <div className="ed-method-belt-stage" aria-label={copy.method.title}>
-          <div className="ed-method-belt" aria-hidden="true">
-            <span />
-            <b>
-              <i />
-              <i />
-              <i />
-              <i />
-            </b>
-          </div>
-          <div className="ed-method-belt-copy">
-            <strong>{Object.keys(sealCopy).length}</strong>
-            <span>{locale === "pt" ? "graus de prova" : "grades of proof"}</span>
-            <small>
-              {locale === "pt"
-                ? "Nenhuma afirmação entra sem selo. A obra classifica; você arbitra."
-                : "No claim enters without a grade. The work classifies; you decide."}
-            </small>
-          </div>
-        </div>
-        <div className="ed-seal-grid">
-          {(Object.entries(sealCopy) as Array<[Seal, (typeof sealCopy)[Seal]]>).map(
-            ([seal, copy]) => (
-              <article className={`ed-seal ed-seal-${seal.toLowerCase()}`} key={seal}>
-                <span>[{seal}]</span>
-                <h3>{copy.label}</h3>
-                <p>{copy.description}</p>
-              </article>
-            )
-          )}
-        </div>
-        <div className="ed-method-rules">
-          {copy.method.rules.map(([title, description]) => (
-            <p key={title}>
-              <strong>{title}</strong> {description}
-            </p>
-          ))}
-        </div>
-      </section>
+      <EditorialMethod locale={locale} />
 
       <section className="ed-section ed-section-dark" id="arvore">
         <div className="ed-section-heading ed-heading-row">
@@ -571,36 +459,7 @@ export default function HomePage() {
         </details>
       </section>
 
-      <section className="ed-section ed-timeline-section" id="cronologia">
-        <div className="ed-section-heading">
-          <p className="ed-eyebrow">{copy.timeline.eyebrow}</p>
-          <h2>{copy.timeline.title}</h2>
-          <p>{copy.timeline.lede}</p>
-        </div>
-        <div className="ed-timeline">
-          {timeline.map((event, index) => (
-            <article key={event.date}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <time>{event.date}</time>
-              <div>
-                <h3>{event.title}</h3>
-                <p>{event.text}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-        <aside className="ed-timeline-research">
-          <p>{locale === "pt" ? "Fila de apuração" : "Research queue"}</p>
-          <h3>
-            {locale === "pt" ? "O que ainda precisamos ir buscar." : "What still needs to be found."}
-          </h3>
-          <span>
-            {locale === "pt"
-              ? "A cronologia publicada não esconde sua fronteira: a peça de 1921 sobre Ferro, Donato e Carlos; o registro de promoção de 1920; e a série da Gazeta de Notícias sobre Miyako e Kakihara permanecem prioridades abertas."
-              : "The published timeline does not hide its frontier: the 1921 item on Ferro, Donato and Carlos; the 1920 promotion record; and the Gazeta de Notícias series on Miyako and Kakihara remain open priorities."}
-          </span>
-        </aside>
-      </section>
+      <EditorialTimeline locale={locale} />
 
       <section className="ed-section ed-section-dark" id="acervo">
         <div className="ed-section-heading">

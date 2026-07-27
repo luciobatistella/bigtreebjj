@@ -100,38 +100,101 @@ export function HomeMotion() {
               "-=0.22"
             );
 
-          const methodBelt = gsap.timeline({
+          const methodHero = gsap.timeline({
             defaults: { ease: "power3.out" },
             scrollTrigger: {
-              trigger: ".ed-method-belt-stage",
-              start: "top 86%",
-              end: "bottom 28%",
-              scrub: 0.45
+              trigger: ".ed-method-document-hero",
+              start: "top 76%",
+              once: true
             }
           });
-          methodBelt
-            .from(".ed-method-belt > span", {
-              yPercent: -210,
-              duration: 1.25,
-              immediateRender: false,
-              ease: "power2.out"
+          methodHero
+            .from(".ed-method-document-hero .ed-doc-mono", {
+              y: 14,
+              opacity: 0,
+              duration: 0.45,
+              immediateRender: false
             })
-            .from(".ed-method-belt > b", { yPercent: -210, opacity: 0, duration: 1.25, immediateRender: false }, "<")
-            .from(".ed-method-belt i", {
+            .from(".ed-method-document-hero h2", {
+              y: 52,
+              opacity: 0,
+              duration: 0.9,
+              immediateRender: false
+            }, "-=.2")
+            .from(".ed-method-hero-belt > span:first-child", {
+              scaleX: 0,
+              transformOrigin: "0 50%",
+              duration: 0.9,
+              immediateRender: false,
+              ease: "power2.inOut"
+            }, "-=.48")
+            .from(".ed-method-hero-belt .ed-proof-tip", {
+              x: -28,
+              opacity: 0,
+              duration: 0.44,
+              immediateRender: false
+            }, "-=.2")
+            .from(".ed-method-hero-belt i", {
               scaleY: 0,
               transformOrigin: "50% 50%",
               stagger: 0.07,
               duration: 0.32,
               immediateRender: false,
               ease: "back.out(2)"
-            }, "-=0.18")
-            .from(".ed-method-belt-copy > *", {
-              y: 52,
+            }, "-=.1")
+            .from(".ed-method-hero-foot p", {
+              y: 14,
               opacity: 0,
-              stagger: 0.1,
-              duration: 0.7,
+              stagger: 0.08,
+              duration: 0.42,
               immediateRender: false
-            }, "-=0.12");
+            }, "-=.18");
+
+          document.querySelectorAll<HTMLElement>(".ed-chronology-track").forEach((track) => {
+            const fill = track.querySelector(".ed-chronology-fill");
+            if (!fill) return;
+            gsap.to(fill, {
+              height: "100%",
+              ease: "none",
+              scrollTrigger: {
+                trigger: track,
+                start: "top 70%",
+                end: "bottom 60%",
+                scrub: 0.4
+              }
+            });
+          });
+
+          document.querySelectorAll<HTMLElement>(".ed-chronology-event").forEach((event) => {
+            const eventTimeline = gsap.timeline({
+              scrollTrigger: {
+                trigger: event,
+                start: "top 84%",
+                once: true
+              }
+            });
+            eventTimeline
+              .from(event, {
+                y: 34,
+                opacity: 0,
+                duration: 0.7,
+                immediateRender: false,
+                ease: "power2.out"
+              })
+              .from(event.querySelectorAll(".ed-chronology-mark i"), {
+                scaleY: 0,
+                transformOrigin: "50% 50%",
+                stagger: 0.07,
+                duration: 0.3,
+                ease: "back.out(2)"
+              }, "-=.4")
+              .from(event.querySelector("time"), {
+                x: -28,
+                opacity: 0,
+                duration: 0.48,
+                ease: "power2.out"
+              }, "-=.34");
+          });
 
           document.querySelectorAll<HTMLElement>(".ed-stats strong").forEach((element) => {
             const target = Number(element.textContent);
@@ -221,24 +284,19 @@ export function HomeMotion() {
             interval?: number;
           }> = [
             {
-              selector: ".ed-seal",
-              from: { x: -34, opacity: 0 },
+              selector: ".ed-grade-row",
+              from: { y: 36, opacity: 0 },
               interval: 0.12
             },
             {
-              selector: ".ed-method-rules > p",
+              selector: ".ed-method-fields li, .ed-method-plates figure",
               from: { y: 34, opacity: 0 },
-              interval: 0.1
+              interval: 0.07
             },
             {
               selector: ".ed-link-row",
               from: { x: -24, opacity: 0 },
               interval: 0.035
-            },
-            {
-              selector: ".ed-timeline article",
-              from: { y: 30, opacity: 0 },
-              interval: 0.07
             },
             {
               selector: ".ed-entry",
@@ -284,39 +342,9 @@ export function HomeMotion() {
             });
           });
 
-          document.querySelectorAll<HTMLElement>(".ed-seal").forEach((seal) => {
-            const code = seal.querySelector(":scope > span");
-            if (!code) return;
-            gsap.from(code, {
-              scale: 0.72,
-              transformOrigin: "0 50%",
-              duration: 0.65,
-              ease: "back.out(1.8)",
-              scrollTrigger: {
-                trigger: seal,
-                start: "top 78%",
-                once: true
-              }
-            });
-          });
-
-          document.querySelectorAll<HTMLElement>(".ed-timeline article").forEach((event) => {
-            const marker = event.querySelector("time");
-            if (!marker) return;
-            gsap.from(marker, {
-              color: "#c1272d",
-              scale: 0.82,
-              transformOrigin: "0 50%",
-              duration: 0.6,
-              scrollTrigger: {
-                trigger: event,
-                start: "top 82%",
-                once: true
-              }
-            });
-          });
-
-          document.querySelectorAll<HTMLElement>(".ed-section").forEach((section) => {
+          document
+            .querySelectorAll<HTMLElement>(".ed-section, .ed-method-document, .ed-master-chronology")
+            .forEach((section) => {
             if (!section.id) return;
             const link = document.querySelector<HTMLAnchorElement>(`.ed-index-link[href="#${section.id}"]`);
             if (!link) return;
@@ -324,9 +352,9 @@ export function HomeMotion() {
               trigger: section,
               start: "top 42%",
               end: "bottom 42%",
-              onToggle: ({ isActive }) => link.classList.toggle("ed-nav-current", isActive)
+                onToggle: ({ isActive }) => link.classList.toggle("ed-nav-current", isActive)
+              });
             });
-          });
 
           const finePointer = window.matchMedia("(pointer: fine)").matches;
           if (finePointer) {
