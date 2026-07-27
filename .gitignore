@@ -23,3 +23,7 @@ data/uploads/
 
 # Snapshot local que contém cache completo do Next.js.
 apps/web/next-env.d.zip
+
+# Pesquisa IBJJF privada: importar em armazenamento protegido, nunca publicar no Git.
+records/ibjjf_black_belts.csv
+records/ibjjf_scraper_checkpoint.json
