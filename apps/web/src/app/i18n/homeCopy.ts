@@ -13,12 +13,20 @@ export const homeCopy = {
     },
     openExplorer: "Abrir Explorer",
     hero: {
+      exploreTree: "Explorar a árvore viva",
+      discoverHistory: "Conhecer a história",
       overline: "The global jiu-jitsu lineage database",
       signature: ["História", "Fonte", "Linhagem"],
-      joinEyebrow: "Faixa-preta e ainda não está na árvore?",
-      joinTitle: "Prove que você é um verdadeiro faixa-preta",
       scrollLabel: "Continuar para a introdução",
       scroll: "Conheça o projeto"
+    },
+    join: {
+      eyebrow: "A história continua",
+      title: "É faixa-preta e não encontrou seu nome na árvore?",
+      lede:
+        "Sua trajetória pode se tornar parte desta obra. Envie sua documentação para análise editorial e ajude a manter a linhagem viva, verificável e aberta.",
+      actionEyebrow: "Solicitação de inclusão",
+      action: "Quero registrar minha linhagem"
     },
     intro: {
       eyebrow: "Obra de referência · edição viva 0.2",
@@ -154,12 +162,20 @@ export const homeCopy = {
     },
     openExplorer: "Open Explorer",
     hero: {
+      exploreTree: "Explore the living tree",
+      discoverHistory: "Discover the history",
       overline: "The global jiu-jitsu lineage database",
       signature: ["History", "Sources", "Lineage"],
-      joinEyebrow: "Black belt and still not in the tree?",
-      joinTitle: "Prove that you are a true black belt",
       scrollLabel: "Continue to the introduction",
       scroll: "Discover the project"
+    },
+    join: {
+      eyebrow: "The story continues",
+      title: "A black belt and not yet in the tree?",
+      lede:
+        "Your journey can become part of this work. Submit your documentation for editorial review and help keep the lineage alive, verifiable and open.",
+      actionEyebrow: "Inclusion request",
+      action: "Register my lineage"
     },
     intro: {
       eyebrow: "Reference work · living edition 0.2",

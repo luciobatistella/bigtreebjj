@@ -379,11 +379,15 @@ export default function HomePage() {
             <i aria-hidden="true" />
             <span>{copy.hero.signature[2]}</span>
           </p>
-          <Link className="ed-hero-join" href="/join">
-            <span>{copy.hero.joinEyebrow}</span>
-            <strong>{copy.hero.joinTitle}</strong>
-            <i aria-hidden="true">→</i>
-          </Link>
+          <div className="ed-hero-discovery-actions">
+            <Link className="ed-hero-discovery-primary" href="/explore">
+              {copy.hero.exploreTree}
+              <i aria-hidden="true">→</i>
+            </Link>
+            <a className="ed-hero-discovery-secondary" href="#metodo">
+              {copy.hero.discoverHistory}
+            </a>
+          </div>
         </div>
         <a className="ed-hero-scroll" href="#introducao" aria-label={copy.hero.scrollLabel}>
           <span>{copy.hero.scroll}</span>
@@ -698,6 +702,19 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="ed-join-invitation" aria-labelledby="join-invitation-title">
+        <div>
+          <p className="ed-eyebrow">{copy.join.eyebrow}</p>
+          <h2 id="join-invitation-title">{copy.join.title}</h2>
+          <p>{copy.join.lede}</p>
+        </div>
+        <Link className="ed-hero-join" href="/join">
+          <span>{copy.join.actionEyebrow}</span>
+          <strong>{copy.join.action}</strong>
+          <i aria-hidden="true">→</i>
+        </Link>
       </section>
 
       <footer className="ed-footer">

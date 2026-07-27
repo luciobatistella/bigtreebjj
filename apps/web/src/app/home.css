@@ -372,6 +372,62 @@
   box-shadow: 0 0 8px rgba(200, 162, 74, .7);
 }
 
+.ed-hero-discovery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 11px;
+  margin-top: clamp(20px, 3vh, 32px);
+  animation: ed-copy-enter .65s .94s cubic-bezier(.2,.9,.2,1) both;
+}
+
+.ed-hero-discovery-primary,
+.ed-hero-discovery-secondary {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 13px 19px;
+  font: 600 9px/1 var(--mono);
+  letter-spacing: .15em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: translate .28s cubic-bezier(.2,.9,.2,1), background .28s ease, border-color .28s ease, box-shadow .28s ease;
+}
+
+.ed-hero-discovery-primary {
+  color: #111208 !important;
+  background: linear-gradient(135deg, var(--gold-high), var(--gold));
+  border: 1px solid rgba(255, 239, 188, .72);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .36), 0 0 28px rgba(200, 162, 74, .16);
+}
+
+.ed-hero-discovery-primary i {
+  font: 400 21px/0 var(--body);
+  font-style: normal;
+  transition: transform .28s cubic-bezier(.2,.9,.2,1);
+}
+
+.ed-hero-discovery-secondary {
+  color: var(--bone) !important;
+  background: rgba(10, 10, 9, .42);
+  border: 1px solid rgba(232, 206, 134, .44);
+  backdrop-filter: blur(8px);
+}
+
+.ed-hero-discovery-primary:hover,
+.ed-hero-discovery-secondary:hover {
+  translate: 0 -3px;
+}
+
+.ed-hero-discovery-primary:hover i { transform: translateX(5px); }
+
+.ed-hero-discovery-secondary:hover {
+  background: rgba(200, 162, 74, .18);
+  border-color: var(--gold-high);
+}
+
 .ed-hero-join {
   position: relative;
   isolation: isolate;
@@ -1508,6 +1564,42 @@
   color: var(--bone-dim);
 }
 
+.ed-join-invitation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 520px);
+  align-items: center;
+  gap: clamp(32px, 8vw, 130px);
+  padding: clamp(78px, 11vw, 150px) var(--gutter);
+  background:
+    radial-gradient(ellipse at 85% 50%, rgba(30, 51, 32, .56), transparent 52%),
+    linear-gradient(115deg, #10150f, var(--ink));
+  border-top: var(--rule);
+}
+
+.ed-join-invitation > div { max-width: 720px; }
+
+.ed-join-invitation h2 {
+  max-width: 12ch;
+  margin: 0;
+  font: 900 clamp(43px, 6vw, 86px)/.88 var(--display);
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+
+.ed-join-invitation > div > p:not(.ed-eyebrow) {
+  max-width: 52ch;
+  margin: 25px 0 0;
+  color: var(--bone-dim);
+  font-size: clamp(18px, 1.7vw, 23px);
+  line-height: 1.42;
+}
+
+.ed-join-invitation .ed-hero-join {
+  width: 100%;
+  margin: 0;
+  animation: none;
+}
+
 .ed-footer {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -1722,6 +1814,20 @@
     letter-spacing: .13em;
   }
 
+  .ed-hero-discovery-actions {
+    width: min(100%, 420px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .ed-hero-discovery-primary,
+  .ed-hero-discovery-secondary {
+    width: 100%;
+    min-height: 48px;
+  }
+
   .ed-hero-join {
     width: min(100%, 420px);
     min-height: 90px;
@@ -1913,6 +2019,16 @@
 
   .ed-historiography {
     padding-block: 90px;
+  }
+
+  .ed-join-invitation {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding-block: 78px;
+  }
+
+  .ed-join-invitation h2 {
+    font-size: clamp(43px, 14vw, 68px);
   }
 
   .ed-footer {
