@@ -1929,6 +1929,20 @@
       "prioridade": "P1"
     }
   },
+  "referencias_externas": {
+    "_jimmerson": {
+      "nome": "Art Jimmerson",
+      "tipo": "adversario_externo"
+    },
+    "_shamrock": {
+      "nome": "Ken Shamrock",
+      "tipo": "adversario_externo"
+    },
+    "_gordeau": {
+      "nome": "Gerard Gordeau",
+      "tipo": "adversario_externo"
+    }
+  },
   "combates": [
     {
       "id": "K-1930-ROCHA",

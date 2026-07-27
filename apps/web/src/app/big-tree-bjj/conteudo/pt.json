@@ -544,8 +544,8 @@
     },
     "C-06": {
       "objeto": "O combate de Miyako com o capoeirista Cyríaco",
-      "a": "Ocorreu conforme narrado",
-      "b": "Foi farsa, e Miyako talvez nem fosse lutador de jiu-jitsu",
+      "a": "Foi farsa, e Miyako talvez nem fosse lutador de jiu-jitsu",
+      "b": "Ocorreu conforme narrado",
       "teste": "Cobertura de imprensa contemporânea"
     },
     "C-07": {

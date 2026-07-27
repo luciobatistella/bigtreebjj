@@ -86,12 +86,21 @@ type FightRecord = {
   fonte?: string;
 };
 
+type ExternalReference = {
+  nome: string;
+  tipo: "adversario_externo";
+};
+
 const people = coreData.pessoas as Record<string, CorePerson>;
 const biographies = ptData.verbetes as Record<string, Biography>;
 const links = coreData.vinculos as LinkRecord[];
 const conflicts = coreData.conflitos as ConflictRecord[];
 const conflictCopy = ptData.conflitos as Record<string, ConflictCopy>;
 const sources = coreData.fontes as Record<string, SourceRecord>;
+const externalReferences = coreData.referencias_externas as Record<
+  string,
+  ExternalReference
+>;
 const fights = coreData.combates as FightRecord[];
 
 const timelinePt = [
@@ -163,7 +172,12 @@ const timelinePt = [
 ];
 
 function displayName(id: string) {
-  return biographies[id]?.nome ?? people[id]?.variantes?.[0] ?? id.replaceAll("_", " ");
+  return (
+    biographies[id]?.nome ??
+    people[id]?.variantes?.[0] ??
+    externalReferences[id]?.nome ??
+    id.replaceAll("_", " ")
+  );
 }
 
 function translateRelationshipType(value: string, locale: Locale) {

@@ -127,7 +127,7 @@ Não iniciados.
 | C-03 | Chegada de Maeda ao Brasil | 1914 | 1915 (fixação em Belém) | Registro de imigração / imprensa paraense |
 | C-04 | Professor de Carlos Gracie | Maeda, diretamente `[TRA]` | Jacyntho Ferro `[DOC]`, depois Donato Pires `[ATE]` | Já resolvido a favor de B; manter aberto para documento novo |
 | C-05 | Retorno de Carlos Gracie ao Rio | 1925, segundo a biografia familiar | 1930, segundo fontes de imprensa da época | Hemeroteca, 1925–1930 |
-| C-06 | Combate Miyako × Cyríaco | Ocorreu conforme narrado | Farsa | Cobertura de imprensa contemporânea |
+| C-06 | Combate Miyako × Cyríaco | Farsa `[ATE]` | Ocorreu conforme narrado `[DOC]` | Cobertura de imprensa contemporânea |
 | C-07 | Primeira atestação datada do termo 柔術 | "Século XVII", sem documento | — | Densho de escolas Edo, acervo Kodokan |
 
 ---
