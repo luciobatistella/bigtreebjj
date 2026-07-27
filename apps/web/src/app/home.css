@@ -944,17 +944,15 @@
   position: relative;
   width: 100%;
   max-width: 1400px;
-  min-height: clamp(290px, 34vw, 440px);
+  min-height: min(74svh, 680px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 390px);
-  align-items: end;
-  gap: clamp(32px, 7vw, 120px);
+  place-items: center;
   margin: 0 auto clamp(70px, 10vw, 130px);
-  padding: clamp(34px, 5vw, 70px);
+  padding: clamp(70px, 9vw, 128px) clamp(24px, 6vw, 84px) clamp(46px, 6vw, 78px);
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 80% 50%, rgba(193, 39, 45, .16), transparent 30%),
-    linear-gradient(135deg, rgba(0, 0, 0, .74), rgba(30, 51, 32, .38));
+    radial-gradient(ellipse at 50% 92%, rgba(193, 39, 45, .2), transparent 42%),
+    linear-gradient(135deg, rgba(0, 0, 0, .82), rgba(30, 51, 32, .32));
   border: var(--rule);
 }
 
@@ -969,12 +967,13 @@
 }
 
 .ed-method-belt {
-  position: relative;
+  position: absolute;
+  inset: 0 0 auto;
   z-index: 1;
-  height: clamp(50px, 5vw, 72px);
+  height: clamp(64px, 7vw, 96px);
   display: flex;
   align-items: stretch;
-  filter: drop-shadow(0 22px 22px rgba(0,0,0,.52));
+  filter: drop-shadow(0 24px 28px rgba(0,0,0,.72));
 }
 
 .ed-method-belt > span {
@@ -1006,8 +1005,10 @@
   position: relative;
   z-index: 1;
   display: grid;
-  justify-items: start;
+  justify-items: center;
+  text-align: center;
   gap: 8px;
+  padding-top: clamp(60px, 10vw, 140px);
 }
 
 .ed-method-belt-copy strong {
@@ -1028,7 +1029,7 @@
 }
 
 .ed-method-belt-copy small {
-  max-width: 32ch;
+  max-width: 48ch;
   color: var(--bone-dim);
   font-size: 9px;
   letter-spacing: .08em;
@@ -2030,16 +2031,15 @@
   }
 
   .ed-method-belt-stage {
-    min-height: 360px;
-    grid-template-columns: 1fr;
-    align-content: end;
-    gap: 42px;
-    padding: 58px 22px 30px;
+    min-height: 500px;
+    display: grid;
+    padding: 72px 22px 34px;
   }
 
   .ed-method-belt {
-    width: calc(100% + 44px);
-    margin-left: -22px;
+    width: 100%;
+    margin-left: 0;
+    height: 64px;
   }
 
   .ed-method-belt > b {
@@ -2050,6 +2050,7 @@
     grid-template-columns: auto 1fr;
     column-gap: 14px;
     align-items: end;
+    padding-top: 58px;
   }
 
   .ed-method-belt-copy strong { grid-row: span 2; }

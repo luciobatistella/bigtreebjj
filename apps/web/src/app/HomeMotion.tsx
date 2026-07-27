@@ -104,19 +104,19 @@ export function HomeMotion() {
             defaults: { ease: "power3.out" },
             scrollTrigger: {
               trigger: ".ed-method-belt-stage",
-              start: "top 78%",
-              once: true
+              start: "top 86%",
+              end: "bottom 28%",
+              scrub: 0.45
             }
           });
           methodBelt
             .from(".ed-method-belt > span", {
-              scaleX: 0,
-              transformOrigin: "0 50%",
-              duration: 1.05,
+              yPercent: -210,
+              duration: 1.25,
               immediateRender: false,
-              ease: "power2.inOut"
+              ease: "power2.out"
             })
-            .from(".ed-method-belt > b", { x: -90, opacity: 0, duration: 0.5, immediateRender: false }, "-=0.28")
+            .from(".ed-method-belt > b", { yPercent: -210, opacity: 0, duration: 1.25, immediateRender: false }, "<")
             .from(".ed-method-belt i", {
               scaleY: 0,
               transformOrigin: "50% 50%",
@@ -124,14 +124,14 @@ export function HomeMotion() {
               duration: 0.32,
               immediateRender: false,
               ease: "back.out(2)"
-            }, "-=0.12")
+            }, "-=0.18")
             .from(".ed-method-belt-copy > *", {
-              y: 24,
+              y: 52,
               opacity: 0,
               stagger: 0.1,
-              duration: 0.5,
+              duration: 0.7,
               immediateRender: false
-            }, "-=0.34");
+            }, "-=0.12");
 
           document.querySelectorAll<HTMLElement>(".ed-stats strong").forEach((element) => {
             const target = Number(element.textContent);
