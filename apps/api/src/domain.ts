@@ -91,12 +91,6 @@ export interface PromotionGroupRecord {
   createdAt: string;
 }
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  role: Role;
-}
-
 const people: PersonRecord[] = [];
 const sources: SourceRecord[] = [];
 const relationships: RelationshipRecord[] = [];
@@ -104,7 +98,6 @@ const organizations: OrganizationRecord[] = [];
 const organizationRelationships: OrganizationRelationshipRecord[] = [];
 const publicationChecklists = new Map<string, PublicationChecklist>();
 const promotionGroups: PromotionGroupRecord[] = [];
-const sessions = new Map<string, AuthUser>();
 
 export function createPerson(input: { fullName: string; nicknames?: string[]; country?: string; city?: string }) {
   const person: PersonRecord = {
@@ -341,30 +334,6 @@ export function getPublicPersonProfile(personId: string) {
 
 export function getPublicationChecklist(claimId: string) {
   return publicationChecklists.get(claimId);
-}
-
-export function loginAdmin(email: string, password: string) {
-  const validEmail = process.env.ADMIN_EMAIL ?? 'admin@example.com';
-  const validPassword = process.env.ADMIN_PASSWORD ?? 'changeme';
-  if (email !== validEmail || password !== validPassword) {
-    throw new Error('Invalid credentials');
-  }
-
-  const user: AuthUser = { id: 'admin-1', email, role: 'admin' };
-  const token = `token-${user.id}`;
-  sessions.set(token, user);
-  return { token, user };
-}
-
-export function verifyAuth(token?: string) {
-  if (!token) {
-    throw new Error('Missing token');
-  }
-  const user = sessions.get(token);
-  if (!user) {
-    throw new Error('Invalid token');
-  }
-  return user;
 }
 
 export function listPeople() {

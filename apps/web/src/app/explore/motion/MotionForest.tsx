@@ -2308,6 +2308,10 @@ export default function MotionForest({
 
           <footer className="mt-lineage-footer">
             <p ref={lineageClosingRef} />
+            <a href="/embed">
+              <span aria-hidden="true">✦</span>
+              {copy.createOfficialWidget}
+            </a>
             <button ref={lineageShareRef} type="button">
               <span aria-hidden="true">↗</span>
               {copy.copyDirectLineageLink}

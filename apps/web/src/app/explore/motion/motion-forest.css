@@ -1150,9 +1150,12 @@
   position: relative;
   width: clamp(48px, 4vw, 66px);
   height: clamp(48px, 4vw, 66px);
+  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
+  align-self: center;
+  box-sizing: border-box;
   margin-bottom: 12px;
   border: 1px solid rgba(232,192,120,.55);
   border-radius: 50%;
@@ -1173,8 +1176,9 @@
 .mt-lineage-avatar-photo img {
   width: 100%;
   height: 100%;
+  aspect-ratio: 1 / 1;
   display: block;
-  border-radius: inherit;
+  border-radius: 50%;
   object-fit: cover;
   filter: sepia(.14) saturate(.9) contrast(1.05);
 }
@@ -1468,6 +1472,30 @@
   font-size: clamp(17px, 1.6vw, 25px);
   line-height: 1.35;
 }
+.mt-lineage-footer > a {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  flex: 0 0 auto;
+  padding: 11px 17px;
+  border: 1px solid rgba(232,192,120,.28);
+  border-radius: 999px;
+  color: #e4c47e;
+  background: rgba(201,151,76,.08);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.mt-lineage-footer > a:hover {
+  border-color: rgba(255,233,180,.62);
+  background: rgba(201,151,76,.15);
+  transform: translateY(-2px);
+}
 .mt-lineage-footer > button {
   min-height: 50px;
   display: flex;
@@ -1697,7 +1725,7 @@
   .mt-lineage-stage-inner {
     height: auto;
     min-height: 100dvh;
-    grid-template-rows: auto 190px minmax(470px, 1fr) auto auto;
+    grid-template-rows: auto 190px auto auto;
     gap: 14px;
     padding: calc(72px + env(safe-area-inset-top)) 14px calc(24px + env(safe-area-inset-bottom));
   }
@@ -1766,32 +1794,132 @@
     left: 14px;
   }
   .mt-lineage-ribbon {
-    width: calc(100% + 28px);
-    margin-inline: -14px;
+    width: 100%;
+    margin-inline: 0;
+    overflow: visible;
+  }
+  .mt-lineage-ribbon::before {
+    top: 30px;
+    right: auto;
+    bottom: 30px;
+    left: 50%;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(to bottom, transparent, rgba(232,192,120,.62) 5%, rgba(232,192,120,.62) 95%, transparent);
+    transform: scaleY(1);
+    transform-origin: 50% 0;
+  }
+  .mt-lineage-animate .mt-lineage-ribbon::before {
+    animation: mtLineageVerticalRuleIn 1.1s .28s cubic-bezier(.2,.8,.2,1) both;
   }
   .mt-lineage-track {
-    gap: 8px;
-    min-height: 440px;
-    padding: 46px 18px 34px;
-    scroll-padding-inline: 18px;
-    scroll-snap-type: x mandatory;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    min-height: 0;
+    padding: 28px 0 34px;
+    overflow: visible;
+    overscroll-behavior-inline: auto;
+    touch-action: pan-y;
+    scroll-snap-type: none;
   }
   .mt-lineage-card {
-    flex-basis: min(44vw, 176px);
-    min-width: min(44vw, 176px);
-    max-width: min(44vw, 176px);
-    min-height: 244px;
+    width: min(100%, 360px);
+    min-width: 0;
+    max-width: 360px;
+    min-height: 154px;
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+    column-gap: 15px;
+    align-items: center;
+    padding: 20px 22px 18px;
+    text-align: left;
+    scroll-snap-align: none;
   }
-  .mt-lineage-connector { min-width: 18px; margin-top: 111px; }
+  .mt-lineage-card .mt-lineage-avatar {
+    grid-column: 1;
+    grid-row: 1 / 5;
+    width: 72px;
+    height: 72px;
+    margin: 0;
+    justify-self: center;
+  }
+  .mt-lineage-card > small {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .mt-lineage-card > strong {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+    display: block;
+    margin-top: 5px;
+    font-size: clamp(19px, 5.8vw, 25px);
+    line-height: 1.05;
+  }
+  .mt-lineage-card > p {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 7px 0 10px;
+    font-size: 9px;
+  }
+  .mt-lineage-card > em {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: start;
+    margin-top: 0;
+  }
+  .mt-lineage-card mark {
+    left: auto;
+    right: 18px;
+    bottom: -12px;
+    transform: none;
+  }
+  .mt-lineage-connector {
+    width: 36px;
+    min-width: 36px;
+    height: 58px;
+    min-height: 58px;
+    align-self: center;
+    margin: 0;
+  }
+  .mt-lineage-connector i {
+    top: -5px;
+    right: auto;
+    bottom: -5px;
+    left: 50%;
+    width: 1px;
+    height: auto;
+    transform: scaleY(1);
+  }
+  .mt-lineage-animate .mt-lineage-connector i {
+    animation: mtLineageVerticalRuleIn .55s var(--mt-lineage-connector-delay, .5s) ease both;
+  }
+  .mt-lineage-connector b {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
   .mt-lineage-destination {
-    flex-basis: min(76vw, 300px);
-    min-width: min(76vw, 300px);
-    max-width: min(76vw, 300px);
+    width: min(100%, 360px);
+    min-width: 0;
+    max-width: 360px;
+    flex: 0 0 auto;
+    align-items: stretch;
+    scroll-snap-align: none;
   }
-  .mt-lineage-card-final { min-height: 270px; }
+  .mt-lineage-card-final {
+    width: 100%;
+    min-height: 180px;
+    padding-top: 22px;
+  }
   .mt-lineage-card-final .mt-lineage-avatar {
     width: 88px;
     height: 88px;
+    aspect-ratio: 1 / 1;
   }
   .mt-lineage-continuation {
     height: 52px;
@@ -1809,22 +1937,7 @@
   .mt-lineage-join-card > p { font-size: 9px; }
   .mt-lineage-join-card > b { font-size: 8px; }
   .mt-lineage-swipe-hint {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 11px;
-    border: 1px solid rgba(232,192,120,.24);
-    border-radius: 999px;
-    color: #dcb66d;
-    background: rgba(10,7,4,.82);
-    box-shadow: 0 8px 30px rgba(0,0,0,.36);
-    white-space: nowrap;
-    pointer-events: none;
-    transform: translateX(-50%);
+    display: none;
   }
   .mt-lineage-swipe-hint::before {
     content: "↔";
@@ -1843,6 +1956,11 @@
 @keyframes mtLineageSwipeCue {
   0%, 100% { transform: translateX(-2px); opacity: .62; }
   50% { transform: translateX(2px); opacity: 1; }
+}
+
+@keyframes mtLineageVerticalRuleIn {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
 @media (max-width: 520px) {

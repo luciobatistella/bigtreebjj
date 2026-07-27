@@ -1,87 +1,88 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { FormEvent, useEffect, MouseEvent, useState } from 'react';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { adminApiFetch, goToAdminLogin } from "../../../../lib/adminApi";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-
-export default function BjjHeroesImportPage() {
-  const [profileUrl, setProfileUrl] = useState('');
-  const [externalName, setExternalName] = useState('');
-  const [listedTeamText, setListedTeamText] = useState('');
+export default function ExternalProfileImportPage() {
+  const [profileUrl, setProfileUrl] = useState("");
+  const [externalName, setExternalName] = useState("");
+  const [listedTeamText, setListedTeamText] = useState("");
   const [status, setStatus] = useState<any>(null);
-  const [message, setMessage] = useState('Manual profile URL import creates pending review candidates only.');
+  const [message, setMessage] = useState("");
 
-  const load = async () => {
-    const response = await fetch(`${apiBase}/admin/imports/bjjheroes`);
-    if (response.ok) setStatus(await response.json());
+  const handleError = (error: unknown) => {
+    if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+    setMessage(error instanceof Error ? error.message : "A operação falhou.");
   };
 
   useEffect(() => {
-    load().catch(() => undefined);
+    adminApiFetch("/admin/imports/bjjheroes")
+      .then(async (response) => response.ok && setStatus(await response.json()))
+      .catch(handleError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const submit = async (event: FormEvent, dryRun = false) => {
+  const submit = async (event: { preventDefault(): void }, dryRun: boolean) => {
     event.preventDefault();
-    const response = await fetch(`${apiBase}/admin/imports/bjjheroes/manual-profile`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profileUrl, externalName, listedTeamText, dryRun })
-    });
-    const payload = await response.json();
-    if (!response.ok) {
-      setMessage(payload.error ?? 'Import failed');
-      return;
+    try {
+      const response = await adminApiFetch("/admin/imports/bjjheroes/manual-profile", {
+        method: "POST",
+        body: JSON.stringify({ profileUrl, externalName, listedTeamText, dryRun })
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error ?? "Não foi possível importar.");
+      setStatus(payload);
+      setMessage(
+        dryRun
+          ? "Simulação concluída sem criar registros."
+          : `Lote pendente criado: ${payload.candidateImportJobId}`
+      );
+    } catch (error) {
+      handleError(error);
     }
-    setStatus(payload);
-    setMessage(dryRun ? 'Dry-run completed without creating import rows.' : `Pending review import created: ${payload.candidateImportJobId}`);
-  };
-
-  const dryRun = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const response = await fetch(`${apiBase}/admin/imports/bjjheroes/manual-profile`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profileUrl, externalName, listedTeamText, dryRun: true })
-    });
-    const payload = await response.json();
-    setStatus(payload);
-    setMessage(response.ok ? 'Dry-run completed without creating import rows.' : payload.error ?? 'Dry-run failed');
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-10">
-      <section className="border-b border-slate-800 pb-6">
-        <p className="text-sm uppercase tracking-[0.24em] text-emerald-400">BJJ Heroes import</p>
-        <h1 className="mt-3 text-3xl font-semibold">Manual Profile URL Import</h1>
-        <p className="mt-2 text-slate-300">{message}</p>
+    <main className="admin-page">
+      <header className="admin-page-head">
+        <div>
+          <Link className="admin-back-link" href="/admin/imports">← Voltar às importações</Link>
+          <div className="admin-eyebrow">Fonte externa</div>
+          <h1 className="admin-page-title">Importar perfil de referência</h1>
+          <p className="admin-page-lead">
+            Capture apenas fatos estruturados e a URL de origem. Biografias e imagens de terceiros não podem ser copiadas.
+          </p>
+        </div>
+        <span className="admin-live-badge">Sempre pendente</span>
+      </header>
+
+      {message ? <div className="admin-alert" role="status">{message}</div> : null}
+
+      <section className="admin-panel">
+        <header className="admin-panel-head"><h2>Perfil selecionado</h2><small>Revisão antes da árvore</small></header>
+        <form className="admin-panel-body admin-import-form" onSubmit={(event) => void submit(event, false)}>
+          <label className="admin-field">URL do perfil<input type="url" value={profileUrl} onChange={(event) => setProfileUrl(event.target.value)} placeholder="https://…" required /></label>
+          <div className="admin-form-grid">
+            <label className="admin-field">Nome externo<input value={externalName} onChange={(event) => setExternalName(event.target.value)} /></label>
+            <label className="admin-field">Equipe citada<input value={listedTeamText} onChange={(event) => setListedTeamText(event.target.value)} /></label>
+          </div>
+          <div className="admin-inline-actions">
+            <button className="admin-button" type="submit">Criar lote pendente</button>
+            <button className="admin-button-secondary" type="button" onClick={(event) => void submit(event, true)}>Apenas simular</button>
+            {status?.lastImportJobId ? <Link className="admin-button-secondary" href={`/admin/imports/${status.lastImportJobId}`}>Abrir último lote</Link> : null}
+          </div>
+        </form>
       </section>
 
-      <form className="rounded-lg border border-slate-800 bg-slate-900 p-5" onSubmit={(event) => submit(event, false)}>
-        <h2 className="text-xl font-semibold">Profile URL</h2>
-        <div className="mt-4 grid gap-4">
-          <label className="text-sm text-slate-300">BJJ Heroes profile URL<input className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2" value={profileUrl} onChange={(event) => setProfileUrl(event.target.value)} placeholder="https://www.bjjheroes.com/bjj-fighters/name" /></label>
-          <label className="text-sm text-slate-300">External name<input className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2" value={externalName} onChange={(event) => setExternalName(event.target.value)} /></label>
-          <label className="text-sm text-slate-300">Listed team text<input className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2" value={listedTeamText} onChange={(event) => setListedTeamText(event.target.value)} /></label>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <button className="rounded-lg bg-emerald-600 px-4 py-2 text-white" type="submit">Create pending review import</button>
-          <button className="rounded-lg border border-slate-700 px-4 py-2" type="button" onClick={dryRun}>Dry-run URL</button>
-          {status?.lastImportJobId ? <Link className="rounded-lg border border-slate-700 px-4 py-2" href={`/admin/imports/${status.lastImportJobId}`}>Open last import</Link> : null}
-        </div>
-      </form>
-
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="admin-metrics admin-section-gap">
         {[
-          ['Profiles queued', status?.profilesQueued ?? 0],
-          ['Profiles fetched', status?.profilesFetched ?? 0],
-          ['Profiles skipped', status?.profilesSkipped ?? 0],
-          ['Review tasks created', status?.reviewTasksCreated ?? 0]
+          ["Perfis na fila", status?.profilesQueued ?? 0],
+          ["Perfis consultados", status?.profilesFetched ?? 0],
+          ["Perfis ignorados", status?.profilesSkipped ?? 0],
+          ["Tarefas de revisão", status?.reviewTasksCreated ?? 0]
         ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-            <dt className="text-sm text-slate-500">{label}</dt>
-            <dd className="mt-2 text-2xl font-semibold">{value}</dd>
-          </div>
+          <article className="admin-metric" key={String(label)}><small>{label}</small><strong>{value}</strong></article>
         ))}
       </section>
     </main>

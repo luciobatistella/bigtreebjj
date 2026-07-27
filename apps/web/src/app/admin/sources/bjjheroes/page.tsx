@@ -1,93 +1,93 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { FormEvent, useEffect, useState } from 'react';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { adminApiFetch, goToAdminLogin } from "../../../../lib/adminApi";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-
-export default function BjjHeroesSourcePage() {
+export default function ExternalSourcePage() {
   const [status, setStatus] = useState<any>(null);
-  const [message, setMessage] = useState('Loading BJJ Heroes connector status...');
+  const [message, setMessage] = useState("");
+
+  const handleError = (error: unknown) => {
+    if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+    setMessage(error instanceof Error ? error.message : "A operação falhou.");
+  };
 
   const load = async () => {
-    const response = await fetch(`${apiBase}/admin/sources/bjjheroes`);
-    if (!response.ok) throw new Error('Unable to load connector status');
+    const response = await adminApiFetch("/admin/sources/bjjheroes");
+    if (!response.ok) throw new Error("Não foi possível carregar o conector.");
     setStatus(await response.json());
-    setMessage('Connector status loaded.');
   };
 
   useEffect(() => {
-    load().catch((error) => setMessage(error.message));
+    void load().catch(handleError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const post = async (path: string, body: Record<string, unknown> = {}) => {
-    const response = await fetch(`${apiBase}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error ?? 'Request failed');
-    setStatus(payload);
-    setMessage('Connector updated.');
-  };
-
-  const dryRun = async (event: FormEvent) => {
-    event.preventDefault();
-    await post('/admin/sources/bjjheroes/dry-run', { mode: 'conservative', limit: 10 });
+    try {
+      const response = await adminApiFetch(path, { method: "POST", body: JSON.stringify(body) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error ?? "A operação falhou.");
+      setStatus(payload);
+      setMessage("Estado do conector atualizado.");
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-10">
-      <section className="border-b border-slate-800 pb-6">
-        <p className="text-sm uppercase tracking-[0.24em] text-emerald-400">Discovery source</p>
-        <h1 className="mt-3 text-3xl font-semibold">BJJ Heroes Discovery Connector</h1>
-        <p className="mt-2 text-slate-300">{message}</p>
-      </section>
+    <main className="admin-page">
+      <header className="admin-page-head">
+        <div>
+          <div className="admin-eyebrow">Fonte de descoberta</div>
+          <h1 className="admin-page-title">Conector externo</h1>
+          <p className="admin-page-lead">
+            Descoberta conservadora de fatos estruturados, sem importar biografias, fotos ou conteúdo editorial.
+          </p>
+        </div>
+        <span className={`admin-status-badge ${status?.paused ? "is-rejected" : "is-approved"}`}>
+          {status?.paused ? "Pausado" : "Ativo"}
+        </span>
+      </header>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {message ? <div className="admin-alert" role="status">{message}</div> : null}
+
+      <section className="admin-metrics">
         {[
-          ['Catalog size discovered', status?.catalogSizeDiscovered ?? 0],
-          ['Profiles queued', status?.profilesQueued ?? 0],
-          ['Profiles fetched', status?.profilesFetched ?? 0],
-          ['Profiles skipped', status?.profilesSkipped ?? 0],
-          ['Duplicate candidates', status?.duplicateCandidates ?? 0],
-          ['Potential lineage clues', status?.potentialLineageClues ?? 0],
-          ['Review tasks created', status?.reviewTasksCreated ?? 0],
-          ['Paused', status?.paused ? 'yes' : 'no']
+          ["Catálogo descoberto", status?.catalogSizeDiscovered ?? 0],
+          ["Perfis na fila", status?.profilesQueued ?? 0],
+          ["Possíveis duplicidades", status?.duplicateCandidates ?? 0],
+          ["Tarefas criadas", status?.reviewTasksCreated ?? 0]
         ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-            <dt className="text-sm text-slate-500">{label}</dt>
-            <dd className="mt-2 text-2xl font-semibold">{value}</dd>
-          </div>
+          <article className="admin-metric" key={String(label)}><small>{label}</small><strong>{value}</strong></article>
         ))}
       </section>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-        <h2 className="text-xl font-semibold">Controls</h2>
-        <p className="mt-2 text-sm text-slate-400">{status?.rateLimitStatus ?? 'Rate limit not loaded.'}</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <form onSubmit={dryRun}>
-            <button className="rounded-lg bg-emerald-600 px-4 py-2 text-white">Run 10-profile dry-run</button>
-          </form>
-          <button onClick={() => post('/admin/sources/bjjheroes/pause', { reason: 'Paused by curator from admin' })} className="rounded-lg border border-slate-700 px-4 py-2">Pause</button>
-          <button onClick={() => post('/admin/sources/bjjheroes/resume')} className="rounded-lg border border-slate-700 px-4 py-2">Resume</button>
-          <Link className="rounded-lg border border-slate-700 px-4 py-2" href="/admin/imports/bjjheroes">Manual profile import</Link>
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-        <h2 className="text-xl font-semibold">Crawl logs</h2>
-        <div className="mt-4 space-y-2 text-sm text-slate-300">
-          {(status?.crawlLogs ?? []).map((log: any) => (
-            <div key={log.id} className="rounded border border-slate-800 bg-slate-950 p-3">
-              <p>{log.message}</p>
-              <p className="mt-1 text-slate-500">{log.createdAt} {log.sourceUrl ? `- ${log.sourceUrl}` : ''}</p>
+      <div className="admin-grid-two">
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Controles</h2><small>Modo conservador</small></header>
+          <div className="admin-panel-body">
+            <p className="admin-evidence-note">{status?.rateLimitStatus ?? "Limite de consultas ainda não carregado."}</p>
+            <div className="admin-inline-actions admin-section-gap">
+              <button className="admin-button" onClick={() => void post("/admin/sources/bjjheroes/dry-run", { mode: "conservative", limit: 10 })}>Simular 10 perfis</button>
+              <button className="admin-button-warning" onClick={() => void post("/admin/sources/bjjheroes/pause", { reason: "Pausado pela curadoria" })}>Pausar</button>
+              <button className="admin-button-secondary" onClick={() => void post("/admin/sources/bjjheroes/resume")}>Retomar</button>
+              <Link className="admin-button-secondary" href="/admin/imports/bjjheroes">Importar URL manualmente</Link>
             </div>
-          ))}
-          {!status?.crawlLogs?.length ? <p className="text-slate-400">No crawl logs yet.</p> : null}
-        </div>
-      </section>
+          </div>
+        </section>
+
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Registros de atividade</h2><small>{status?.crawlLogs?.length ?? 0} eventos</small></header>
+          <div className="admin-stack-list">
+            {(status?.crawlLogs ?? []).map((log: any) => (
+              <article key={log.id}><strong>{log.message}</strong><small>{log.createdAt}{log.sourceUrl ? ` · ${log.sourceUrl}` : ""}</small></article>
+            ))}
+            {!status?.crawlLogs?.length ? <div className="admin-empty">Nenhuma atividade recente.</div> : null}
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

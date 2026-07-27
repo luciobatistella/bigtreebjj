@@ -7,7 +7,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  if (pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/embed")) return null;
 
   const selectLocale = (nextLocale: Locale) => {
     if (nextLocale === locale) return;

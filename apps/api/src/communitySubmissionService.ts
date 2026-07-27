@@ -375,7 +375,7 @@ export async function decideLineageSubmission(
   db: any,
   id: string,
   action: 'approve' | 'reject' | 'request_evidence',
-  input: { reviewerNotes?: string; teacherPersonId?: string; personId?: string } = {}
+  input: { reviewerNotes?: string; teacherPersonId?: string; personId?: string; reviewerId?: string } = {}
 ) {
   const submission = await db.lineageSubmission.findUnique({
     where: { id },
@@ -402,7 +402,7 @@ export async function decideLineageSubmission(
         entityType: 'lineage_submission',
         entityId: id,
         action,
-        changedBy: 'reviewer',
+        changedBy: input.reviewerId ?? 'reviewer',
         details: JSON.stringify({ reviewerNotes: input.reviewerNotes ?? '' })
       }
     });
@@ -532,7 +532,7 @@ export async function decideLineageSubmission(
         entityType: 'lineage_submission',
         entityId: id,
         action: 'approve',
-        changedBy: 'reviewer',
+        changedBy: input.reviewerId ?? 'reviewer',
         details: JSON.stringify({
           personId: person.id,
           lineageClaimIds: claims.map((claim: any) => claim.id),

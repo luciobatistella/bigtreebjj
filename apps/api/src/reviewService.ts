@@ -128,6 +128,37 @@ export async function getClaimReview(claimId: string) {
   };
 }
 
+export async function listClaimReviews(status = 'pending_review') {
+  const db = await getPrismaClient();
+  if (!db) return [];
+  const claims = await db.lineageClaim.findMany({
+    where: status === 'all' ? {} : { status },
+    include: {
+      studentPerson: true,
+      teacherPerson: true,
+      evidences: true,
+      reviewDecisions: true
+    },
+    orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    take: 250
+  });
+  return claims.map((claim: any) => ({
+    id: claim.id,
+    student: claim.studentPerson?.fullName ?? 'Pessoa não resolvida',
+    teacher: claim.teacherPerson?.fullName ?? 'Professor não resolvido',
+    claimType: claim.claimType,
+    relationshipLabel: claim.relationshipLabel,
+    evidenceLevel: claim.evidenceLevel,
+    confidenceScore: claim.confidenceScore,
+    status: claim.status,
+    sourceCount: claim.evidences.length,
+    evidenceUrls: claim.evidences.map((evidence: any) => evidence.url),
+    notes: claim.notes ?? '',
+    updatedAt: claim.updatedAt,
+    reviewCount: claim.reviewDecisions.length
+  }));
+}
+
 export async function decideClaimReview(
   claimId: string,
   action: ReviewDecision['action'],
@@ -140,6 +171,7 @@ export async function decideClaimReview(
     teacherPersonId?: string;
     sourceUrls?: string[];
     status?: 'confirmed' | 'corroborated';
+    reviewerId?: string;
   } = {}
 ) {
   const db = await getPrismaClient();
@@ -160,12 +192,12 @@ export async function decideClaimReview(
           create: {
             action,
             notes,
-            reviewerId: 'reviewer'
+            reviewerId: options.reviewerId ?? 'reviewer'
           }
         }
       }
     });
-    await db.changeHistory.create({ data: { entityType: 'lineage_claim', entityId: claimId, action, changedBy: 'reviewer', details: JSON.stringify({ notes, evidenceLevel }) } }).catch(() => undefined);
+    await db.changeHistory.create({ data: { entityType: 'lineage_claim', entityId: claimId, action, changedBy: options.reviewerId ?? 'reviewer', details: JSON.stringify({ notes, evidenceLevel }) } }).catch(() => undefined);
     return { id: updated.id, status: updated.status, action };
   }
 

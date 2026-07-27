@@ -195,6 +195,26 @@ describe('import service workflow', () => {
     expect(records['Lineage Claims'][0].publicVisibility).toBe('not public');
   });
 
+  it('previews the curated Demian Maia review batch without excluded candidates', () => {
+    const fixturePath = path.resolve(
+      __dirname,
+      '../../../data/imports/demian_maia_black_belts_2026_07_27/lineage_claims.csv'
+    );
+    const preview = previewImport(fixturePath, 'csv', { importCategory: 'lineage_claims' });
+    const rawRows = preview.rows.map((row) => row.raw as Record<string, string>);
+
+    expect(preview.summary).toEqual({ totalRows: 4, validRows: 4, invalidRows: 0 });
+    expect(rawRows.map((row) => row.student_name)).toEqual([
+      'Mark Turner',
+      'Daniel Amado Perez',
+      'Nathan Drona',
+      'Vitalino Silva'
+    ]);
+    expect(rawRows.every((row) => row.teacher_name === 'Demian Maia')).toBe(true);
+    expect(rawRows.every((row) => row.status === 'pending_review')).toBe(true);
+    expect(rawRows.some((row) => row.student_name === 'Nelson de Souza Lopes')).toBe(false);
+  });
+
   it('calculates dashboard metrics from imported rows', async () => {
     const metrics = await getDashboardMetrics();
 

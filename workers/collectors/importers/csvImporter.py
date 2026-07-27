@@ -25,7 +25,7 @@ def import_csv(file_path: str, options: Dict[str, Any] | None = None) -> Dict[st
         reader = csv.DictReader(handle, delimiter=str(delimiter))
         for index, row in enumerate(reader, start=2):
             normalized = normalize_person(row)
-            validation = validate_row(row)
+            validation = validate_row(row, entity_type)
             normalized_organization = normalize_organization(row)
             current_name = normalized_organization.get("name") if entity_type in {"organizations", "organization"} else normalized.get("full_name") or ""
             duplicate_candidates = detect_duplicate_candidates(str(current_name or ""), existing_records, row, entity_type)

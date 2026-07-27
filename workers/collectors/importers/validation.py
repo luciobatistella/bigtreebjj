@@ -25,8 +25,26 @@ def normalize_aliases(value: Any) -> List[str]:
     return [normalize_name(str(value))]
 
 
-def validate_row(row: Dict[str, Any]) -> Dict[str, Any]:
+REQUIRED_FIELDS_BY_ENTITY = {
+    "people": ("full_name", "name"),
+    "persons": ("full_name", "name"),
+    "organizations": ("name", "organization_name"),
+    "sources": ("source_name", "url", "name"),
+    "official_observations": ("observation_id", "person_id"),
+    "person_affiliations": ("affiliation_id", "person_id", "organization_id"),
+    "research_queue": ("task_id", "person_id", "person_name"),
+    "research_tasks": ("task_id", "task_type"),
+    "lineage_claims": ("claim_id", "student_person_id", "student_name"),
+    "claim_evidence": ("claim_id", "url"),
+    "external_source_profiles": ("source_profile_url", "external_name"),
+    "external_fact_candidates": ("candidate_type", "subject_name", "source_url"),
+    "evidence": ("url", "source_url"),
+}
+
+
+def validate_row(row: Dict[str, Any], entity_type: str = "people") -> Dict[str, Any]:
     errors: List[str] = []
-    if not row.get("full_name") and not row.get("name"):
-        errors.append("Missing full_name or name")
+    required_fields = REQUIRED_FIELDS_BY_ENTITY.get(entity_type)
+    if required_fields and not any(str(row.get(field) or "").strip() for field in required_fields):
+        errors.append(f"Missing category identifier: {' or '.join(required_fields)}")
     return {"valid": not errors, "errors": errors}

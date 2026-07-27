@@ -1,4 +1,4 @@
-export const PUBLIC_FOREST_STATUSES = ['confirmed', 'pending_review'] as const;
+export const PUBLIC_FOREST_STATUSES = ['confirmed', 'corroborated', 'verified'] as const;
 
 export function publicTreeMembershipWhere() {
   return {

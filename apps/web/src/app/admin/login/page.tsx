@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { createSupabaseBrowserClient } from "../../../lib/supabase/browser";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -13,22 +12,43 @@ export default function AdminLoginPage() {
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const reason = new URL(window.location.href).searchParams.get("error");
+    if (reason === "configuration") {
+      setMessage("O Supabase Auth ainda não foi configurado neste ambiente.");
+    } else if (reason === "forbidden") {
+      setMessage("A conta autenticada não possui acesso editorial.");
+    }
+  }, []);
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setState("loading");
     setMessage("");
+
+    const supabase = createSupabaseBrowserClient();
     try {
-      const response = await fetch(`${apiBase}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const payload = await response.json();
-      if (!response.ok || !payload.token) throw new Error("Credenciais inválidas.");
-      window.localStorage.setItem("tbt_admin_token", payload.token);
-      const requestedNext = new URL(window.location.href).searchParams.get("next") ?? "/admin/review";
-      const nextPath = requestedNext.startsWith("/admin/") ? requestedNext : "/admin/review";
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw new Error("E-mail ou senha inválidos.");
+
+      const permission = await fetch("/api/admin/session", { cache: "no-store" });
+      if (!permission.ok) {
+        await supabase.auth.signOut();
+        throw new Error(
+          permission.status === 403
+            ? "Este usuário não possui permissão editorial."
+            : "Não foi possível validar sua sessão."
+        );
+      }
+
+      const requestedNext =
+        new URL(window.location.href).searchParams.get("next") ?? "/admin";
+      const nextPath =
+        requestedNext.startsWith("/admin") && requestedNext !== "/admin/login"
+          ? requestedNext
+          : "/admin";
       router.replace(nextPath);
+      router.refresh();
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error ? error.message : "Não foi possível entrar.");
@@ -36,48 +56,54 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-950 px-5 py-12 text-slate-100">
-      <section className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-7 shadow-2xl">
-        <Link className="text-sm text-emerald-400" href="/">← The Big Tree BJJ</Link>
-        <p className="mt-8 text-xs uppercase tracking-[0.24em] text-emerald-400">Editorial access</p>
-        <h1 className="mt-3 text-3xl font-semibold">Entrar no admin</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
-          As solicitações públicas contêm contato e evidências privadas.
-        </p>
+    <main className="admin-login-card">
+      <Link className="tbt-admin-brand admin-login-brand" href="/">
+        <span className="tbt-admin-seal"><span>TBT</span></span>
+        <span>
+          <strong>The Big Tree</strong>
+          <small>Núcleo editorial</small>
+        </span>
+      </Link>
 
-        <form className="mt-7 grid gap-4" onSubmit={submit}>
-          <label className="grid gap-2 text-sm text-slate-300">
-            E-mail
-            <input
-              className="min-h-12 rounded-lg border border-slate-700 bg-slate-950 px-3 outline-none focus:border-emerald-500"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              autoComplete="username"
-              required
-            />
-          </label>
-          <label className="grid gap-2 text-sm text-slate-300">
-            Senha
-            <input
-              className="min-h-12 rounded-lg border border-slate-700 bg-slate-950 px-3 outline-none focus:border-emerald-500"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          {message ? <p className="text-sm text-rose-300" role="alert">{message}</p> : null}
-          <button
-            className="mt-2 min-h-12 rounded-lg bg-emerald-600 px-4 font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
-            type="submit"
-            disabled={state === "loading"}
-          >
-            {state === "loading" ? "Entrando…" : "Entrar"}
-          </button>
-        </form>
-      </section>
+      <header className="admin-login-title">
+        <div className="admin-eyebrow" style={{ justifyContent: "center" }}>Acesso protegido</div>
+        <h1>Área de curadoria</h1>
+        <p>
+          Revise linhagens, documentos e solicitações com uma conta editorial autorizada.
+        </p>
+      </header>
+
+      <form className="admin-login-form" onSubmit={submit}>
+        <label className="admin-field">
+          E-mail
+          <input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="username"
+            inputMode="email"
+            autoCapitalize="none"
+            required
+          />
+        </label>
+        <label className="admin-field">
+          Senha
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+          />
+        </label>
+        {message ? <p className="admin-form-error" role="alert">{message}</p> : null}
+        <button className="admin-button" type="submit" disabled={state === "loading"}>
+          {state === "loading" ? "Validando…" : "Entrar no acervo"}
+        </button>
+      </form>
+      <p className="admin-login-note">
+        Sessão gerenciada pelo Supabase Auth. Nenhuma credencial é armazenada neste navegador.
+      </p>
     </main>
   );
 }

@@ -3,8 +3,7 @@ import {
   approveRelationship,
   createPerson,
   createRelationship,
-  createSource,
-  loginAdmin
+  createSource
 } from './domain.js';
 import { previewImport } from './importService.js';
 import { createReviewDecision } from './reviewService.js';
@@ -38,12 +37,6 @@ describe('basic API domain flows', () => {
 
     expect(relationship.status).toBe('confirmed');
     expect(approved.status).toBe('confirmed');
-  });
-
-  it('supports admin login with configured credentials', () => {
-    const login = loginAdmin('admin@example.com', 'changeme');
-
-    expect(login.user.role).toBe('admin');
   });
 
   it('previews a CSV import and creates a review decision', () => {

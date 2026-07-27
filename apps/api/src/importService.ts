@@ -97,6 +97,19 @@ function parseDateOrNow(value: unknown) {
   return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
 }
 
+function parseOptionalDate(value: unknown) {
+  if (!value) {
+    return undefined;
+  }
+  const parsed = value instanceof Date ? value : new Date(String(value));
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed;
+}
+
+function parseConfidence(value: unknown, fallback = 0.5) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? Math.min(1, Math.max(0, parsed)) : fallback;
+}
+
 function normalizeComparable(value: unknown) {
   return String(value ?? '')
     .normalize('NFD')
@@ -428,6 +441,9 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
         const teacherName = String(normalizedClaim.teacher_name ?? rawValue(row, 'teacher_name', ''));
         const student = await findOrCreateImportedPerson(db, { id: optionalRawValue(row, 'student_person_id'), name: studentName });
         const teacher = teacherName ? await findOrCreateImportedPerson(db, { id: optionalRawValue(row, 'promoter_person_id'), name: teacherName }) : null;
+        const promotionDate = parseOptionalDate(optionalRawValue(row, 'promotion_date'));
+        const promotionLocation = optionalRawValue(row, 'promotion_location') ?? optionalRawValue(row, 'location');
+        const confidenceScore = parseConfidence(optionalRawValue(row, 'confidence_score'));
         const claim = await db.lineageClaim.upsert({
           where: { id: optionalRawValue(row, 'claim_id') ?? `claim-${job.id}-${rowPayload.originalRowNumber}` },
           update: {
@@ -435,9 +451,11 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
             teacherPersonId: teacher?.id,
             claimType: String(normalizedClaim.claim_type ?? rawValue(row, 'claim_type', 'black_belt_awarded_by')),
             relationshipLabel: String(normalizedClaim.relationship_label ?? rawValue(row, 'relationship_label', 'Imported claim')),
+            dateStart: promotionDate,
+            location: promotionLocation ?? undefined,
             status: rawValue(row, 'status', 'pending_review'),
             evidenceLevel: rawValue(row, 'evidence_level', 'imported'),
-            confidenceScore: 0.5,
+            confidenceScore,
             notes: String(normalizedClaim.notes ?? rawValue(row, 'notes'))
           },
           create: {
@@ -446,9 +464,11 @@ export async function executeImportJob(jobId: string, input: { importCategory?: 
             teacherPersonId: teacher?.id,
             claimType: String(normalizedClaim.claim_type ?? rawValue(row, 'claim_type', 'black_belt_awarded_by')),
             relationshipLabel: String(normalizedClaim.relationship_label ?? rawValue(row, 'relationship_label', 'Imported claim')),
+            dateStart: promotionDate,
+            location: promotionLocation ?? undefined,
             status: rawValue(row, 'status', 'pending_review'),
             evidenceLevel: rawValue(row, 'evidence_level', 'imported'),
-            confidenceScore: 0.5,
+            confidenceScore,
             notes: String(normalizedClaim.notes ?? rawValue(row, 'notes'))
           }
         });

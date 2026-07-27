@@ -1,13 +1,24 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { adminApiFetch, goToAdminLogin } from "../../../../lib/adminApi";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-const tabs = ['Overview', 'Preview Rows', 'Imported Records', 'Warnings & Errors', 'Duplicate Candidates', 'Review Queue', 'Report', 'Audit History'];
+const tabs = [
+  ["overview", "Visão geral"],
+  ["rows", "Linhas"],
+  ["records", "Registros criados"],
+  ["warnings", "Alertas"],
+  ["duplicates", "Duplicidades"],
+  ["queue", "Fila de revisão"],
+  ["report", "Relatório"],
+  ["audit", "Auditoria"]
+] as const;
+
+type TabId = (typeof tabs)[number][0];
 
 function parseJson(value: unknown) {
-  if (!value || typeof value !== 'string') return value;
+  if (!value || typeof value !== "string") return value;
   try {
     return JSON.parse(value);
   } catch {
@@ -16,11 +27,11 @@ function parseJson(value: unknown) {
 }
 
 function JsonBlock({ value }: { value: unknown }) {
-  return <pre className="mt-3 max-h-72 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-300">{JSON.stringify(parseJson(value), null, 2)}</pre>;
+  return <pre className="admin-json">{JSON.stringify(parseJson(value), null, 2)}</pre>;
 }
 
 export default function ImportJobDetailPage({ params }: { params: { id: string } }) {
-  const [activeTab, setActiveTab] = useState('Overview');
+  const [activeTab, setActiveTab] = useState<TabId>("overview");
   const [detail, setDetail] = useState<any>(null);
   const [rows, setRows] = useState<any[]>([]);
   const [duplicates, setDuplicates] = useState<any[]>([]);
@@ -28,198 +39,230 @@ export default function ImportJobDetailPage({ params }: { params: { id: string }
   const [records, setRecords] = useState<Record<string, any[]>>({});
   const [report, setReport] = useState<any>(null);
   const [audit, setAudit] = useState<any[]>([]);
-  const [message, setMessage] = useState('Loading import job...');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const load = async () => {
-      const [detailResponse, rowsResponse, duplicateResponse, queueResponse, recordsResponse, reportResponse, auditResponse] = await Promise.all([
-        fetch(`${apiBase}/imports/${params.id}/detail`),
-        fetch(`${apiBase}/imports/${params.id}/rows`),
-        fetch(`${apiBase}/imports/${params.id}/duplicates`),
-        fetch(`${apiBase}/imports/${params.id}/review-queue`),
-        fetch(`${apiBase}/imports/${params.id}/imported-records`),
-        fetch(`${apiBase}/imports/${params.id}/report`),
-        fetch(`${apiBase}/imports/${params.id}/audit-history`)
+      const responses = await Promise.all([
+        adminApiFetch(`/imports/${params.id}/detail`),
+        adminApiFetch(`/imports/${params.id}/rows`),
+        adminApiFetch(`/imports/${params.id}/duplicates`),
+        adminApiFetch(`/imports/${params.id}/review-queue`),
+        adminApiFetch(`/imports/${params.id}/imported-records`),
+        adminApiFetch(`/imports/${params.id}/report`),
+        adminApiFetch(`/imports/${params.id}/audit-history`)
       ]);
-      if (detailResponse.ok) setDetail(await detailResponse.json());
-      if (rowsResponse.ok) setRows(await rowsResponse.json());
-      if (duplicateResponse.ok) setDuplicates(await duplicateResponse.json());
-      if (queueResponse.ok) setQueue(await queueResponse.json());
-      if (recordsResponse.ok) setRecords(await recordsResponse.json());
-      if (reportResponse.ok) setReport(await reportResponse.json());
-      if (auditResponse.ok) setAudit(await auditResponse.json());
-      setMessage('Import job loaded.');
+      if (!responses[0].ok) throw new Error("Lote de importação não encontrado.");
+      const [detailData, rowsData, duplicateData, queueData, recordsData, reportData, auditData] =
+        await Promise.all(responses.map((response) => response.ok ? response.json() : null));
+      setDetail(detailData);
+      setRows(rowsData ?? []);
+      setDuplicates(duplicateData ?? []);
+      setQueue(queueData ?? []);
+      setRecords(recordsData ?? {});
+      setReport(reportData);
+      setAudit(auditData ?? []);
     };
-    load().catch(() => setMessage('Unable to load import job.'));
+    load().catch((error) => {
+      if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(error instanceof Error ? error.message : "Não foi possível carregar o lote.");
+    });
   }, [params.id]);
 
-  const warnings = useMemo(() => rows.filter((row) => {
-    const validation = parseJson(row.validationResult) as any;
-    return row.status === 'review_required' || validation?.valid === false || validation?.warnings?.length || validation?.errors?.length;
-  }), [rows]);
+  const warnings = useMemo(
+    () =>
+      rows.filter((row) => {
+        const validation = parseJson(row.validationResult) as any;
+        return (
+          row.status === "review_required" ||
+          validation?.valid === false ||
+          validation?.warnings?.length ||
+          validation?.errors?.length
+        );
+      }),
+    [rows]
+  );
 
   const handleRollback = async () => {
-    const response = await fetch(`${apiBase}/imports/${params.id}/rollback`, { method: 'POST' });
-    const payload = await response.json();
-    setMessage(payload.status ?? 'Rollback completed');
+    if (!window.confirm("Reverter os registros criados por este lote? O histórico será preservado.")) return;
+    try {
+      const response = await adminApiFetch(`/imports/${params.id}/rollback`, { method: "POST" });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error ?? "Não foi possível reverter.");
+      setMessage(`Reversão concluída: ${payload.status ?? "ok"}.`);
+    } catch (error) {
+      if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(error instanceof Error ? error.message : "A reversão falhou.");
+    }
   };
 
   const handleDownload = async () => {
-    const response = await fetch(`${apiBase}/imports/${params.id}/download`);
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
+    try {
+      const response = await adminApiFetch(`/imports/${params.id}/download`);
+      if (!response.ok) throw new Error("Não foi possível baixar o arquivo.");
+      const url = URL.createObjectURL(await response.blob());
+      const anchor = document.createElement("a");
       anchor.href = url;
-      anchor.download = detail?.originalFileName ?? 'import-file';
+      anchor.download = detail?.originalFileName ?? "arquivo-importado";
       anchor.click();
-      window.URL.revokeObjectURL(url);
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      if (error instanceof Error && error.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(error instanceof Error ? error.message : "O download falhou.");
     }
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-6 py-10">
-      <section className="border-b border-slate-800 pb-6">
-        <p className="text-sm uppercase tracking-[0.24em] text-emerald-400">Import job detail</p>
-        <h1 className="mt-3 text-3xl font-semibold">{detail?.originalFileName ?? params.id}</h1>
-        <p className="mt-2 text-slate-300">{message}</p>
-      </section>
+    <main className="admin-page">
+      <header className="admin-page-head">
+        <div>
+          <Link className="admin-back-link" href="/admin/imports">← Voltar às importações</Link>
+          <div className="admin-eyebrow">Lote de importação</div>
+          <h1 className="admin-page-title">{detail?.originalFileName ?? params.id}</h1>
+          <p className="admin-page-lead">Acompanhe validação, registros gerados e decisões pendentes.</p>
+        </div>
+        {detail ? <span className="admin-status-badge">{detail.status}</span> : null}
+      </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {message ? <div className="admin-alert" role="status">{message}</div> : null}
+
+      <section className="admin-metrics">
         {[
-          ['Status', detail?.status],
-          ['Total rows', detail?.totalRows],
-          ['Imported rows', detail?.importedRows],
-          ['Needs review', detail?.reviewQueueItemsCreated],
-          ['Failed rows', detail?.failedRows],
-          ['Duplicates', detail?.duplicateCandidates],
-          ['Rollback', detail?.rollbackStatus],
-          ['Uploaded by', detail?.importingUser]
-        ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{label}</p>
-            <p className="mt-2 text-xl font-semibold text-slate-100">{value ?? 'n/a'}</p>
-          </div>
+          ["Linhas recebidas", detail?.totalRows, "total do arquivo"],
+          ["Registros importados", detail?.importedRows, "mantidos fora do público até aprovação"],
+          ["Exigem revisão", detail?.reviewQueueItemsCreated, "tarefas editoriais"],
+          ["Falhas", detail?.failedRows, `${detail?.duplicateCandidates ?? 0} duplicidades`]
+        ].map(([label, value, note]) => (
+          <article className="admin-metric" key={String(label)}>
+            <small>{label}</small><strong>{value ?? "—"}</strong><span>{note}</span>
+          </article>
         ))}
       </section>
 
-      <div className="flex flex-wrap gap-2 border-b border-slate-800 pb-3">
-        {tabs.map((tab) => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`rounded-lg px-3 py-2 text-sm ${activeTab === tab ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-300 hover:bg-slate-800'}`}>
-            {tab}
+      <nav className="admin-tabs admin-section-gap" aria-label="Seções do lote">
+        {tabs.map(([id, label]) => (
+          <button className={`admin-tab ${activeTab === id ? "is-active" : ""}`} key={id} onClick={() => setActiveTab(id)}>
+            {label}
           </button>
         ))}
-      </div>
+      </nav>
 
-      {activeTab === 'Overview' ? (
-        <section className="grid gap-5 lg:grid-cols-2">
-          <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-            <h2 className="text-xl font-semibold">Operational summary</h2>
-            <dl className="mt-4 grid gap-3 text-sm text-slate-300 sm:grid-cols-2">
-              {[
-                ['Original file name', detail?.originalFileName],
-                ['File type', detail?.fileType],
-                ['Import category', detail?.importCategory],
-                ['Upload date', detail?.uploadDate],
-                ['CSV delimiter', detail?.selectedCsvDelimiter],
-                ['XLSX worksheet', detail?.selectedXlsxWorksheet ?? 'n/a'],
-                ['SQLite table', detail?.selectedSqliteTable ?? 'n/a'],
-                ['Skipped rows', detail?.skippedRows]
-              ].map(([label, value]) => (
-                <div key={label}><dt className="text-slate-500">{label}</dt><dd>{value ?? 'n/a'}</dd></div>
-              ))}
-            </dl>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button onClick={handleRollback} className="rounded-lg border border-rose-700 px-4 py-2 text-rose-300 hover:bg-rose-950">Rollback</button>
-              <button onClick={handleDownload} className="rounded-lg border border-slate-700 px-4 py-2 hover:bg-slate-800">Download original</button>
+      {activeTab === "overview" ? (
+        <div className="admin-detail-grid">
+          <section className="admin-panel">
+            <header className="admin-panel-head"><h2>Resumo operacional</h2><small>{detail?.importType ?? detail?.fileType}</small></header>
+            <div className="admin-panel-body">
+              <dl className="admin-definition-grid">
+                <div><dt>Arquivo original</dt><dd>{detail?.originalFileName ?? "—"}</dd></div>
+                <div><dt>Categoria</dt><dd>{detail?.importCategory ?? "—"}</dd></div>
+                <div><dt>Data de envio</dt><dd>{detail?.uploadDate ? new Date(detail.uploadDate).toLocaleString("pt-BR") : "—"}</dd></div>
+                <div><dt>Responsável</dt><dd>{detail?.importingUser ?? "—"}</dd></div>
+                <div><dt>Linhas ignoradas</dt><dd>{detail?.skippedRows ?? 0}</dd></div>
+                <div><dt>Estado da reversão</dt><dd>{detail?.rollbackStatus ?? "não iniciada"}</dd></div>
+              </dl>
+              <div className="admin-inline-actions admin-section-gap">
+                <button className="admin-button-secondary" onClick={() => void handleDownload()}>Baixar original</button>
+                <button className="admin-button-danger" onClick={() => void handleRollback()}>Reverter lote</button>
+              </div>
             </div>
-          </div>
-          <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-            <h2 className="text-xl font-semibold">Mapping and validation</h2>
-            <JsonBlock value={{ mappedColumns: detail?.mappedColumns, validationSummary: detail?.validationSummary }} />
+          </section>
+          <section className="admin-panel">
+            <header className="admin-panel-head"><h2>Mapeamento e validação</h2><small>Dados técnicos</small></header>
+            <div className="admin-panel-body"><JsonBlock value={{ mappedColumns: detail?.mappedColumns, validationSummary: detail?.validationSummary }} /></div>
+          </section>
+        </div>
+      ) : null}
+
+      {activeTab === "rows" ? (
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Linhas recebidas</h2><small>{rows.length} linhas</small></header>
+          <div className="admin-stack-list">
+            {rows.map((row, index) => (
+              <details key={row.id ?? index}>
+                <summary><strong>Linha {row.originalRowNumber}</strong><span className="admin-status-badge">{row.status}</span></summary>
+                <JsonBlock value={row.rawPayload} />
+              </details>
+            ))}
           </div>
         </section>
       ) : null}
 
-      {activeTab === 'Preview Rows' ? (
-        <section className="space-y-3">
-          {rows.map((row, index) => (
-            <div key={row.id ?? index} className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-              <p className="font-medium">Row {row.originalRowNumber} · {row.status}</p>
-              <JsonBlock value={row.rawPayload} />
-            </div>
-          ))}
-        </section>
-      ) : null}
-
-      {activeTab === 'Imported Records' ? (
-        <section className="grid gap-4 lg:grid-cols-2">
+      {activeTab === "records" ? (
+        <section className="admin-record-groups">
           {Object.entries(records).map(([group, items]) => (
-            <div key={group} className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-              <h2 className="text-xl font-semibold">{group}</h2>
-              <div className="mt-3 space-y-3 text-sm text-slate-300">
-                {items.length ? items.map((record) => (
-                  <div key={`${group}-${record.id}`} className="rounded-lg bg-slate-950 p-3">
-                    <Link className="font-medium text-emerald-300" href={record.adminUrl}>{record.id}</Link>
-                    <p>Status: {record.status} · Visibility: {record.publicVisibility}</p>
-                    {record.badges?.length ? <p className="mt-2 flex flex-wrap gap-2">{record.badges.map((badge: string) => <span key={badge} className="rounded-full bg-slate-800 px-2 py-1 text-xs text-slate-300">{badge}</span>)}</p> : null}
-                    {group === 'Lineage Claims' ? <p>Evidence count: {record.evidenceCount} · Source import row: {record.sourceImportRow}</p> : <p>Source import row: {record.sourceImportRow}</p>}
-                  </div>
-                )) : <p className="text-slate-500">No imported records in this group.</p>}
+            <div className="admin-panel" key={group}>
+              <header className="admin-panel-head"><h2>{group}</h2><small>{items.length} registros</small></header>
+              <div className="admin-stack-list">
+                {items.map((record) => (
+                  <Link href={record.adminUrl} key={`${group}-${record.id}`}>
+                    <strong>{record.id}</strong>
+                    <small>Status: {record.status} · Visibilidade: {record.publicVisibility} · Linha: {record.sourceImportRow}</small>
+                  </Link>
+                ))}
+                {!items.length ? <div className="admin-empty">Nenhum registro neste grupo.</div> : null}
               </div>
             </div>
           ))}
         </section>
       ) : null}
 
-      {activeTab === 'Warnings & Errors' ? (
-        <section className="space-y-3">
-          {warnings.map((row) => <div key={row.id ?? row.originalRowNumber} className="rounded-lg border border-amber-800 bg-amber-950/30 p-4"><p>Row {row.originalRowNumber} · {row.status}</p><JsonBlock value={row.validationResult} /></div>)}
-          {!warnings.length ? <p className="text-slate-400">No warnings or errors found for this import.</p> : null}
+      {activeTab === "warnings" ? (
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Alertas e erros</h2><small>{warnings.length} ocorrências</small></header>
+          <div className="admin-stack-list">
+            {warnings.map((row) => (
+              <details key={row.id ?? row.originalRowNumber}>
+                <summary><strong>Linha {row.originalRowNumber}</strong><span className="admin-status-badge is-pending">{row.status}</span></summary>
+                <JsonBlock value={row.validationResult} />
+              </details>
+            ))}
+            {!warnings.length ? <div className="admin-empty"><strong>Nenhum alerta</strong>O lote passou pelas validações.</div> : null}
+          </div>
         </section>
       ) : null}
 
-      {activeTab === 'Duplicate Candidates' ? (
-        <section className="space-y-4">
-          {duplicates.map((candidate) => (
-            <div key={candidate.id} className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-              <div className="grid gap-4 lg:grid-cols-2">
-                <div><h3 className="font-semibold">Incoming record</h3><JsonBlock value={candidate.incomingRecord} /></div>
-                <div><h3 className="font-semibold">Possible existing record</h3><JsonBlock value={candidate.possibleExistingRecord} /></div>
-              </div>
-              <p className="mt-3 text-sm text-slate-300">Confidence: {candidate.similarityConfidence} · Matching fields: {(candidate.matchingFields ?? []).join(', ') || 'n/a'} · Source row: {candidate.importSourceRow} · Suggested action: {candidate.suggestedAction}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link className="rounded-lg bg-emerald-600 px-3 py-2 text-sm text-white" href={candidate.openComparisonUrl}>Open person comparison</Link>
-                <button className="rounded-lg border border-slate-700 px-3 py-2 text-sm">Merge with existing person</button>
-                <button className="rounded-lg border border-slate-700 px-3 py-2 text-sm">Keep separate</button>
-                <button className="rounded-lg border border-slate-700 px-3 py-2 text-sm">Ignore candidate</button>
-              </div>
-            </div>
-          ))}
-          {!duplicates.length ? <p className="text-slate-400">No duplicate candidates for this import.</p> : null}
+      {activeTab === "duplicates" ? (
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Possíveis duplicidades</h2><small>{duplicates.length} candidatos</small></header>
+          <div className="admin-action-list">
+            {duplicates.map((candidate) => (
+              <Link className="admin-action-row" href={candidate.openComparisonUrl} key={candidate.id}>
+                <span className="admin-action-number">≈</span>
+                <span><strong>Comparação sugerida</strong><small>Confiança: {candidate.similarityConfidence} · Linha: {candidate.importSourceRow}</small></span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+            {!duplicates.length ? <div className="admin-empty"><strong>Sem duplicidades</strong>Nenhuma combinação foi sugerida.</div> : null}
+          </div>
         </section>
       ) : null}
 
-      {activeTab === 'Review Queue' ? (
-        <section className="space-y-3">
-          {queue.map((item) => (
-            <div key={item.id} className="grid gap-3 rounded-lg border border-slate-800 bg-slate-900 p-4 text-sm text-slate-300 lg:grid-cols-[1fr_auto]">
-              <div>
-                <p className="font-semibold text-slate-100">{item.type} · {item.priority}</p>
-                <p>Related entity: {item.relatedEntity} · Source import row: {item.sourceImportRow} · Created: {item.createdDate} · Status: {item.status}</p>
-                {item.suggestedSearches?.length ? <div className="mt-2 flex flex-wrap gap-2">{item.suggestedSearches.map((search: string) => <code key={search} className="rounded bg-slate-950 px-2 py-1 text-xs text-emerald-200">{search}</code>)}</div> : null}
-              </div>
-              <Link className="rounded-lg bg-emerald-600 px-3 py-2 text-white" href={item.openReviewUrl}>Open review</Link>
-            </div>
-          ))}
-          {!queue.length ? <p className="text-slate-400">No review queue items for this import.</p> : null}
+      {activeTab === "queue" ? (
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Fila de revisão</h2><small>{queue.length} tarefas</small></header>
+          <div className="admin-action-list">
+            {queue.map((item) => (
+              <Link className="admin-action-row" href={item.openReviewUrl} key={item.id}>
+                <span className="admin-action-number">!</span>
+                <span><strong>{item.type} · {item.priority}</strong><small>Entidade: {item.relatedEntity} · Linha: {item.sourceImportRow} · {item.status}</small></span>
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+            {!queue.length ? <div className="admin-empty"><strong>Fila limpa</strong>Nenhuma tarefa foi criada.</div> : null}
+          </div>
         </section>
       ) : null}
 
-      {activeTab === 'Report' ? <section className="rounded-lg border border-slate-800 bg-slate-900 p-5"><JsonBlock value={report} /></section> : null}
-      {activeTab === 'Audit History' ? (
-        <section className="space-y-3">
-          {audit.map((entry) => <div key={entry.id} className="rounded-lg border border-slate-800 bg-slate-900 p-4 text-sm"><p className="font-semibold">{entry.action}</p><p className="text-slate-400">{entry.createdAt} · {entry.entityType} · {entry.entityId}</p><JsonBlock value={entry.details} /></div>)}
+      {activeTab === "report" ? <section className="admin-panel"><header className="admin-panel-head"><h2>Relatório do lote</h2><small>JSON</small></header><div className="admin-panel-body"><JsonBlock value={report} /></div></section> : null}
+
+      {activeTab === "audit" ? (
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Histórico de auditoria</h2><small>{audit.length} eventos</small></header>
+          <div className="admin-timeline">
+            {audit.map((entry) => (
+              <article key={entry.id}><i aria-hidden="true" /><div><strong>{entry.action}</strong><p>{entry.entityType} · {entry.entityId}</p><small>{entry.createdAt ? new Date(entry.createdAt).toLocaleString("pt-BR") : ""}</small><JsonBlock value={entry.details} /></div></article>
+            ))}
+          </div>
         </section>
       ) : null}
     </main>

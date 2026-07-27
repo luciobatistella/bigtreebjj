@@ -1,103 +1,204 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { adminApiFetch, goToAdminLogin } from "../../../../../lib/adminApi";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+type ClaimReview = {
+  id: string;
+  student: string;
+  teacher: string;
+  claimType: string;
+  relationshipLabel?: string | null;
+  promotionGroup?: string | null;
+  evidenceLevel?: string | null;
+  status: string;
+  importedSourceRow?: number | null;
+  linkedSources?: Array<{ id?: string; url?: string; sourceType?: string }>;
+  evidenceUrls?: string[];
+  internalNotes?: string;
+  auditHistory?: Array<{ id?: string; action?: string; notes?: string; createdAt?: string }>;
+};
 
-function JsonBlock({ value }: { value: unknown }) {
-  return <pre className="mt-3 max-h-72 overflow-auto rounded-lg bg-slate-950 p-3 text-xs text-slate-300">{JSON.stringify(value, null, 2)}</pre>;
-}
+const statusLabel: Record<string, string> = {
+  pending_review: "Pendente",
+  needs_evidence: "Mais evidências",
+  confirmed: "Confirmada",
+  corroborated: "Corroborada",
+  disputed: "Contestada",
+  rejected: "Recusada"
+};
 
 export default function ClaimReviewPage({ params }: { params: { id: string } }) {
-  const [claim, setClaim] = useState<any>(null);
-  const [note, setNote] = useState('');
-  const [evidenceLevel, setEvidenceLevel] = useState('');
-  const [message, setMessage] = useState('Loading claim...');
+  const [claim, setClaim] = useState<ClaimReview | null>(null);
+  const [note, setNote] = useState("");
+  const [evidenceLevel, setEvidenceLevel] = useState("imported");
+  const [state, setState] = useState<"loading" | "ready" | "saving" | "error">("loading");
+  const [message, setMessage] = useState("");
 
-  const load = async () => {
-    const response = await fetch(`${apiBase}/review/claims/${params.id}`);
-    if (response.ok) {
-      const payload = await response.json();
+  const load = useCallback(async () => {
+    try {
+      setState("loading");
+      const response = await adminApiFetch(`/review/claims/${params.id}`);
+      if (!response.ok) throw new Error(response.status === 404 ? "Relação não encontrada." : "Não foi possível carregar a relação.");
+      const payload = (await response.json()) as ClaimReview;
       setClaim(payload);
-      setEvidenceLevel(payload.evidenceLevel ?? 'imported');
-      setMessage('Claim loaded.');
-    } else {
-      setMessage('Claim not found.');
+      setEvidenceLevel(payload.evidenceLevel ?? "imported");
+      setNote(payload.internalNotes ?? "");
+      setState("ready");
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(cause instanceof Error ? cause.message : "Falha ao carregar a relação.");
+      setState("error");
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const decide = async (action: "approve" | "reject" | "dispute" | "request-evidence") => {
+    if (["reject", "dispute", "request-evidence"].includes(action) && !note.trim()) {
+      setMessage("Explique a decisão nas notas antes de continuar.");
+      return;
+    }
+    if (
+      action === "approve" &&
+      claim?.claimType === "black_belt_awarded_by" &&
+      !window.confirm(`Confirmar que ${claim.student} recebeu a faixa-preta de ${claim.teacher}?`)
+    ) return;
+
+    setState("saving");
+    setMessage("");
+    try {
+      const response = await adminApiFetch(`/review/claims/${params.id}/${action}`, {
+        method: "POST",
+        body: JSON.stringify({ notes: note.trim(), evidenceLevel })
+      });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.message ?? payload.error ?? "Não foi possível salvar a decisão.");
+      }
+      setMessage("Decisão registrada com sucesso.");
+      await load();
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AdminSessionError") return goToAdminLogin();
+      setState("ready");
+      setMessage(cause instanceof Error ? cause.message : "Não foi possível salvar.");
     }
   };
 
-  useEffect(() => {
-    load().catch(() => setMessage('Unable to load claim.'));
-  }, [params.id]);
-
-  const decide = async (action: 'approve' | 'reject' | 'dispute' | 'request-evidence') => {
-    if (action === 'approve' && claim?.claimType === 'black_belt_awarded_by' && !window.confirm('Approve this black belt promotion claim?')) return;
-    const response = await fetch(`${apiBase}/review/claims/${params.id}/${action}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ notes: note, evidenceLevel })
-    });
-    const payload = await response.json();
-    setMessage(`${payload.action} saved. Status: ${payload.status}`);
-    await load();
-  };
+  const sourceLinks = (claim?.linkedSources ?? [])
+    .map((source) => ({ url: source.url, label: source.sourceType ?? "Fonte vinculada" }))
+    .filter((source): source is { url: string; label: string } => Boolean(source.url));
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-10">
-      <section className="border-b border-slate-800 pb-6">
-        <p className="text-sm uppercase tracking-[0.24em] text-emerald-400">Claim review</p>
-        <h1 className="mt-3 text-3xl font-semibold">{claim?.student ?? 'Lineage claim'} to {claim?.teacher ?? 'teacher'}</h1>
-        <p className="mt-2 text-slate-300">{message}</p>
-      </section>
+    <main className="admin-page">
+      <header className="admin-page-head">
+        <div>
+          <Link className="admin-back-link" href="/admin/review">← Voltar para a fila</Link>
+          <div className="admin-eyebrow">Revisão de linhagem</div>
+          <h1 className="admin-page-title">{claim?.student ?? "Carregando relação…"}</h1>
+          <p className="admin-page-lead">
+            {claim ? <>Faixa-preta atribuída por <strong>{claim.teacher}</strong>.</> : "Consultando o registro editorial."}
+          </p>
+        </div>
+        {claim ? <span className="admin-status-badge is-pending">{statusLabel[claim.status] ?? claim.status}</span> : null}
+      </header>
 
-      <section className="grid gap-5 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-xl font-semibold">Claim details</h2>
-          <dl className="mt-4 grid gap-3 text-sm text-slate-300 sm:grid-cols-2">
-            <div><dt className="text-slate-500">Student</dt><dd>{claim?.student ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Teacher</dt><dd>{claim?.teacher ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Claim type</dt><dd>{claim?.claimType ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Promotion group</dt><dd>{claim?.promotionGroup ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Evidence level</dt><dd>{claim?.evidenceLevel ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Status</dt><dd>{claim?.status ?? 'n/a'}</dd></div>
-            <div><dt className="text-slate-500">Imported source row</dt><dd>{claim?.importedSourceRow ?? 'n/a'}</dd></div>
-          </dl>
-        </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-xl font-semibold">Sources and evidence</h2>
-          <JsonBlock value={{ linkedSources: claim?.linkedSources ?? [], evidenceUrls: claim?.evidenceUrls ?? [] }} />
-        </div>
-      </section>
+      {message ? <div className={`admin-alert ${state === "error" ? "is-danger" : ""}`} role="status">{message}</div> : null}
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-        <h2 className="text-xl font-semibold">Reviewer actions</h2>
-        <div className="mt-4 grid gap-4 lg:grid-cols-[0.4fr_1fr]">
-          <label className="text-sm text-slate-300">Evidence level<select className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2" value={evidenceLevel} onChange={(event) => setEvidenceLevel(event.target.value)}>
-            <option value="imported">Imported</option>
-            <option value="community_submission">Community submission</option>
-            <option value="primary_source">Primary source</option>
-            <option value="official_record">Official record</option>
-          </select></label>
-          <label className="text-sm text-slate-300">Internal notes<textarea className="mt-2 min-h-28 w-full rounded-lg border border-slate-700 bg-slate-950 p-3" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add reviewer note" /></label>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <button onClick={() => decide('approve')} className="rounded-lg bg-emerald-600 px-4 py-2 text-white">Approve</button>
-          <button onClick={() => decide('reject')} className="rounded-lg border border-rose-700 px-4 py-2 text-rose-300">Reject</button>
-          <button onClick={() => decide('dispute')} className="rounded-lg border border-slate-700 px-4 py-2">Mark disputed</button>
-          <button onClick={() => decide('request-evidence')} className="rounded-lg border border-slate-700 px-4 py-2">Request evidence</button>
-        </div>
-      </section>
+      {state === "loading" && !claim ? (
+        <section className="admin-panel admin-empty"><strong>Carregando relação…</strong>Acessando fontes e histórico.</section>
+      ) : null}
 
-      <section className="grid gap-5 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-xl font-semibold">Internal notes</h2>
-          <p className="mt-3 text-sm text-slate-300">{claim?.internalNotes || 'No internal notes yet.'}</p>
-        </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-xl font-semibold">Audit history</h2>
-          <JsonBlock value={claim?.auditHistory ?? []} />
-        </div>
-      </section>
+      {claim ? (
+        <>
+          <div className="admin-detail-grid">
+            <section className="admin-panel">
+              <header className="admin-panel-head"><h2>Conexão proposta</h2><small>Dados estruturados</small></header>
+              <div className="admin-panel-body">
+                <div className="admin-relationship">
+                  <div><small>Aluno</small><strong>{claim.student}</strong></div>
+                  <span aria-hidden="true">→</span>
+                  <div><small>Professor</small><strong>{claim.teacher}</strong></div>
+                </div>
+                <dl className="admin-definition-grid admin-section-gap">
+                  <div><dt>Tipo da relação</dt><dd>{claim.claimType.replaceAll("_", " ")}</dd></div>
+                  <div><dt>Nível de evidência</dt><dd>{claim.evidenceLevel ?? "Não classificado"}</dd></div>
+                  <div><dt>Grupo de graduação</dt><dd>{claim.promotionGroup ?? "Individual"}</dd></div>
+                  <div><dt>Linha importada</dt><dd>{claim.importedSourceRow ?? "Não disponível"}</dd></div>
+                </dl>
+              </div>
+            </section>
+
+            <section className="admin-panel">
+              <header className="admin-panel-head"><h2>Fontes e evidências</h2><small>{sourceLinks.length} links</small></header>
+              <div className="admin-panel-body admin-source-list">
+                {sourceLinks.map((source, index) => (
+                  <a className="admin-link-card" href={source.url} target="_blank" rel="noreferrer" key={`${source.url}-${index}`}>
+                    <small>{source.label}</small>
+                    <strong>{source.url}</strong>
+                  </a>
+                ))}
+                {!sourceLinks.length ? (
+                  <div className="admin-empty"><strong>Nenhuma fonte vinculada</strong>Solicite evidências antes de aprovar.</div>
+                ) : null}
+              </div>
+            </section>
+          </div>
+
+          <section className="admin-panel admin-section-gap">
+            <header className="admin-panel-head"><h2>Parecer editorial</h2><small>Registrado na auditoria</small></header>
+            <div className="admin-panel-body admin-review-form">
+              <label className="admin-field">
+                Nível da evidência
+                <select value={evidenceLevel} onChange={(event) => setEvidenceLevel(event.target.value)}>
+                  <option value="imported">Importada</option>
+                  <option value="community_submission">Envio da comunidade</option>
+                  <option value="primary_source">Fonte primária</option>
+                  <option value="official_record">Registro oficial</option>
+                </select>
+              </label>
+              <label className="admin-field">
+                Notas internas
+                <textarea
+                  value={note}
+                  onChange={(event) => setNote(event.target.value)}
+                  placeholder="Registre o raciocínio, as ressalvas e o que foi conferido."
+                />
+              </label>
+            </div>
+          </section>
+
+          <section className="admin-panel admin-section-gap">
+            <header className="admin-panel-head"><h2>Histórico</h2><small>{claim.auditHistory?.length ?? 0} eventos</small></header>
+            <div className="admin-timeline">
+              {(claim.auditHistory ?? []).map((entry, index) => (
+                <article key={entry.id ?? `${entry.action}-${index}`}>
+                  <i aria-hidden="true" />
+                  <div>
+                    <strong>{entry.action?.replaceAll("_", " ") ?? "Alteração"}</strong>
+                    <p>{entry.notes || "Sem observação registrada."}</p>
+                    <small>{entry.createdAt ? new Date(entry.createdAt).toLocaleString("pt-BR") : ""}</small>
+                  </div>
+                </article>
+              ))}
+              {!claim.auditHistory?.length ? <div className="admin-empty">Nenhuma decisão anterior.</div> : null}
+            </div>
+          </section>
+
+          <div className="admin-decision-bar">
+            <small>Esta decisão altera o que pode aparecer publicamente na árvore.</small>
+            <div className="admin-decision-actions">
+              <button className="admin-button" disabled={state === "saving"} onClick={() => void decide("approve")}>Aprovar relação</button>
+              <button className="admin-button-warning" disabled={state === "saving"} onClick={() => void decide("request-evidence")}>Pedir evidências</button>
+              <button className="admin-button-secondary" disabled={state === "saving"} onClick={() => void decide("dispute")}>Contestar</button>
+              <button className="admin-button-danger" disabled={state === "saving"} onClick={() => void decide("reject")}>Recusar</button>
+            </div>
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }

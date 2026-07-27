@@ -1,9 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { adminApiFetch, goToAdminLogin } from "../../../../../lib/adminApi";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+type Certificate = {
+  id: string;
+  track: "adult" | "youth";
+  beltRank: string;
+  beltLabel: string;
+  sequence: number;
+  awardedAt?: string | null;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  sha256: string;
+};
 
 type Submission = {
   id: string;
@@ -30,18 +42,7 @@ type Submission = {
   certificateSize?: number | null;
   certificateSha256?: string | null;
   certificateCount?: number;
-  certificates?: Array<{
-    id: string;
-    track: "adult" | "youth";
-    beltRank: string;
-    beltLabel: string;
-    sequence: number;
-    awardedAt?: string | null;
-    originalName: string;
-    mimeType: string;
-    size: number;
-    sha256: string;
-  }>;
+  certificates?: Certificate[];
   status: string;
   personId?: string | null;
   lineageClaimId?: string | null;
@@ -56,43 +57,57 @@ const claimLabels: Record<string, string> = {
   trained_under: "Treinou sob"
 };
 
+const statusLabels: Record<string, string> = {
+  pending_review: "Pendente",
+  needs_evidence: "Mais evidências",
+  approved: "Aprovada",
+  rejected: "Recusada"
+};
+
 export default function SubmissionReviewPage({ params }: { params: { id: string } }) {
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [notes, setNotes] = useState("");
   const [state, setState] = useState<"loading" | "ready" | "saving" | "error">("loading");
-  const [message, setMessage] = useState("Carregando solicitação…");
-  const [certificateState, setCertificateState] = useState<"idle" | "loading" | "error">("idle");
+  const [message, setMessage] = useState("");
+  const [certificateState, setCertificateState] = useState<"idle" | "loading">("idle");
 
-  const load = async () => {
-    const token = window.localStorage.getItem("tbt_admin_token");
-    if (!token) {
-      window.location.href = `/admin/login?next=${encodeURIComponent(`/admin/review/submissions/${params.id}`)}`;
-      return;
+  const load = useCallback(async () => {
+    try {
+      setState("loading");
+      const response = await adminApiFetch(`/review/submissions/${params.id}`);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error ?? "Solicitação não encontrada.");
+      setSubmission(payload as Submission);
+      setNotes((payload as Submission).reviewerNotes ?? "");
+      setState("ready");
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(cause instanceof Error ? cause.message : "Falha ao carregar.");
+      setState("error");
     }
-    const response = await fetch(`${apiBase}/review/submissions/${params.id}`, {
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const payload = await response.json();
-    if (response.status === 403) {
-      window.localStorage.removeItem("tbt_admin_token");
-      window.location.href = `/admin/login?next=${encodeURIComponent(`/admin/review/submissions/${params.id}`)}`;
-      return;
-    }
-    if (!response.ok) throw new Error(payload.error ?? "Solicitação não encontrada.");
-    setSubmission(payload as Submission);
-    setNotes((payload as Submission).reviewerNotes ?? "");
-    setState("ready");
-    setMessage("");
-  };
+  }, [params.id]);
 
   useEffect(() => {
-    load().catch((error) => {
-      setState("error");
-      setMessage(error instanceof Error ? error.message : "Falha ao carregar.");
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.id]);
+    void load();
+  }, [load]);
+
+  const teacherNames = useMemo(
+    () =>
+      submission?.teacherNames?.length
+        ? submission.teacherNames
+        : submission?.teacherName
+          ? [submission.teacherName]
+          : [],
+    [submission]
+  );
+
+  const teachersLabel = useMemo(
+    () =>
+      teacherNames.length
+        ? new Intl.ListFormat("pt-BR", { style: "long", type: "conjunction" }).format(teacherNames)
+        : "Professor não informado",
+    [teacherNames]
+  );
 
   const decide = async (action: "approve" | "reject" | "request_evidence") => {
     if (!submission) return;
@@ -103,67 +118,48 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
     if (
       action === "approve" &&
       !window.confirm(
-        `Aprovar ${submission.fullName} como conexão de ${teachersLabel}? Isso publicará ${teacherNames.length} vínculo(s) confirmado(s) na árvore.`
+        `Aprovar ${submission.fullName} como conexão de ${teachersLabel}? ${teacherNames.length} vínculo(s) confirmado(s) serão publicados.`
       )
-    ) {
-      return;
-    }
-    setState("saving");
-    setMessage("Salvando decisão…");
+    ) return;
+
     try {
-      const token = window.localStorage.getItem("tbt_admin_token");
-      if (!token) {
-        window.location.href = `/admin/login?next=${encodeURIComponent(`/admin/review/submissions/${params.id}`)}`;
-        return;
-      }
-      const response = await fetch(`${apiBase}/review/submissions/${submission.id}/${action}`, {
+      setState("saving");
+      setMessage("");
+      const response = await adminApiFetch(`/review/submissions/${submission.id}/${action}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
         body: JSON.stringify({
-          reviewerNotes: notes,
+          reviewerNotes: notes.trim(),
           teacherPersonId: submission.teacherPersonId || undefined
         })
       });
-      const payload = await response.json();
+      const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error ?? "Não foi possível salvar a decisão.");
-      setSubmission(payload as Submission);
-      setState("ready");
       setMessage(
         action === "approve"
-          ? "Aprovada e publicada na árvore."
+          ? "Solicitação aprovada e publicada na árvore."
           : action === "reject"
             ? "Solicitação recusada."
-            : "Solicitante marcado como aguardando mais evidências."
+            : "O solicitante foi marcado como aguardando mais evidências."
       );
       await load();
-    } catch (error) {
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AdminSessionError") return goToAdminLogin();
       setState("ready");
-      setMessage(error instanceof Error ? error.message : "Não foi possível salvar a decisão.");
+      setMessage(cause instanceof Error ? cause.message : "Não foi possível salvar a decisão.");
     }
   };
 
   const downloadCertificate = async (certificateId?: string, originalName?: string) => {
     if (!submission?.hasCertificate) return;
-    const token = window.localStorage.getItem("tbt_admin_token");
-    if (!token) {
-      window.location.href = `/admin/login?next=${encodeURIComponent(`/admin/review/submissions/${params.id}`)}`;
-      return;
-    }
     setCertificateState("loading");
     try {
-      const certificatePath = certificateId
+      const path = certificateId
         ? `/review/submissions/${submission.id}/certificates/${certificateId}`
         : `/review/submissions/${submission.id}/certificate`;
-      const response = await fetch(`${apiBase}${certificatePath}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store"
-      });
+      const response = await adminApiFetch(path);
       if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        throw new Error(payload?.error ?? "Não foi possível baixar o certificado.");
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error ?? "Não foi possível baixar o certificado.");
       }
       const blobUrl = URL.createObjectURL(await response.blob());
       const link = document.createElement("a");
@@ -171,212 +167,174 @@ export default function SubmissionReviewPage({ params }: { params: { id: string 
       link.download = originalName || submission.certificateOriginalName || "certificado";
       link.click();
       window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "AdminSessionError") return goToAdminLogin();
+      setMessage(cause instanceof Error ? cause.message : "Não foi possível baixar o certificado.");
+    } finally {
       setCertificateState("idle");
-    } catch (error) {
-      setCertificateState("error");
-      setMessage(error instanceof Error ? error.message : "Não foi possível baixar o certificado.");
     }
   };
 
   if (!submission) {
     return (
-      <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
-        <Link className="text-sm text-emerald-400" href="/admin/review">← Voltar à fila</Link>
-        <p className={`mt-8 ${state === "error" ? "text-rose-300" : "text-slate-400"}`}>{message}</p>
+      <main className="admin-page">
+        <Link className="admin-back-link" href="/admin/review">← Voltar para a fila</Link>
+        <section className="admin-panel admin-empty">
+          <strong>{state === "error" ? "Não foi possível abrir" : "Carregando solicitação…"}</strong>
+          {message || "Consultando dados privados e certificados."}
+        </section>
       </main>
     );
   }
 
-  const isPending = submission.status === "pending_review" || submission.status === "needs_evidence";
-  const teacherNames = submission.teacherNames?.length
-    ? submission.teacherNames
-    : [submission.teacherName];
   const teacherIds = submission.teacherPersonIds?.length
     ? submission.teacherPersonIds
     : submission.teacherPersonId
       ? [submission.teacherPersonId]
       : [];
-  const teachersLabel = new Intl.ListFormat("pt-BR", {
-    style: "long",
-    type: "conjunction"
-  }).format(teacherNames);
+  const isPending = ["pending_review", "needs_evidence"].includes(submission.status);
+  const certificates = submission.certificates ?? [];
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 px-6 py-10">
-      <section className="border-b border-slate-800 pb-6">
-        <Link className="text-sm text-emerald-400" href="/admin/review">← Voltar à fila</Link>
-        <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-slate-500">{submission.protocol}</p>
-            <h1 className="mt-2 text-3xl font-semibold">
-              {submission.fullName} <span className="text-slate-500">→</span> {teachersLabel}
-            </h1>
-            <p className="mt-2 text-slate-300">{claimLabels[submission.claimType] ?? submission.claimType}</p>
-          </div>
-          <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs uppercase tracking-[0.12em] text-amber-300">
-            {submission.status}
-          </span>
+    <main className="admin-page">
+      <header className="admin-page-head">
+        <div>
+          <Link className="admin-back-link" href="/admin/review">← Voltar para a fila</Link>
+          <div className="admin-eyebrow">{submission.protocol}</div>
+          <h1 className="admin-page-title">{submission.fullName}</h1>
+          <p className="admin-page-lead">
+            {claimLabels[submission.claimType] ?? submission.claimType} <strong>{teachersLabel}</strong>.
+          </p>
         </div>
-      </section>
+        <span className={`admin-status-badge ${submission.status === "approved" ? "is-approved" : submission.status === "rejected" ? "is-rejected" : "is-pending"}`}>
+          {statusLabels[submission.status] ?? submission.status}
+        </span>
+      </header>
 
-      <section className="grid gap-5 lg:grid-cols-2">
-        <article className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-          <h2 className="text-xl font-semibold">Conexão declarada</h2>
-          <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2">
-            <div><dt className="text-slate-500">Solicitante</dt><dd>{submission.fullName}</dd></div>
-            <div><dt className="text-slate-500">Professor(es)</dt><dd>{teachersLabel}</dd></div>
-            <div><dt className="text-slate-500">IDs dos professores</dt><dd className="font-mono text-xs">{teacherIds.join(", ") || "não resolvido"}</dd></div>
-            <div><dt className="text-slate-500">Graduação</dt><dd>{submission.promotionDate ? new Date(submission.promotionDate).toLocaleDateString("pt-BR") : "não informada"}</dd></div>
-            <div><dt className="text-slate-500">Percurso</dt><dd>{submission.graduationTrack === "youth" ? "Início juvenil" : "Início adulto"}</dd></div>
-            <div><dt className="text-slate-500">Declaração documental</dt><dd>{submission.certificateCompletenessConfirmed ? "Todos os certificados declarados" : "Não confirmada"}</dd></div>
-            <div><dt className="text-slate-500">Equipe</dt><dd>{submission.academyTeam ?? "não informada"}</dd></div>
-            <div><dt className="text-slate-500">Local</dt><dd>{[submission.city, submission.country].filter(Boolean).join(", ") || "não informado"}</dd></div>
-            <div><dt className="text-slate-500">Recebida</dt><dd>{new Date(submission.createdAt).toLocaleString("pt-BR")}</dd></div>
-            <div><dt className="text-slate-500">Vínculo publicado</dt><dd className="font-mono text-xs">{submission.lineageClaimId ?? "ainda não"}</dd></div>
-          </dl>
-        </article>
+      {message ? <div className="admin-alert" role="status">{message}</div> : null}
 
-        <article className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-          <h2 className="text-xl font-semibold">Contato privado</h2>
-          <p className="mt-2 text-xs text-slate-500">Não é exibido no site público.</p>
-          <div className="mt-5 grid gap-3">
-            <a className="rounded-lg border border-slate-700 p-3 hover:bg-slate-800" href={`mailto:${submission.email}`}>
-              <small className="block text-slate-500">E-mail</small>
-              <strong>{submission.email}</strong>
+      <div className="admin-detail-grid">
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Conexão declarada</h2><small>{teacherNames.length} professor(es)</small></header>
+          <div className="admin-panel-body">
+            <div className="admin-relationship">
+              <div><small>Solicitante</small><strong>{submission.fullName}</strong></div>
+              <span aria-hidden="true">→</span>
+              <div><small>Professor(es)</small><strong>{teachersLabel}</strong></div>
+            </div>
+            <dl className="admin-definition-grid admin-section-gap">
+              <div><dt>IDs dos professores</dt><dd>{teacherIds.join(", ") || "Não resolvidos"}</dd></div>
+              <div><dt>Data da graduação</dt><dd>{submission.promotionDate ? new Date(submission.promotionDate).toLocaleDateString("pt-BR") : "Não informada"}</dd></div>
+              <div><dt>Percurso</dt><dd>{submission.graduationTrack === "youth" ? "Início juvenil" : "Início adulto"}</dd></div>
+              <div><dt>Documentação completa</dt><dd>{submission.certificateCompletenessConfirmed ? "Declarada pelo solicitante" : "Não confirmada"}</dd></div>
+              <div><dt>Equipe</dt><dd>{submission.academyTeam ?? "Não informada"}</dd></div>
+              <div><dt>Local</dt><dd>{[submission.city, submission.country].filter(Boolean).join(", ") || "Não informado"}</dd></div>
+              <div><dt>Recebida</dt><dd>{new Date(submission.createdAt).toLocaleString("pt-BR")}</dd></div>
+              <div><dt>Vínculo publicado</dt><dd>{submission.lineageClaimId ?? "Ainda não"}</dd></div>
+            </dl>
+          </div>
+        </section>
+
+        <section className="admin-panel">
+          <header className="admin-panel-head"><h2>Contato privado</h2><small>Não publicar</small></header>
+          <div className="admin-panel-body admin-source-list">
+            <a className="admin-link-card" href={`mailto:${submission.email}`}>
+              <small>E-mail</small><strong>{submission.email}</strong>
             </a>
             {submission.instagram ? (
-              <div className="rounded-lg border border-slate-700 p-3">
-                <small className="block text-slate-500">Instagram</small>
-                <strong>{submission.instagram}</strong>
-              </div>
+              <div className="admin-link-card"><small>Instagram</small><strong>{submission.instagram}</strong></div>
             ) : null}
+            <div className="admin-privacy-note">
+              Estes dados servem apenas para validação e contato editorial.
+            </div>
           </div>
-        </article>
+        </section>
+      </div>
+
+      <section className="admin-panel admin-section-gap">
+        <header className="admin-panel-head"><h2>Certificados</h2><small>{submission.certificateCount ?? certificates.length} arquivos privados</small></header>
+        <div className="admin-certificate-grid">
+          {certificates.map((certificate, index) => (
+            <article className="admin-certificate-card" key={certificate.id}>
+              <div className="admin-certificate-rank">{String(index + 1).padStart(2, "0")}</div>
+              <div>
+                <small>{certificate.track === "youth" ? "Percurso juvenil" : "Percurso adulto"}</small>
+                <strong>{certificate.beltLabel}</strong>
+                <p>{certificate.originalName}</p>
+                <code>{(certificate.size / 1024 / 1024).toFixed(2)} MB · SHA-256 {certificate.sha256.slice(0, 12)}…</code>
+              </div>
+              <button
+                className="admin-button-secondary"
+                type="button"
+                disabled={certificateState === "loading"}
+                onClick={() => void downloadCertificate(certificate.id, certificate.originalName)}
+              >
+                Abrir
+              </button>
+            </article>
+          ))}
+          {!certificates.length && submission.hasCertificate ? (
+            <article className="admin-certificate-card">
+              <div className="admin-certificate-rank">01</div>
+              <div>
+                <small>Pré-evidência privada</small>
+                <strong>Certificado enviado</strong>
+                <p>{submission.certificateOriginalName}</p>
+                <code>{submission.certificateMimeType} · {submission.certificateSize ? `${(submission.certificateSize / 1024 / 1024).toFixed(2)} MB` : ""}</code>
+              </div>
+              <button
+                className="admin-button-secondary"
+                type="button"
+                disabled={certificateState === "loading"}
+                onClick={() => void downloadCertificate(undefined, submission.certificateOriginalName ?? undefined)}
+              >
+                Abrir
+              </button>
+            </article>
+          ) : null}
+          {!submission.hasCertificate ? (
+            <div className="admin-empty"><strong>Nenhum certificado</strong>Não há documentos privados anexados.</div>
+          ) : null}
+        </div>
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-        <h2 className="text-xl font-semibold">Evidências enviadas</h2>
-        {submission.certificates?.length ? (
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {submission.certificates.map((certificate, index) => (
-              <article
-                key={certificate.id}
-                className="flex min-w-0 flex-col justify-between gap-4 rounded-xl border border-emerald-700/40 bg-emerald-950/20 p-4"
-              >
-                <div className="min-w-0">
-                  <small className="block text-xs uppercase tracking-[0.14em] text-emerald-400">
-                    {String(index + 1).padStart(2, "0")} · {certificate.beltLabel}
-                  </small>
-                  <strong className="mt-2 block truncate">{certificate.originalName}</strong>
-                  <span className="mt-1 block font-mono text-xs text-slate-500">
-                    {certificate.track === "youth" ? "Percurso juvenil" : "Percurso adulto"}
-                    {certificate.awardedAt
-                      ? ` · ${new Date(certificate.awardedAt).toLocaleDateString("pt-BR")}`
-                      : ""}
-                    {` · ${(certificate.size / 1024 / 1024).toFixed(2)} MB`}
-                  </span>
-                  <span className="mt-2 block truncate font-mono text-[10px] text-slate-600">
-                    SHA-256 {certificate.sha256}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => void downloadCertificate(certificate.id, certificate.originalName)}
-                  disabled={certificateState === "loading"}
-                  className="self-start rounded-lg border border-emerald-600 px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-900/30 disabled:opacity-50"
-                >
-                  {certificateState === "loading" ? "Baixando…" : "Abrir certificado"}
-                </button>
-              </article>
-            ))}
-          </div>
-        ) : submission.hasCertificate ? (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-emerald-700/40 bg-emerald-950/20 p-4">
-            <div className="min-w-0">
-              <small className="block text-xs uppercase tracking-[0.14em] text-emerald-400">
-                Certificado privado · pré-evidência
-              </small>
-              <strong className="mt-1 block truncate">{submission.certificateOriginalName}</strong>
-              <span className="mt-1 block font-mono text-xs text-slate-500">
-                {submission.certificateMimeType}
-                {submission.certificateSize
-                  ? ` · ${(submission.certificateSize / 1024 / 1024).toFixed(2)} MB`
-                  : ""}
-              </span>
-              {submission.certificateSha256 ? (
-                <span className="mt-1 block truncate font-mono text-[10px] text-slate-600">
-                  SHA-256 {submission.certificateSha256}
-                </span>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              onClick={() => void downloadCertificate(undefined, submission.certificateOriginalName ?? undefined)}
-              disabled={certificateState === "loading"}
-              className="rounded-lg border border-emerald-600 px-4 py-2 text-sm text-emerald-300 hover:bg-emerald-900/30 disabled:opacity-50"
-            >
-              {certificateState === "loading" ? "Baixando…" : "Abrir certificado"}
-            </button>
-          </div>
-        ) : null}
-        <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-slate-300">
-          {submission.evidenceNotes || "Sem relato textual."}
-        </p>
-        <div className="mt-5 grid gap-2">
+      <section className="admin-panel admin-section-gap">
+        <header className="admin-panel-head"><h2>Outras evidências</h2><small>{submission.evidenceUrls.length} links</small></header>
+        <div className="admin-panel-body admin-source-list">
+          {submission.evidenceNotes ? <p className="admin-evidence-note">{submission.evidenceNotes}</p> : null}
           {submission.evidenceUrls.map((url) => (
-            <a
-              key={url}
-              className="break-all rounded-lg border border-slate-700 px-4 py-3 text-sm text-emerald-300 hover:bg-slate-800"
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {url} ↗
+            <a className="admin-link-card" href={url} target="_blank" rel="noreferrer" key={url}>
+              <small>Link enviado</small><strong>{url}</strong>
             </a>
           ))}
-          {!submission.evidenceUrls.length ? <p className="text-sm text-slate-500">Nenhum link anexado.</p> : null}
+          {!submission.evidenceUrls.length && !submission.evidenceNotes ? (
+            <div className="admin-empty"><strong>Sem evidências adicionais</strong>Confira os certificados acima.</div>
+          ) : null}
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-        <h2 className="text-xl font-semibold">Decisão editorial</h2>
-        <label className="mt-4 block text-sm text-slate-300">
-          Mensagem e notas da revisão
-          <textarea
-            className="mt-2 min-h-32 w-full rounded-lg border border-slate-700 bg-slate-950 p-3"
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            placeholder="Explique a decisão; esta mensagem aparece na consulta pública do protocolo."
-          />
-        </label>
-        {message ? <p className="mt-3 text-sm text-amber-300" role="status">{message}</p> : null}
-        <div className="mt-5 flex flex-wrap gap-3">
-          <button
-            type="button"
-            disabled={!isPending || state === "saving"}
-            onClick={() => void decide("approve")}
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Aprovar e publicar
-          </button>
-          <button
-            type="button"
-            disabled={!isPending || state === "saving"}
-            onClick={() => void decide("request_evidence")}
-            className="rounded-lg border border-amber-600 px-4 py-2 text-amber-300 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Pedir evidências
-          </button>
-          <button
-            type="button"
-            disabled={!isPending || state === "saving"}
-            onClick={() => void decide("reject")}
-            className="rounded-lg border border-rose-700 px-4 py-2 text-rose-300 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Recusar
-          </button>
+      <section className="admin-panel admin-section-gap">
+        <header className="admin-panel-head"><h2>Parecer editorial</h2><small>Visível na consulta do protocolo</small></header>
+        <div className="admin-panel-body">
+          <label className="admin-field">
+            Mensagem e notas da revisão
+            <textarea
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              placeholder="Explique o que foi conferido ou qual evidência ainda é necessária."
+            />
+          </label>
         </div>
       </section>
+
+      <div className="admin-decision-bar">
+        <small>{isPending ? "A aprovação publica a pessoa e suas conexões na árvore." : "Esta solicitação já recebeu uma decisão."}</small>
+        <div className="admin-decision-actions">
+          <button className="admin-button" disabled={!isPending || state === "saving"} onClick={() => void decide("approve")}>Aprovar e publicar</button>
+          <button className="admin-button-warning" disabled={!isPending || state === "saving"} onClick={() => void decide("request_evidence")}>Pedir evidências</button>
+          <button className="admin-button-danger" disabled={!isPending || state === "saving"} onClick={() => void decide("reject")}>Recusar</button>
+        </div>
+      </div>
     </main>
   );
 }

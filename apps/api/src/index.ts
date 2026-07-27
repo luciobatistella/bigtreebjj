@@ -21,9 +21,7 @@ import {
   listPublicLineageGraph,
   listPeople,
   listRelationships,
-  listSources,
-  loginAdmin,
-  verifyAuth
+  listSources
 } from './domain.js';
 import {
   bulkDecideDuplicates,
@@ -52,7 +50,7 @@ import {
   setImportJobStatus,
   updateImportJobMapping
 } from './importService.js';
-import { decideClaimReview, getClaimReview, reclassifyClaimReview } from './reviewService.js';
+import { decideClaimReview, getClaimReview, listClaimReviews, reclassifyClaimReview } from './reviewService.js';
 import { readCommunityCertificate, storeUploadFile } from './storage.js';
 import {
   getBjjHeroesStatus,
@@ -69,6 +67,7 @@ import {
   listLineageSubmissions
 } from './communitySubmissionService.js';
 import { publicTreeMembershipWhere } from './publicLineage.js';
+import { AdminAuthError, verifySupabaseAdminToken } from './supabaseAuth.js';
 
 dotenv.config({ path: '../../.env' });
 
@@ -182,13 +181,15 @@ const protectPublicData: express.RequestHandler = (_req, res, next) => {
   next();
 };
 
-const requireAdmin: express.RequestHandler = (req, res, next) => {
+const requireAdmin: express.RequestHandler = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.replace(/^Bearer\s+/i, '');
-    verifyAuth(token);
+    res.locals.adminUser = await verifySupabaseAdminToken(token);
+    res.setHeader('Cache-Control', 'private, no-store');
     next();
   } catch (error) {
-    res.status(403).json({ error: (error as Error).message });
+    const statusCode = error instanceof AdminAuthError ? error.statusCode : 403;
+    res.status(statusCode).json({ error: (error as Error).message });
   }
 };
 
@@ -247,28 +248,28 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'api' });
 });
 
-app.get('/admin/metrics', async (_req, res) => {
+app.get('/admin/metrics', requireAdmin, async (_req, res) => {
   const metrics = await getDashboardMetrics();
   res.json(metrics);
 });
 
-app.get('/admin/sources/bjjheroes', (_req, res) => {
+app.get('/admin/sources/bjjheroes', requireAdmin, (_req, res) => {
   res.json(getBjjHeroesStatus());
 });
 
-app.get('/admin/imports/bjjheroes', (_req, res) => {
+app.get('/admin/imports/bjjheroes', requireAdmin, (_req, res) => {
   res.json(getBjjHeroesStatus());
 });
 
-app.post('/admin/sources/bjjheroes/pause', (req, res) => {
+app.post('/admin/sources/bjjheroes/pause', requireAdmin, (req, res) => {
   res.json(pauseBjjHeroesConnector(req.body?.reason));
 });
 
-app.post('/admin/sources/bjjheroes/resume', (_req, res) => {
+app.post('/admin/sources/bjjheroes/resume', requireAdmin, (_req, res) => {
   res.json(resumeBjjHeroesConnector());
 });
 
-app.post('/admin/sources/bjjheroes/dry-run', (req, res) => {
+app.post('/admin/sources/bjjheroes/dry-run', requireAdmin, (req, res) => {
   try {
     res.json(runBjjHeroesDryRun(req.body ?? {}));
   } catch (error) {
@@ -276,7 +277,7 @@ app.post('/admin/sources/bjjheroes/dry-run', (req, res) => {
   }
 });
 
-app.post('/admin/imports/bjjheroes/manual-profile', async (req, res) => {
+app.post('/admin/imports/bjjheroes/manual-profile', requireAdmin, async (req, res) => {
   try {
     const result = await importManualBjjHeroesProfile(req.body ?? {});
     res.status(201).json(result);
@@ -285,13 +286,10 @@ app.post('/admin/imports/bjjheroes/manual-profile', async (req, res) => {
   }
 });
 
-app.post('/auth/login', (req, res) => {
-  try {
-    const { email, password } = req.body as { email: string; password: string };
-    res.json(loginAdmin(email, password));
-  } catch (error) {
-    res.status(401).json({ error: (error as Error).message });
-  }
+app.post('/auth/login', (_req, res) => {
+  res.status(410).json({
+    error: 'O login administrativo agora é realizado diretamente pelo Supabase Auth.'
+  });
 });
 
 app.get('/people', protectPublicData, async (_req, res) => {
@@ -488,6 +486,7 @@ app.get('/explore/tree', async (req, res) => {
   const claims = rootPerson
     ? await db.lineageClaim.findMany({
       where: {
+        status: { in: ['confirmed', 'corroborated', 'verified'] },
         OR: [
           { studentPersonId: rootPerson.id },
           { teacherPersonId: rootPerson.id }
@@ -603,9 +602,9 @@ app.get(
     select: { id: true, fullName: true, nicknames: true, team: true, bio: true, profileUrl: true }
   });
   const claims = await db.lineageClaim.findMany({
-    where: { status: { in: ['confirmed', 'pending_review'] }, teacherPersonId: { not: null } },
+    where: { status: { in: ['confirmed', 'corroborated', 'verified'] }, teacherPersonId: { not: null } },
     select: { studentPersonId: true, teacherPersonId: true, claimType: true, status: true, notes: true },
-    orderBy: [{ status: 'asc' }, { createdAt: 'asc' }] // 'confirmed' sorts before 'pending_review'
+    orderBy: [{ status: 'asc' }, { createdAt: 'asc' }]
   });
 
   const personById = new Map(people.map((p: any) => [p.id, p]));
@@ -662,7 +661,7 @@ app.get(
   }
 );
 
-app.post('/external-profiles/:id/approve-person', async (req, res) => {
+app.post('/external-profiles/:id/approve-person', requireAdmin, async (req, res) => {
   const db = await getDb();
   if (!db) {
     res.status(503).json({ error: 'Database is not available' });
@@ -731,7 +730,7 @@ app.post('/external-profiles/:id/approve-person', async (req, res) => {
   });
 });
 
-app.post('/people', (req, res) => {
+app.post('/people', requireAdmin, (req, res) => {
   const person = createPerson(req.body);
   res.status(201).json(person);
 });
@@ -740,12 +739,12 @@ app.get('/sources', (_req, res) => {
   res.json(listSources());
 });
 
-app.post('/sources', (req, res) => {
+app.post('/sources', requireAdmin, (req, res) => {
   const source = createSource(req.body);
   res.status(201).json(source);
 });
 
-app.get('/relationships', (_req, res) => {
+app.get('/relationships', requireAdmin, (_req, res) => {
   res.json(listRelationships());
 });
 
@@ -867,15 +866,15 @@ app.get(
   }
 );
 
-app.get('/organizations/review', (_req, res) => {
+app.get('/organizations/review', requireAdmin, (_req, res) => {
   res.json({ organizations: listOrganizations(), relationships: listOrganizationRelationships() });
 });
 
-app.post('/organizations/review', (req, res) => {
+app.post('/organizations/review', requireAdmin, (req, res) => {
   res.status(201).json(createOrganization(req.body));
 });
 
-app.post('/organizations/review/canonicalize', (req, res) => {
+app.post('/organizations/review/canonicalize', requireAdmin, (req, res) => {
   res.status(201).json(canonicalizeOrganizationDuplicate(req.body));
 });
 
@@ -883,27 +882,25 @@ app.get('/promotion-groups', (_req, res) => {
   res.json(listPromotionGroups());
 });
 
-app.post('/promotion-groups', (req, res) => {
+app.post('/promotion-groups', requireAdmin, (req, res) => {
   res.status(201).json(createPromotionGroup(req.body));
 });
 
-app.post('/relationships', (req, res) => {
+app.post('/relationships', requireAdmin, (req, res) => {
   const relationship = createRelationship(req.body);
   res.status(201).json(relationship);
 });
 
-app.post('/relationships/:id/approve', (req, res) => {
+app.post('/relationships/:id/approve', requireAdmin, (req, res) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    verifyAuth(token);
-    const relationship = approveRelationship(req.params.id);
+    const relationship = approveRelationship(String(req.params.id));
     res.json(relationship);
   } catch (error) {
     res.status(403).json({ error: (error as Error).message });
   }
 });
 
-app.post('/imports/upload', upload.single('file'), async (req, res) => {
+app.post('/imports/upload', requireAdmin, upload.single('file'), async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
@@ -919,9 +916,9 @@ app.post('/imports/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-app.post('/imports/:id/preview', async (req, res) => {
+app.post('/imports/:id/preview', requireAdmin, async (req, res) => {
   try {
-    const job = await getImportJob(req.params.id);
+    const job = await getImportJob(String(req.params.id));
     if (!job) {
       return res.status(404).json({ error: 'Import job not found' });
     }
@@ -932,117 +929,117 @@ app.post('/imports/:id/preview', async (req, res) => {
   }
 });
 
-app.post('/imports/:id/map-columns', async (req, res) => {
+app.post('/imports/:id/map-columns', requireAdmin, async (req, res) => {
   try {
     const mapping = req.body as Record<string, unknown>;
-    const updated = await updateImportJobMapping(req.params.id, mapping);
+    const updated = await updateImportJobMapping(String(req.params.id), mapping);
     return res.json(updated);
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.post('/imports/:id/validate', async (req, res) => {
+app.post('/imports/:id/validate', requireAdmin, async (req, res) => {
   try {
-    const updated = await setImportJobStatus(req.params.id, 'validated');
+    const updated = await setImportJobStatus(String(req.params.id), 'validated');
     return res.json(updated);
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.post('/imports/:id/execute', async (req, res) => {
+app.post('/imports/:id/execute', requireAdmin, async (req, res) => {
   try {
-    const result = await executeImportJob(req.params.id, req.body as { importCategory?: string; mapping?: Record<string, unknown> });
+    const result = await executeImportJob(String(req.params.id), req.body as { importCategory?: string; mapping?: Record<string, unknown> });
     return res.status(201).json(result);
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.post('/imports/:id/rollback', async (req, res) => {
+app.post('/imports/:id/rollback', requireAdmin, async (req, res) => {
   try {
-    const result = await rollbackImportJob(req.params.id);
+    const result = await rollbackImportJob(String(req.params.id));
     return res.json(result);
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.get('/imports', async (_req, res) => {
+app.get('/imports', requireAdmin, async (_req, res) => {
   const jobs = await listImportJobs();
   return res.json(jobs);
 });
 
-app.get('/imports/presets/research', (_req, res) => {
+app.get('/imports/presets/research', requireAdmin, (_req, res) => {
   res.json(getImportPresets());
 });
 
-app.post('/imports/readiness-report', async (req, res) => {
+app.post('/imports/readiness-report', requireAdmin, async (req, res) => {
   const report = await createImportReadinessReport(req.body as { categories: Record<string, Array<Record<string, unknown>>> });
   res.json(report);
 });
 
-app.get('/imports/:id', async (req, res) => {
-  const job = await getImportJob(req.params.id);
+app.get('/imports/:id', requireAdmin, async (req, res) => {
+  const job = await getImportJob(String(req.params.id));
   return job ? res.json(job) : res.status(404).json({ error: 'Import job not found' });
 });
 
-app.get('/imports/:id/detail', async (req, res) => {
-  const detail = await getImportOperationalDetail(req.params.id);
+app.get('/imports/:id/detail', requireAdmin, async (req, res) => {
+  const detail = await getImportOperationalDetail(String(req.params.id));
   return detail ? res.json(detail) : res.status(404).json({ error: 'Import job not found' });
 });
 
-app.get('/imports/:id/rows', async (req, res) => {
-  const rows = await listImportRows(req.params.id);
+app.get('/imports/:id/rows', requireAdmin, async (req, res) => {
+  const rows = await listImportRows(String(req.params.id));
   return res.json(rows);
 });
 
-app.get('/imports/:id/report', async (req, res) => {
-  const report = await getImportReport(req.params.id);
+app.get('/imports/:id/report', requireAdmin, async (req, res) => {
+  const report = await getImportReport(String(req.params.id));
   return res.json(report);
 });
 
-app.get('/imports/:id/duplicates', async (req, res) => {
-  const duplicates = await listImportDuplicateCandidates(req.params.id);
+app.get('/imports/:id/duplicates', requireAdmin, async (req, res) => {
+  const duplicates = await listImportDuplicateCandidates(String(req.params.id));
   return res.json(duplicates);
 });
 
-app.get('/imports/:id/review-queue', async (req, res) => {
-  const queue = await listImportReviewQueue(req.params.id);
+app.get('/imports/:id/review-queue', requireAdmin, async (req, res) => {
+  const queue = await listImportReviewQueue(String(req.params.id));
   return res.json(queue);
 });
 
-app.get('/imports/:id/imported-records', async (req, res) => {
-  const records = await listImportImportedRecords(req.params.id);
+app.get('/imports/:id/imported-records', requireAdmin, async (req, res) => {
+  const records = await listImportImportedRecords(String(req.params.id));
   return res.json(records);
 });
 
-app.get('/imports/:id/audit-history', async (req, res) => {
-  const history = await listImportAuditHistory(req.params.id);
+app.get('/imports/:id/audit-history', requireAdmin, async (req, res) => {
+  const history = await listImportAuditHistory(String(req.params.id));
   return res.json(history);
 });
 
-app.get('/imports/:id/report.csv', async (req, res) => {
-  const report = await getImportReport(req.params.id);
+app.get('/imports/:id/report.csv', requireAdmin, async (req, res) => {
+  const report = await getImportReport(String(req.params.id));
   res.type('text/csv').send(`job_id,row_count,review_queue_count,imported_count,skipped_count,duplicate_count\n${report.job?.id ?? req.params.id},${report.rowCount},${report.reviewQueueCount},${report.importedCount},${report.skippedCount},${report.duplicateCount}`);
 });
 
-app.get('/imports/:id/status', async (req, res) => {
-  const status = await getImportStatus(req.params.id);
+app.get('/imports/:id/status', requireAdmin, async (req, res) => {
+  const status = await getImportStatus(String(req.params.id));
   return res.json(status);
 });
 
-app.get('/imports/:id/download', async (req, res) => {
-  const job = await getImportJob(req.params.id);
+app.get('/imports/:id/download', requireAdmin, async (req, res) => {
+  const job = await getImportJob(String(req.params.id));
   if (!job || !job.storagePath) {
     return res.status(404).json({ error: 'Import job not found' });
   }
   return res.download(job.storagePath as string, job.originalFileName as string);
 });
 
-app.get('/review/claims', (_req, res) => {
-  res.json(listRelationships());
+app.get('/review/claims', requireAdmin, async (req, res) => {
+  res.json(await listClaimReviews(String(req.query.status ?? 'pending_review')));
 });
 
 app.get('/review/submissions', requireAdmin, async (req, res) => {
@@ -1113,97 +1110,118 @@ app.post('/review/submissions/:id/:action', requireAdmin, async (req, res) => {
     return res.status(400).json({ error: 'Ação editorial inválida.' });
   }
   try {
-    const updated = await decideLineageSubmission(db, String(req.params.id), action, req.body ?? {});
+    const updated = await decideLineageSubmission(db, String(req.params.id), action, {
+      ...(req.body ?? {}),
+      reviewerId: res.locals.adminUser.id
+    });
     return res.status(201).json(privateSubmissionView(updated));
   } catch (error) {
     return res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.get('/review/claims/:id', async (req, res) => {
-  const claim = await getClaimReview(req.params.id);
+app.get('/review/claims/:id', requireAdmin, async (req, res) => {
+  const claim = await getClaimReview(String(req.params.id));
   return claim ? res.json(claim) : res.status(404).json({ error: 'Claim not found' });
 });
 
-app.post('/review/claims/:id/approve', async (req, res) => {
+app.post('/review/claims/:id/approve', requireAdmin, async (req, res) => {
   try {
-    if (req.headers.authorization) {
-      verifyAuth(req.headers.authorization?.replace('Bearer ', ''));
-    }
-    const decision = await decideClaimReview(req.params.id, 'approve', req.body.notes ?? 'Approved', req.body.evidenceLevel, req.body);
+    const decision = await decideClaimReview(
+      String(req.params.id),
+      'approve',
+      req.body.notes ?? 'Approved',
+      req.body.evidenceLevel,
+      { ...req.body, reviewerId: res.locals.adminUser.id }
+    );
     res.status(201).json(decision);
   } catch (error) {
     res.status(403).json({ error: (error as Error).message });
   }
 });
 
-app.post('/review/claims/:id/reclassify', async (req, res) => {
+app.post('/review/claims/:id/reclassify', requireAdmin, async (req, res) => {
   try {
-    const decision = await reclassifyClaimReview(req.params.id, req.body.claimType, req.body.relationshipLabel, req.body.notes ?? 'Relationship type reclassified');
+    const decision = await reclassifyClaimReview(String(req.params.id), req.body.claimType, req.body.relationshipLabel, req.body.notes ?? 'Relationship type reclassified');
     res.status(201).json(decision);
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }
 });
 
-app.post('/review/claims/:id/reject', async (req, res) => {
+app.post('/review/claims/:id/reject', requireAdmin, async (req, res) => {
   try {
-    if (req.headers.authorization) {
-      verifyAuth(req.headers.authorization?.replace('Bearer ', ''));
-    }
-    const decision = await decideClaimReview(req.params.id, 'reject', req.body.notes ?? 'Rejected');
+    const decision = await decideClaimReview(
+      String(req.params.id),
+      'reject',
+      req.body.notes ?? 'Rejected',
+      undefined,
+      { reviewerId: res.locals.adminUser.id }
+    );
     res.status(201).json(decision);
   } catch (error) {
     res.status(403).json({ error: (error as Error).message });
   }
 });
 
-app.post('/review/claims/:id/dispute', async (req, res) => {
-  const decision = await decideClaimReview(req.params.id, 'dispute', req.body.notes ?? 'Marked disputed');
+app.post('/review/claims/:id/dispute', requireAdmin, async (req, res) => {
+  const decision = await decideClaimReview(
+    String(req.params.id),
+    'dispute',
+    req.body.notes ?? 'Marked disputed',
+    undefined,
+    { reviewerId: res.locals.adminUser.id }
+  );
   res.status(201).json(decision);
 });
 
-app.post('/review/claims/:id/request-evidence', async (req, res) => {
-  const decision = await decideClaimReview(req.params.id, 'request_evidence', req.body.notes ?? 'More evidence requested');
+app.post('/review/claims/:id/request-evidence', requireAdmin, async (req, res) => {
+  const decision = await decideClaimReview(
+    String(req.params.id),
+    'request_evidence',
+    req.body.notes ?? 'More evidence requested',
+    undefined,
+    { reviewerId: res.locals.adminUser.id }
+  );
   res.status(201).json(decision);
 });
 
-app.get('/review/duplicates', async (req, res) => {
+app.get('/review/duplicates', requireAdmin, async (req, res) => {
   const duplicates = await listDuplicateCandidates(req.query as Record<string, unknown>);
   res.json(duplicates);
 });
 
-app.post('/review/duplicates/bulk', async (req, res) => {
+app.post('/review/duplicates/bulk', requireAdmin, async (req, res) => {
   const result = await bulkDecideDuplicates(req.body as { ids?: string[]; filters?: Record<string, unknown>; action: 'ignore_low_confidence' | 'keep_separate' | 'needs_manual_review'; notes?: string });
   res.json(result);
 });
 
-app.get('/review/duplicates/:id', async (req, res) => {
-  const duplicate = await getDuplicateReview(req.params.id);
+app.get('/review/duplicates/:id', requireAdmin, async (req, res) => {
+  const duplicate = await getDuplicateReview(String(req.params.id));
   return duplicate ? res.json(duplicate) : res.status(404).json({ error: 'Duplicate candidate not found' });
 });
 
-app.post('/review/duplicates/:id/merge', async (req, res) => {
-  const decision = await decideDuplicate(req.params.id, 'merge', req.body.notes);
+app.post('/review/duplicates/:id/merge', requireAdmin, async (req, res) => {
+  const decision = await decideDuplicate(String(req.params.id), 'merge', req.body.notes);
   res.json(decision);
 });
 
-app.post('/review/duplicates/:id/keep-separate', async (req, res) => {
-  const decision = await decideDuplicate(req.params.id, 'keep_separate', req.body.notes);
+app.post('/review/duplicates/:id/keep-separate', requireAdmin, async (req, res) => {
+  const decision = await decideDuplicate(String(req.params.id), 'keep_separate', req.body.notes);
   res.json(decision);
 });
 
-app.post('/review/duplicates/:id/uncertain', async (req, res) => {
-  const decision = await decideDuplicate(req.params.id, 'uncertain', req.body.notes);
+app.post('/review/duplicates/:id/uncertain', requireAdmin, async (req, res) => {
+  const decision = await decideDuplicate(String(req.params.id), 'uncertain', req.body.notes);
   res.json(decision);
 });
 
-app.post('/research-tasks/generate-census', async (_req, res) => {
+app.post('/research-tasks/generate-census', requireAdmin, async (_req, res) => {
   const result = await generateCensusResearchTasks();
   res.status(201).json(result);
 });
 
-app.get('/research-tasks', (_req, res) => {
+app.get('/research-tasks', requireAdmin, (_req, res) => {
   res.json(getGeneratedResearchTasks());
 });
 

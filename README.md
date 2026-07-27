@@ -43,6 +43,36 @@ pnpm dev
 - The lineage rules are encoded as application guidance and schema conventions.
 - The system is designed to support future importers, curator review, and Docker-based deployment to a VPS.
 
+## Official Lineage Widget
+
+The public generator at `https://bigtreebjj.com/embed` creates a responsive,
+read-only lineage widget for any person already published in the unified tree.
+
+```html
+<script async src="https://bigtreebjj.com/embed/widget.js"></script>
+<the-big-tree-bjj
+  person="demian-maia"
+  lang="pt"
+  theme="gold"
+  view="full"
+></the-big-tree-bjj>
+```
+
+Supported values:
+
+- `lang`: `pt` or `en`;
+- `theme`: `gold` or `light`;
+- `view`: `full`, `lineage`, or `compact`.
+
+The custom element creates a sandboxed iframe and automatically follows its
+responsive height. The payload uses the same unified projection as the
+Explorer, returns no biographies, certificates, evidence documents, source
+lists, or database identifiers, and limits direct black-belt results to eight.
+The The Big Tree BJJ signature and canonical lineage link are mandatory.
+
+“Official” refers to the editorial record published by The Big Tree BJJ; it
+does not claim federation certification.
+
 ## BJJ Heroes Discovery Connector
 
 The BJJ Heroes Discovery Connector is a review-first discovery source for minimal structured research facts: person names, nicknames, listed team text, profile URLs, and possible lineage clues. It is not a clone, mirror, scraper for editorial content, or image downloader.
